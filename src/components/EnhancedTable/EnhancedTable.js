@@ -129,8 +129,8 @@ const headCells = [[
     // { id: 'Agent Name', numeric: true, disablePadding: false, label: 'Agent Name' },
     { id: 'Action', numeric: true, disablePadding: false, label: 'Action' }],
 [
-    { id: 'SubmittedDate', numeric: true, disablePadding: false, label: 'Re-Work Date' },
-    { id: 'LoanID', numeric: true, disablePadding: false, label: 'Loan ID' },
+    { id: 'SubmittedDate', numeric: true, disablePadding: false, label: 'Approved Date' },
+    { id: 'LoanID', numeric: true, disablePadding: false, label: 'LAN' },
     { id: 'Name', numeric: true, disablePadding: false, label: 'Name' },
     { id: 'MobileNumber', numeric: true, disablePadding: false, label: 'Mobile Number' },
     { id: 'LoanAmount', numeric: true, disablePadding: false, label: 'Loan Amount' },
@@ -138,12 +138,12 @@ const headCells = [[
     // { id: 'Agent Name', numeric: true, disablePadding: false, label: 'Agent Name' },
     { id: 'Action', numeric: true, disablePadding: false, label: 'Action' }],
 [
-    { id: 'SubmittedDate', numeric: true, disablePadding: false, label: 'Re-Work Date' },
-    { id: 'LoanID', numeric: true, disablePadding: false, label: 'Loan ID' },
+    { id: 'SubmittedDate', numeric: true, disablePadding: false, label: 'Rejected Date' },
+    { id: 'LoanID', numeric: true, disablePadding: false, label: 'LAN' },
     { id: 'Name', numeric: true, disablePadding: false, label: 'Name' },
     { id: 'MobileNumber', numeric: true, disablePadding: false, label: 'Mobile Number' },
     { id: 'LoanAmount', numeric: true, disablePadding: false, label: 'Loan Amount' },
-    // { id: 'Case Status', numeric: true, disablePadding: false, label: 'Case Status' },
+    { id: 'Reason', numeric: true, disablePadding: false, label: 'Reason' },
     // { id: 'Agent Name', numeric: true, disablePadding: false, label: 'Agent Name' },
     { id: 'Action', numeric: true, disablePadding: false, label: 'Action' }],
 [
@@ -397,13 +397,26 @@ export default function EnhancedTable() {
                     }
                 }
 
-
-                $.ajax(settings).done(function (response) {
-                    console.log('first');
-                    console.log(response);
-                    setRows(JSON.parse(response));
+                console.log('Beofre fetch call');
+                fetch(settings.url, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "token": localStorage.getItem('token')
+                    }
+                }).then(res => res.json()
+                ).then(res => {
+                    console.log('res === through fetch', res);
+                    setRows(res);
                     setisfetching(false);
                 });
+
+                // $.ajax(settings).done(function (response) {
+                //     console.log('first');
+                //     console.log(response);
+                //     setRows(JSON.parse(response));
+                //     setisfetching(false);
+                // });
                 console.log("token in local storage " + localStorage.getItem('token'));
                 //}
 
@@ -521,6 +534,11 @@ export default function EnhancedTable() {
                                             <TableCell align="left">{row.loanAmount}</TableCell>
                                             {/* <TableCell align="left">{row.applicationStatus}</TableCell>
                                             <TableCell align="left">{row.appVersion}</TableCell> */}
+                                            {
+                                                (card[3]) ? (
+                                                    <TableCell align="left">{row.documentsRejectReason}</TableCell>) : (<div style={{ blockSize: '2rem' }}></div>)
+
+                                            }
                                             <TableCell align="left">VIEW</TableCell>
                                         </StyledTableRow>
                                     );

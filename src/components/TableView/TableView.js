@@ -206,13 +206,13 @@ const TableView = () => {
                 }
 
 
-                $.ajax(settings).done(function (response) {
-                    console.log('first');
-                    console.log(response);
-                    setRows(JSON.parse(response));
-                    setisfetching(false);
-                });
-                console.log("token in local storage " + localStorage.getItem('token'));
+                // $.ajax(settings).done(function (response) {
+                //     console.log('first');
+                //     console.log(response);
+                //     setRows(JSON.parse(response));
+                //     setisfetching(false);
+                // });
+                // console.log("token in local storage " + localStorage.getItem('token'));
                 //}
 
             } catch (e) {

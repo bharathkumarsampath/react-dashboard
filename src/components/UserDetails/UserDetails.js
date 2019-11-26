@@ -33,14 +33,19 @@ const UserDetails = () => {
                             "token": localStorage.getItem('token')
                         }
                     }
-
-
-                    $.ajax(settings).done(function (response) {
-                        console.log('user details');
-                        console.log(response);
-                        setRows(JSON.parse(response));
+                    console.log('Beofre fetch call');
+                    fetch(settings).then((res) => res.json()
+                    ).then(res => {
+                        console.log('res', res);
+                        // setRows()
                         setisfetching(false);
                     });
+                    // $.ajax(settings).done(function (response) {
+                    //     console.log('user details');
+                    //     console.log(response);
+                    //     setRows(JSON.parse(response));
+                    //     setisfetching(false);
+                    // });
                     console.log("token in local storage " + localStorage.getItem('token'));
                 }
 

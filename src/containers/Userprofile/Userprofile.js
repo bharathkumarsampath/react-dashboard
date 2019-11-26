@@ -20,8 +20,12 @@ import Grid from '@material-ui/core/Grid';
 import $ from 'jquery';
 const UserProfile = () => {
     //console.log("props " + JSON.stringify(props.history.location.data.loanApplicationNumber));
+
     const [rows, setRows] = React.useState({});
+
     const [fetching, setisfetching] = React.useState(false);
+
+
     useEffect(() => {
         const fetchUsers = async () => {
             try {
