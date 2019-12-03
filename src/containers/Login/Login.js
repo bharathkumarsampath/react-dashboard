@@ -161,30 +161,54 @@ const Login = () => {
         var settings = {
             "async": true,
             "crossDomain": true,
-            "url": "http://lstaging2.whizdm.com/loans/services/api/clix/portal/gettoken?username=" + username + "&password=" + password,
+            "url": "http://localhost:8080/services/api/clix/portal/gettoken?username=" + username + "&password=" + password,
             "method": "GET",
             "headers": {
                 "Content-Type": "application/x-www-form-urlencoded",
-                "Accept": "application/x-www-form-urlencoded"
             }
         }
 
-
-        $.ajax(settings).done(function (response) {
-            console.log("ajax call starting");
-            if (response == "please provide valid credentials") {
-                //handleClick();
-                console.log("please provide valid credentials");
-                handleClick();
-            } else if (response == "Please try again later") {
-                console.log("Please try again later");
-                handleClickInfo();
-            } else {
-                console.log("logged in " + response);
-                localStorage.setItem('token', response);
-                handleClickSuccess();
+        fetch(settings.url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
             }
-        });
+        })
+            // .then(response => response.json())
+            .then(res => res.text())          // convert to plain text
+            // .then(text => console.log(" text " + text))
+            .then(response => {
+                console.log("ajax call starting " + response);
+                if (response == "please provide valid credentials") {
+                    //handleClick();
+                    console.log("please provide valid credentials");
+                    handleClick();
+                } else if (response == "Please try again later") {
+                    console.log("Please try again later");
+                    handleClickInfo();
+                } else {
+                    console.log("logged in " + response);
+                    localStorage.setItem('token', response);
+                    handleClickSuccess();
+                }
+            });
+
+
+        // $.ajax(settings).done(function (response) {
+        //     console.log("ajax call starting");
+        //     if (response == "please provide valid credentials") {
+        //         //handleClick();
+        //         console.log("please provide valid credentials");
+        //         handleClick();
+        //     } else if (response == "Please try again later") {
+        //         console.log("Please try again later");
+        //         handleClickInfo();
+        //     } else {
+        //         console.log("logged in " + response);
+        //         localStorage.setItem('token', response);
+        //         handleClickSuccess();
+        //     }
+        // });
 
     }
     return (

@@ -204,6 +204,18 @@ const TableView = () => {
                         "token": localStorage.getItem('token')
                     }
                 }
+                fetch(settings.url, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "token": localStorage.getItem('token')
+                    }
+                }).then(res => res.json()
+                ).then(res => {
+                    console.log('tableview through fetch', res);
+                    setRows(res);
+                    setisfetching(false);
+                });
 
 
                 // $.ajax(settings).done(function (response) {

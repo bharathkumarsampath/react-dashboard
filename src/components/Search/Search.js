@@ -20,9 +20,11 @@ import Cards from '../CountBoard/CountBoard'
 import EnhancedTable from '../EnhancedTable/EnhancedTable';
 
 export const CardContext = React.createContext([1, 0, 0, 0, 0]);
+export const CountContext = React.createContext({});
 
 const search = () => {
     const [card, setCard] = useState([1, 0, 0, 0, 0]);
+    const [count, setCount] = useState({});
     function Account(props) {
         return (
             <AccountCircleIcon {...props}>
@@ -167,12 +169,14 @@ const search = () => {
                 Approved(38)
             </BootstrapButton> */}
             <CardContext.Provider value={[card, setCard]}>
-                <Cards />
+                <CountContext.Provider value={[count, setCount]}>
+                    <Cards />
 
-                <EnhancedTable />
+                    <EnhancedTable />
+                </CountContext.Provider>
             </CardContext.Provider>
 
-            <TableView />
+            {/* <TableView /> */}
             {/* <Toolbar>
                 <div style={{ textAlign: 'left', paddingTop: '.5%' }}>
                     <img src={clixLogo} />

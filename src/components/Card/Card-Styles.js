@@ -28,6 +28,7 @@ const CardStyles = makeStyles({
         marginLeft: '1.5rem',
         padding: '1rem',
         borderRadius: '10px 10px 10px 10px',
+        cursor: 'pointer'
     },
     bullet: {
         display: 'inline-block',
