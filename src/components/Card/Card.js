@@ -11,8 +11,7 @@ export default function SimpleCard(props) {
     const [style, setStyle] = React.useState(classes.card);
 
     useEffect(() => {
-        console.log('inside useeffect');
-        if (props.style[props.index] == 0) {
+        if (props.card[props.index] == 0) {
             setStyle(classes.card);
         } else {
             setStyle(classes.activeCard);
@@ -20,18 +19,18 @@ export default function SimpleCard(props) {
     });
 
     function makeActive() {
-        console.log(" inside make active ");
         var array = [0, 0, 0, 0, 0];
         array[props.index] = 1;
-        props.setStyle(array);
+        array[5] = props.index;
+        props.setCard(array);
     }
 
     return (
         <div>
             <Card className={style} onClick={makeActive}>
                 <CardContent>
-                    {(props.style[props.index]) ? (<div class={classes.tickbg}>
-                        <div class={classes.tick}>
+                    {(props.card[props.index]) ? (<div class={classes.tickbg}>
+                        <div className={classes.tick}>
                         </div>
                     </div>) : (<div style={{ paddingTop: '1rem' }}>   </div>)}
                     <Typography variant="h6" gutterBottom>

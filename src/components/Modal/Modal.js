@@ -1,31 +1,10 @@
 import React, { forwardRef, useRef, useImperativeHandle } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import Button from '../Button/Button'
 import Typography from '@material-ui/core/Typography';
-
-const useStyles = makeStyles(theme => ({
-    modal: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-
-
-    },
-    paper: {
-        backgroundColor: theme.palette.background.paper,
-        padding: theme.spacing(2, 4, 3),
-        borderRadius: '0.6rem',
-        width: '26rem'
-    },
-    displayFlex: {
-        display: 'flex',
-        marginLeft: '12rem',
-        fontSize: '10rem'
-    }
-}));
+import useStyles from './ModalStyles'
 
 const TransitionsModal = forwardRef((props, ref) => {
     const classes = useStyles();
@@ -46,9 +25,6 @@ const TransitionsModal = forwardRef((props, ref) => {
 
     return (
         <div>
-            {/* <button type="button" onClick={handleOpen}>
-                react-transition-group
-      </button> */}
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"

@@ -7,25 +7,23 @@ const CardStyles = makeStyles({
     card: {
         maxWidth: 200,
         minWidth: 180,
+        maxHeight: 100,
+        minHeight: 80,
         backgroundColor: 'white',
         marginLeft: '1.5rem',
         padding: '1rem',
         borderRadius: '10px 10px 10px 10px',
         cursor: 'pointer'
-        // '&:hover': {
-        //     backgroundColor: 'rgb(243,248,239)',
-        //     //boxShadow: '-1px 9px 18px 0px rgba(0,0,0,0.75)',
-        //     boxShadow: '0px 5px 10px -1px rgba(0,0,0,0.75)',
-        //     border: '1px solid rgb(165,201,138)'
-        // }
     },
     activeCard: {
         maxWidth: 200,
         minWidth: 180,
+        maxHeight: 100,
+        minHeight: 80,
         backgroundColor: 'rgb(243,248,239)',
         boxShadow: '0px 5px 10px -1px rgba(0,0,0,0.75)',
         border: '1px solid rgb(165,201,138)',
-        marginLeft: '1.5rem',
+        marginLeft: '1rem',
         padding: '1rem',
         borderRadius: '10px 10px 10px 10px',
         cursor: 'pointer'
@@ -48,7 +46,6 @@ const CardStyles = makeStyles({
         height: 0,
         width: 0,
         display: 'block',
-
         marginLeft: '9rem'
     },
 

@@ -10,6 +10,7 @@ import EnhancedTableHead from '../EnhancedTableHead/EnhancedTableHead'
 import EnhancedTableToolbar from '../EnhancedTableToolbar/EnhancedTableToolbar'
 import Spinner from '../Spinner/Spinner'
 import { StyledTableRow, useStyles } from './EnhancedTableStyles'
+import { useHistory } from "react-router-dom";
 
 
 
@@ -23,25 +24,13 @@ function desc(a, b, orderBy) {
     return 0;
 }
 
-function stableSort(array, cmp) {
-    //console.log('stable sort ' + JSON.parse(array));
-
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-        const order = cmp(a[0], b[0]);
-        if (order !== 0) return order;
-        return a[1] - b[1];
-    });
-    console.log(stabilizedThis.map(el => el[0]));
-    return stabilizedThis.map(el => el[0]);
-}
-
 function getSorting(order, orderBy) {
     return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
 }
 
 
 export default function EnhancedTable() {
+    let history = useHistory();
     const classes = useStyles();
     const [order, setOrder] = React.useState('desc');
     const [orderBy, setOrderBy] = React.useState('LoanID');
@@ -60,10 +49,19 @@ export default function EnhancedTable() {
     function unSelect() {
         setSelected([]);
     }
+    function stableSort(array, cmp) {
+
+        const stabilizedThis = array.map((el, index) => [el, index]);
+        stabilizedThis.sort((a, b) => {
+            const order = cmp(a[0], b[0]);
+            if (order !== 0) return order;
+            return a[1] - b[1];
+        });
+        console.log("stabilized array1" + JSON.stringify(stabilizedThis.map(el => el[0])));
+        return stabilizedThis.map(el => el[0]);
+    }
 
     function bulkApprove() {
-        console.log("json to be sent " + JSON.stringify({ bulkApprove: selected }));
-        console.log("json to be sent " + selected);
         var settings = {
             "url": "http://localhost:8080/services/api/clix/portal/bulkApprove",
             "method": "POST",
@@ -92,7 +90,7 @@ export default function EnhancedTable() {
         });
         unSelect();
     }
-    // const cardArray = ["nach_email_sent","disbursed","loan_approved","data_entry","disbursed"]
+    const cardArray = ["nach_email_sent", "disbursed", "loan_approved", "data_entry", "disbursed"]
 
     function cardParse(card) {
         if (card[0]) {
@@ -119,12 +117,8 @@ export default function EnhancedTable() {
         const fetchUsers = async () => {
             try {
                 setSpinner(true);
-                // if (localStorage.getItem('token') == null) {
-                //     window.location.href = '/';
-                // } else {
                 setRows(rows);
                 setisfetching(true);
-                // const response = await axios.get(USER_SERVICE_URL);
                 var settings = {
                     "url": "http://localhost:8080/services/api/clix/portal/getAllLoanApplication?status=" + cardParse(card),
                     "method": "GET",
@@ -133,8 +127,6 @@ export default function EnhancedTable() {
                         "token": localStorage.getItem('token')
                     }
                 }
-
-                console.log('Beofre fetch call');
                 fetch(settings.url, {
                     method: "GET",
                     headers: {
@@ -144,26 +136,11 @@ export default function EnhancedTable() {
 
                 }).then(res => res.json()
                 ).then(res => {
-                    console.log('res === through fetch', res);
                     setRows(JSON.parse(res.data));
-                    // var udrsCount = JSON.parse(JSON.stringify(res.udrsCount));
-
-
-                    // console.log('udrsCount ', JSON.parse(res.udrsCount.replace(/([{,])(\s*)([A-Za-z0-9_\-]+?)\s*:/g, '$1"$3":')));
-                    // console.log('udrsCount.loanApproved ', udrsCount.loanApproved);
                     setCount(JSON.parse(res.udrsCount));
                     setisfetching(false);
                     setSpinner(false);
                 });
-
-                // $.ajax(settings).done(function (response) {
-                //     console.log('first');
-                //     console.log(response);
-                //     setRows(JSON.parse(response));
-                //     setisfetching(false);
-                // });
-                console.log("token in local storage " + localStorage.getItem('token'));
-                //}
 
             } catch (e) {
                 console.log(e);
@@ -175,13 +152,14 @@ export default function EnhancedTable() {
     }, [card]);
 
     const handleRequestSort = (event, property) => {
+
+        const isDesc = orderBy === property && order === 'desc';
+        setOrder(isDesc ? 'asc' : 'desc');
+        setOrderBy(property);
         console.log("sort function called ");
         console.log("property " + property);
         console.log("orderby " + orderBy);
         console.log("order " + order);
-        const isDesc = orderBy === property && order === 'desc';
-        setOrder(isDesc ? 'asc' : 'desc');
-        setOrderBy(property);
     };
 
     const handleSelectAllClick = event => {
@@ -229,6 +207,17 @@ export default function EnhancedTable() {
 
     const isSelected = loanApplicationNumber => selected.indexOf(loanApplicationNumber) !== -1;
 
+    function viewProfile(event) {
+        console.log(event.target.id);
+        var loanApplicationNumber = event.target.id;
+        localStorage.setItem('appNumber', event.target.id);
+        history.push({
+            pathname: '/userprofile',
+            //data: { loanApplicationNumber: loanApplicationNumber } // your data array of objects
+        });
+        // window.location.href = '/userprofile';
+    }
+
     return (
         <div className={classes.root}>
             {(spinner) ? (<Spinner />) :
@@ -263,7 +252,7 @@ export default function EnhancedTable() {
                                                 role="checkbox"
                                                 aria-checked={isItemSelected}
                                                 tabIndex={-1}
-                                                key={row.name}
+                                                key={row.id}
                                                 selected={isItemSelected}
                                             >
                                                 {
@@ -274,7 +263,6 @@ export default function EnhancedTable() {
                                                                 inputProps={{ 'aria-labelledby': labelId }}
                                                             />
                                                         </TableCell>) : null
-                                                    // (<div style={{ blockSize: '2rem' }}></div>)
 
                                                 }
 
@@ -285,8 +273,6 @@ export default function EnhancedTable() {
                                                 <TableCell align="left">{row.name}</TableCell>
                                                 <TableCell align="left">{row.kycContactMobile}</TableCell>
                                                 <TableCell align="left">{row.loanAmount}</TableCell>
-                                                {/* <TableCell align="left">{row.applicationStatus}</TableCell>
-                                            <TableCell align="left">{row.appVersion}</TableCell> */}
                                                 {
                                                     (card[3]) ? (
                                                         <TableCell align="left">{row.documentsRejectReason}</TableCell>) : (
@@ -295,7 +281,7 @@ export default function EnhancedTable() {
                                                         )
 
                                                 }
-                                                <TableCell align="left">VIEW</TableCell>
+                                                <TableCell align="left" id={row.loanApplicationNumber} onClick={viewProfile}>VIEW</TableCell>
                                             </StyledTableRow>
                                         );
                                     })}

@@ -29,30 +29,30 @@ const UserProfile = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                // if (localStorage.getItem('token') == null) {
-                //     window.location.href = '/';
-                // } else {
-                // setRows(rows);
-                // setisfetching(true);
-                // // const response = await axios.get(USER_SERVICE_URL);
-                // var settings = {
-                //     "url": "http://lstaging2.whizdm.com/loans/services/api/clix/portal/getLoanApplication?id=" + localStorage.getItem('appNumber'),
-                //     "method": "GET",
-                //     "headers": {
-                //         "Content-Type": "application/x-www-form-urlencoded",
-                //         "token": localStorage.getItem('token')
-                //     }
-                // }
+                if (localStorage.getItem('token') == null) {
+                    window.location.href = '/';
+                } else {
+                    setRows(rows);
+                    setisfetching(true);
+                    // const response = await axios.get(USER_SERVICE_URL);
+                    var settings = {
+                        "url": "http://lstaging2.whizdm.com/loans/services/api/clix/portal/getLoanApplication?id=" + localStorage.getItem('appNumber'),
+                        "method": "GET",
+                        "headers": {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                            "token": localStorage.getItem('token')
+                        }
+                    }
 
 
-                // $.ajax(settings).done(function (response) {
-                //     console.log('user profile');
-                //     console.log(response);
-                //     setRows(JSON.parse(response));
-                //     setisfetching(false);
-                // });
-                // console.log("token in local storage " + localStorage.getItem('token'));
-                //}
+                    $.ajax(settings).done(function (response) {
+                        console.log('user profile');
+                        console.log(response);
+                        setRows(JSON.parse(response));
+                        setisfetching(false);
+                    });
+                    console.log("token in local storage " + localStorage.getItem('token'));
+                }
 
             } catch (e) {
                 console.log(e);

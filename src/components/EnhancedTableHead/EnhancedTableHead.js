@@ -109,6 +109,7 @@ export default function EnhancedTableHead(props) {
                                     {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                                 </span>
                             ) : null}
+
                         </TableSortLabel>
                     </TableCell>
                 ))}
