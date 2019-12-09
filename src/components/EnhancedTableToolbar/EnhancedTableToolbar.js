@@ -6,7 +6,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import TransitionsModal from '../Modal/Modal'
-import { CardContext } from '../Search/Search'
+import { CardContext } from '../../containers/Dashboard/Dashboard'
 import { BootstrapButton, useToolbarStyles } from './EnhancedTableToolbarStyle'
 
 

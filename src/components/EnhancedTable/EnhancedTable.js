@@ -5,7 +5,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TablePagination from '@material-ui/core/TablePagination';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
-import { CardContext, CountContext } from '../Search/Search'
+import { CardContext, CountContext } from '../../containers/Dashboard/Dashboard'
 import EnhancedTableHead from '../EnhancedTableHead/EnhancedTableHead'
 import EnhancedTableToolbar from '../EnhancedTableToolbar/EnhancedTableToolbar'
 import Spinner from '../Spinner/Spinner'
@@ -63,10 +63,10 @@ export default function EnhancedTable() {
 
     function bulkApprove() {
         var settings = {
-            "url": "http://localhost:8080/services/api/clix/portal/bulkApprove",
+            "url": "http://localhost:8080/services/api/clix/portal/bulkApprove?status=" + cardParse(card),
             "method": "POST",
             "headers": {
-                "Content-Type": "application/json",
+                "Content-Type": "application/x-www-form-urlencoded",
                 "token": localStorage.getItem('token'),
                 "status": cardParse(card)
             }
@@ -76,7 +76,7 @@ export default function EnhancedTable() {
         fetch(settings.url, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "application/x-www-form-urlencoded",
                 "token": localStorage.getItem('token')
             },
             body: JSON.stringify({ bulkApprove: selected })
@@ -281,7 +281,7 @@ export default function EnhancedTable() {
                                                         )
 
                                                 }
-                                                <TableCell align="left" id={row.loanApplicationNumber} onClick={viewProfile}>VIEW</TableCell>
+                                                <TableCell align="left" id={row.loanApplicationNumber} onClick={viewProfile} style={{ cursor: 'pointer', color: 'rgb(154,216,250)' }}>VIEW</TableCell>
                                             </StyledTableRow>
                                         );
                                     })}

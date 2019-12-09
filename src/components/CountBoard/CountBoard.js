@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import SimpleCard from '../Card/Card'
-import { CardContext, CountContext } from '../Search/Search'
+import { CardContext, CountContext } from '../../containers/Dashboard/Dashboard'
 
 export default function Cards() {
 

@@ -44,8 +44,8 @@ const TransitionsModal = forwardRef((props, ref) => {
                             Are you sure you want to approve the selected applications
                         </Typography>
                         <div className={classes.displayFlex}>
-                            <Button text="CANCEL" close={handleClose}></Button>
-                            <Button text="APPROVE" close={handleClose}></Button>
+                            <Button text="CANCEL" onClick={handleClose}></Button>
+                            <Button text="APPROVE" onClick={handleClose}></Button>
                         </div>
                     </div>
                 </Fade>
