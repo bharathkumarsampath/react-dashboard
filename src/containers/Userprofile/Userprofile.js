@@ -59,28 +59,6 @@ const UserProfile = () => {
                     <LoanAgreement LoanApp={LoanApp} />
                 </div>
             </div>
-            {/* <div style={{ display: 'flex', color: 'grey' }}>
-                <ArrowBackIosIcon style={{ paddingLeft: '2%', paddingTop: '0.9%' }} />
-                <h2>Back</h2>
-            </div>
-            <Divider />
-            <Divider />
-            <UserDetails />
-            <Divider />
-            <Grid container>
-                <Grid item style={{ backgroundColor: '', width: "100%" }} >
-                    <div style={{ marginLeft: "20px", padding: "10px" }}>
-                        <h4>Documents</h4>
-                    </div>
-                </Grid>
-            </Grid>
-            <Grid container>
-                <Grid item style={{ backgroundColor: '', width: "100%" }} >
-                    <div style={{ marginLeft: "20px", padding: "10px" }}>
-                        <h4>Comment</h4>
-                    </div>
-                </Grid>
-            </Grid> */}
 
         </div>
     );
