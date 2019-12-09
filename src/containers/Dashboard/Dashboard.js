@@ -1,25 +1,34 @@
-import React, { Component } from 'react';
-// import '../../App.css';
-import Search from '../../components/Search/Search'
+import React, { useState } from 'react';
+import Divider from '@material-ui/core/Divider';
+import '../../components/Search/Search.css'
+import Cards from '../../components/CountBoard/CountBoard'
+import EnhancedTable from '../../components/EnhancedTable/EnhancedTable';
+import useStyles from '../../components/Search/SearchStyles'
+import Toolbar from '../../components/Toolbar/Toolbar'
 
 
 
-class Dashboard extends Component {
-  render() {
-    return (
-      <div className="App">
-        {/* <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p> */}
-        {/* <Toolbar /> */}
-        <Search />
-      </div>
-    );
-  }
+export const CardContext = React.createContext([1, 0, 0, 0, 0]);
+export const CountContext = React.createContext({});
+
+const Dashboard = () => {
+  const [card, setCard] = useState([1, 0, 0, 0, 0]);
+  const [count, setCount] = useState({});
+
+  const classes = useStyles();
+  return (
+    <div>
+      <Toolbar />
+      <Divider />
+      <CardContext.Provider value={[card, setCard]}>
+        <CountContext.Provider value={[count, setCount]}>
+          <Cards />
+          <EnhancedTable />
+        </CountContext.Provider>
+      </CardContext.Provider>
+    </div>
+
+  );
 }
 
 export default Dashboard;
