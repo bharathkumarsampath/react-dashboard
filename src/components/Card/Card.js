@@ -29,7 +29,7 @@ export default function SimpleCard(props) {
         <div>
             <Card className={style} onClick={makeActive}>
                 <CardContent>
-                    {(props.card[props.index]) ? (<div class={classes.tickbg}>
+                    {(props.card[props.index]) ? (<div className={classes.tickbg}>
                         <div className={classes.tick}>
                         </div>
                     </div>) : (<div style={{ paddingTop: '1rem' }}>   </div>)}

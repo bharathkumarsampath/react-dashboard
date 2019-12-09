@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { Divider, useScrollTrigger } from '@material-ui/core';
 import { Document, Page } from 'react-pdf';
-import $ from 'jquery'
 const LoanAgreement = () => {
 
     const [url, setUrl] = useState('');
@@ -19,11 +18,11 @@ const LoanAgreement = () => {
                 }
 
 
-                $.ajax(settings).done(function (response) {
-                    console.log('url from backend');
-                    console.log(response);
-                    setUrl(JSON.parse(response))
-                });
+                // $.ajax(settings).done(function (response) {
+                //     console.log('url from backend');
+                //     console.log(response);
+                //     setUrl(JSON.parse(response))
+                // });
 
 
             } catch (e) {
