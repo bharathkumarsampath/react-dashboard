@@ -1,19 +1,23 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import Dashboard from "./Dashboard/Dashboard";
 import UserProfile from "./Userprofile/Userprofile";
 import Login from './Login/Login'
 import '../containers/App.css'
 import AuthRoute from './auth'
+import NoPageFound from '../containers/NoPageFound'
 
 const App = () => {
   return (
     <div className="App">
       { /* Constant header component */}
       { /* Container stuff goes here  */}
-      <Route exact path="/" component={Login}></Route>
-      <AuthRoute path="/dashboard" component={Dashboard} />
-      <Route exact path="/userprofile" component={UserProfile} />
+      <Switch>
+        <Route exact path="/" component={Login}></Route>
+        <AuthRoute path="/dashboard" component={Dashboard} />
+        <AuthRoute exact path="/userprofile" component={UserProfile} />
+        <Route component={NoPageFound} />
+      </Switch>
     </div>
   );
 };

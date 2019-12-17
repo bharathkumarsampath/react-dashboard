@@ -25,7 +25,7 @@ import Box from '@material-ui/core/Box';
 import logImage from '../../assets/images/login_bg.png';
 // import { Form, Field } from 'react-final-form';
 import useLogin from './useLogin';
-import { ModalProvider } from "react-modal-hook";
+//import { ModalProvider } from "react-modal-hook";
 import { TransitionGroup } from "react-transition-group";
 import Modal from './Modal';
 
@@ -365,9 +365,6 @@ const Login = () => {
                                             />
                                         </Grid>
                                         <Grid item className={classes.topmrgn} >
-                                            <ModalProvider container={TransitionGroup}>
-                                                <Modal />
-                                            </ModalProvider>
                                         </Grid>
                                     </Grid>
 

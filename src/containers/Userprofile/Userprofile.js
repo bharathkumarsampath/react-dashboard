@@ -11,54 +11,73 @@ import KycDetails from '../../components/KycDetails/KycDetails'
 import EmployerDetails from '../../components/EmployerDetails/EmployerDetails'
 import LoanAgreement from '../../components/LoanAgreement/LoanAgreement'
 import $ from 'jquery'
-const UserProfile = () => {
+import Loader from '../../components/Spinner/Spinner'
+const UserProfile = (props) => {
 
-    const [LoanApp, setLoanApp] = React.useState({});
-
-
-    useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                var settings = {
-                    "url": "http://localhost:8080/services/api/clix/portal/getLoanApplication?id=" + localStorage.getItem('appNumber'),
-                    "method": "GET",
-                    "headers": {
-                        "Content-Type": "application/x-www-form-urlencoded",
-                        "token": localStorage.getItem('token')
-                    }
-                }
+    // const [LoanApp, setLoanApp] = React.useState({});
 
 
-                $.ajax(settings).done(function (response) {
-                    console.log('user profile page');
-                    console.log(response);
-                    setLoanApp(JSON.parse(response));
-                });
-                console.log("token in local storage " + localStorage.getItem('token'));
+    // useEffect(() => {
+    //     const fetchUsers = async () => {
+    //         console.log("props user profile " + JSON.stringify(props.location.state.LoanApp));
+    //         try {
+    //             var settings = {
+    //                 "url": "http://localhost:8080/services/api/clix/portal/getLoanApplication?id=" + localStorage.getItem('appNumber'),
+    //                 "method": "GET",
+    //                 "headers": {
+    //                     "Content-Type": "application/x-www-form-urlencoded",
+    //                     "token": localStorage.getItem('token')
+    //                 }
+    //             }
 
 
-            } catch (e) {
-                console.log(e);
-                setLoanApp(LoanApp);
-            }
-        };
-        fetchUsers();
-    }, []);
+    //             // $.ajax(settings).done(function (response) {
+    //             //     console.log('user profile page');
+    //             //     console.log(response);
+    //             //     setLoanApp(JSON.parse(response));
+    //             // });
+    //             // console.log("token in local storage " + localStorage.getItem('token'));
+
+    //             await fetch(settings.url, {
+    //                 method: "GET",
+    //                 headers: {
+    //                     "Content-Type": "application/x-www-form-urlencoded",
+    //                     "token": localStorage.getItem('token')
+    //                 }
+
+    //             }).then(res => res.json()
+    //             ).then(res => {
+    //                 setLoanApp(res);
+    //                 //setCount(JSON.parse(res.udrsCount));
+    //             });
+
+    //         } catch (e) {
+    //             console.log(e);
+    //             setLoanApp(LoanApp);
+    //         }
+    //     };
+    //     fetchUsers();
+    // }, []);
     return (
-        <div style={{ backgroundColor: 'rgb(245,247,251)' }}>
+        <div style={{ backgroundColor: 'rgb(245,247,251)', fontFamily: "Open Sans" }}>
             <Toolbar />
-            <LoansHeader LoanApp={LoanApp} />
+
+
+
+            <LoansHeader LoanApp={props.location.state.LoanApp} />
             <div style={{ display: 'flex' }}>
                 <div>
-                    <LoanDetails LoanApp={LoanApp} />
-                    <OfferDetails LoanApp={LoanApp} />
-                    <KycDetails LoanApp={LoanApp} />
-                    <EmployerDetails LoanApp={LoanApp} />
+                    <LoanDetails LoanApp={props.location.state.LoanApp} />
+                    <OfferDetails LoanApp={props.location.state.LoanApp} />
+                    <KycDetails LoanApp={props.location.state.LoanApp} />
+                    <EmployerDetails LoanApp={props.location.state.LoanApp} />
                 </div>
                 <div>
-                    <LoanAgreement LoanApp={LoanApp} />
+                    <LoanAgreement LoanApp={props.location.state.LoanApp} />
                 </div>
             </div>
+
+
 
         </div>
     );

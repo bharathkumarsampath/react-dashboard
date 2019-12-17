@@ -5,12 +5,13 @@ import TableCell from '@material-ui/core/TableCell';
 import TablePagination from '@material-ui/core/TablePagination';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
-import { CardContext, CountContext } from '../../containers/Dashboard/Dashboard'
+import { CardContext, CountContext, LatestCountContext } from '../../containers/Dashboard/Dashboard'
 import EnhancedTableHead from '../EnhancedTableHead/EnhancedTableHead'
 import EnhancedTableToolbar from '../EnhancedTableToolbar/EnhancedTableToolbar'
 import Spinner from '../Spinner/Spinner'
 import { StyledTableRow, useStyles } from './EnhancedTableStyles'
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
+import { LoanAppContext } from '../../containers/Dashboard/Dashboard'
 
 
 
@@ -32,19 +33,21 @@ function getSorting(order, orderBy) {
 export default function EnhancedTable() {
     let history = useHistory();
     const classes = useStyles();
-    const [order, setOrder] = React.useState('desc');
-    const [orderBy, setOrderBy] = React.useState('LoanID');
+    const [order, setOrder] = React.useState('asc');
+    const [orderBy, setOrderBy] = React.useState('loanAmount');
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-    const [rows, setRows] = React.useState([]);
+    const [rows, setRows] = React.useContext(LoanAppContext);
     //const [count, setCount] = React.useState({ loanApproved: 3, nachEmailSent: 27, disbursed: 5, rejected: 12, all: 167 });
-    const [fetching, setisfetching] = React.useState(false);
+    const [isFetching, setIsFetching] = React.useState(false);
     const [spinner, setSpinner] = React.useState(true);
+    const [error, setError] = React.useState({});
 
     const [card, setCard] = useContext(CardContext);
     const [count, setCount] = useContext(CountContext);
+    const [latestCount, setLatestCount] = useContext(LatestCountContext);
 
     function unSelect() {
         setSelected([]);
@@ -58,37 +61,43 @@ export default function EnhancedTable() {
             return a[1] - b[1];
         });
         console.log("stabilized array1" + JSON.stringify(stabilizedThis.map(el => el[0])));
+        //setRows(stabilizedThis);
         return stabilizedThis.map(el => el[0]);
     }
 
-    function bulkApprove() {
+    async function bulkApprove() {
+        console.log("bulk approve is getting called " + JSON.stringify({ bulkApprove: selected }));
         var settings = {
-            "url": "http://localhost:8080/services/api/clix/portal/bulkApprove?status=" + cardParse(card),
+            "crossDomain": true,
+            "url": "http://localhost:8080/services/api/clix/portal/bulkApprove",
             "method": "POST",
             "headers": {
-                "Content-Type": "application/x-www-form-urlencoded",
+                "Content-Type": "application/json",
                 "token": localStorage.getItem('token'),
-                "status": cardParse(card)
             }
         }
 
-        console.log('Beofre fetch call');
-        fetch(settings.url, {
+        await fetch(settings.url, {
             method: "POST",
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
+                "Content-Type": "application/json",
                 "token": localStorage.getItem('token')
             },
-            body: JSON.stringify({ bulkApprove: selected })
+            body: JSON.stringify({ bulkApprove: selected, status: cardParse(card) })
         }).then(res => res.json()
         ).then(res => {
             console.log('bulkapprove', res);
+            console.log('length ', res.data.length);
             setRows(JSON.parse(res.data));
-            setCount(JSON.parse(res.udrsCount));
-            setisfetching(false);
-            setSpinner(false);
+            console.log("count " + JSON.stringify(count));
+            console.log("count length " + JSON.stringify(count.length));
+            // setIsFetching(false);
+            // setSpinner(false);
+            setLatestCount(!latestCount);
+
         });
         unSelect();
+        //setCard(...card);
     }
     const cardArray = ["nach_email_sent", "disbursed", "loan_approved", "data_entry", "disbursed"]
 
@@ -116,9 +125,8 @@ export default function EnhancedTable() {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                setSpinner(true);
-                setRows(rows);
-                setisfetching(true);
+                setIsFetching(true);
+                setError(false);
                 var settings = {
                     "url": "http://localhost:8080/services/api/clix/portal/getAllLoanApplication?status=" + cardParse(card),
                     "method": "GET",
@@ -127,26 +135,26 @@ export default function EnhancedTable() {
                         "token": localStorage.getItem('token')
                     }
                 }
-                fetch(settings.url, {
+                await fetch(settings.url, {
+                    mode: 'no-cors',
                     method: "GET",
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded",
                         "token": localStorage.getItem('token')
                     }
 
-                }).then(res => res.json()
+                }).then(res => res.text()
                 ).then(res => {
-                    setRows(JSON.parse(res.data));
-                    setCount(JSON.parse(res.udrsCount));
-                    setisfetching(false);
-                    setSpinner(false);
+                    console.log(res);
+                    // setRows(JSON.parse(res.data));
+                    //setCount(JSON.parse(res.udrsCount));
                 });
 
             } catch (e) {
                 console.log(e);
-                setRows(rows);
-                setisfetching(false);
+                setError(true);
             }
+            setIsFetching(false);
         };
         fetchUsers();
     }, [card]);
@@ -218,9 +226,14 @@ export default function EnhancedTable() {
         // window.location.href = '/userprofile';
     }
 
+    // useAsync({ promiseFn: fetchUsers })
+    // if (isFetching) return (<Spinner />)
+    // if (error) return (`Something went wrong: ${error.message}`)
+    // if (rows)
     return (
         <div className={classes.root}>
-            {(spinner) ? (<Spinner />) :
+            {error && <div>Something went wrong ...</div>}
+            {(isFetching) ? (<Spinner />) :
                 (<Paper className={classes.paper}>
                     <EnhancedTableToolbar numSelected={selected.length} bulkApprove={bulkApprove} />
                     <div className={classes.tableWrapper}>
@@ -274,6 +287,24 @@ export default function EnhancedTable() {
                                                 <TableCell align="left">{row.kycContactMobile}</TableCell>
                                                 <TableCell align="left">{row.loanAmount}</TableCell>
                                                 {
+                                                    (card[0]) ? (
+
+                                                        (row.agentName) ? (<TableCell align="left">Locked</TableCell>)
+                                                            : (<TableCell align="left">Available</TableCell>)
+
+                                                    ) : (null)
+
+                                                }
+                                                {
+                                                    (card[0]) ? (
+
+                                                        (row.agentName) ? (<TableCell align="left">{row.agentName}</TableCell>)
+                                                            : (<TableCell align="left">---</TableCell>)
+
+                                                    ) : (null)
+
+                                                }
+                                                {
                                                     (card[3]) ? (
                                                         <TableCell align="left">{row.documentsRejectReason}</TableCell>) : (
                                                             // <div style={{ blockSize: '2rem' }}></div>
@@ -281,7 +312,15 @@ export default function EnhancedTable() {
                                                         )
 
                                                 }
-                                                <TableCell align="left" id={row.loanApplicationNumber} onClick={viewProfile} style={{ cursor: 'pointer', color: 'rgb(154,216,250)' }}>VIEW</TableCell>
+                                                <TableCell align="left" id={row.loanApplicationNumber} style={{ cursor: 'pointer', color: 'rgb(154,216,250)', textDecoration: 'none' }}>
+                                                    <Link to={{
+                                                        pathname: '/userprofile',
+                                                        state: {
+                                                            LoanApp: row
+                                                        }
+                                                    }}>VIEW
+                                                    </Link>
+                                                </TableCell>
                                             </StyledTableRow>
                                         );
                                     })}
