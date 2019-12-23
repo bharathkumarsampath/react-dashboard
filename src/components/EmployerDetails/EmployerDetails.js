@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Divider } from '@material-ui/core';
@@ -8,11 +8,11 @@ const EmployerDetails = (props) => {
 
     return (
         <div style={{ backgroundColor: 'white', width: '25rem', height: '23rem', borderRadius: '0.4rem', margin: '1rem', boxShadow: '-1px 2px 6px -2px rgba(0,0,0,0.27)' }}>
-            <div style={{ display: 'flex', padding: '1rem',justifyContent:'space-between' }}>
-                <Typography variant="subtitle2" gutterBottom style={{ fontSize: '1.1rem', fontWeight: '500', textAlign: 'left'}}>
+            <div style={{ display: 'flex', padding: '1rem', justifyContent: 'space-between' }}>
+                <Typography variant="subtitle2" gutterBottom style={{ fontSize: '1.1rem', fontWeight: '500', textAlign: 'left' }}>
                     Employer Details
             </Typography>
-                <ExpandMoreIcon style={{ color: 'grey' , textAlign: 'right'}} />
+                <ExpandMoreIcon style={{ color: 'grey', textAlign: 'right' }} />
             </div>
 
             <Divider />

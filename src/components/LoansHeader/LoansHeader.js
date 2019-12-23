@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
-import Search from '../../components/Search/Search'
+import React from 'react';
 import '../../components/Search/Search.css'
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -10,7 +8,6 @@ import Modal from '@material-ui/core/Modal';
 import Select from '../../components/Select/Select'
 import { useHistory } from "react-router-dom";
 import TextField from '@material-ui/core/TextField';
-import Loader from '../Spinner/Spinner'
 
 
 const useStyles = makeStyles(theme => ({
@@ -38,7 +35,7 @@ const BootstrapButton = withStyles({
         backgroundColor: 'white',
         borderColor: 'rgb(113,184,62)',
         color: 'rgb(113,184,62)',
-        padding: '0.5rem 2.3rem 0.5rem 2.3rem',
+        //padding: '0.5rem 2.3rem 0.5rem 2.3rem',
         fontWeight: 'bolder',
         fontFamily: [
             '-apple-system',
@@ -170,7 +167,7 @@ const LoansHeader = (props) => {
                         Please select the reason for re-work
                     </Typography>
                     <Select value={selectedValue} handleSelectChange={handleSelectChange} />
-                    {(selectedValue == 2) ? (
+                    {(selectedValue === 2) ? (
                         <TextField
                             placeholder="Please specify other reasons"
                             multiline

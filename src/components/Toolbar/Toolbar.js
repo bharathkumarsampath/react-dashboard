@@ -16,7 +16,7 @@ const toolbar = () => {
     return (
         <div className="toolbar" style={{ display: "flex", backgroundColor: 'white' }}>
             <div style={{ textAlign: 'left', paddingTop: '.5%', paddingLeft: '.5%' }}>
-                <img src={clixLogo} width={220} height={50} />
+                <img src={clixLogo} width={220} height={50} alt="clix logo" />
             </div>
             <Search />
             <Account style={{ fontSize: '35', paddingTop: '1%', paddingLeft: '2%' }} color="disabled" fontSize="large" />

@@ -1,10 +1,8 @@
-import React, { useEffect, useRef, useContext } from 'react';
+import React, { useRef, useContext } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
 import TransitionsModal from '../Modal/Modal'
 import { CardContext } from '../../containers/Dashboard/Dashboard'
 import { BootstrapButton, useToolbarStyles } from './EnhancedTableToolbarStyle'
@@ -14,7 +12,7 @@ export default function EnhancedTableToolbar(props) {
     const classes = useToolbarStyles();
     const { numSelected, bulkApprove } = props;
     const childRef = useRef();
-    const [card, setCard] = useContext(CardContext);
+    const [card] = useContext(CardContext);
     function cardParse(card) {
         if (card[0]) {
             return "Pending Applications";

@@ -15,7 +15,7 @@ export default function EnhancedTableHead(props) {
     const createSortHandler = property => event => {
         onRequestSort(event, property);
     };
-    const [card, setCard] = useContext(CardContext);
+    const [card] = useContext(CardContext);
 
     function getIndex(card) {
         var i;
@@ -41,8 +41,6 @@ export default function EnhancedTableHead(props) {
         { id: 'name', numeric: true, disablePadding: false, label: 'Name' },
         { id: 'kycContactMobile', numeric: true, disablePadding: false, label: 'Mobile Number' },
         { id: 'loanAmount', numeric: true, disablePadding: false, label: 'Loan Amount' },
-        // { id: 'Case Status', numeric: true, disablePadding: false, label: 'Case Status' },
-        // { id: 'Agent Name', numeric: true, disablePadding: false, label: 'Agent Name' },
         { id: 'Action', numeric: true, disablePadding: false, label: 'Action' }],
     [
         { id: 'submissionDate', numeric: true, disablePadding: false, label: 'Approved Date' },
@@ -50,8 +48,6 @@ export default function EnhancedTableHead(props) {
         { id: 'name', numeric: true, disablePadding: false, label: 'Name' },
         { id: 'kycContactMobile', numeric: true, disablePadding: false, label: 'Mobile Number' },
         { id: 'loanAmount', numeric: true, disablePadding: false, label: 'Loan Amount' },
-        // { id: 'Case Status', numeric: true, disablePadding: false, label: 'Case Status' },
-        // { id: 'Agent Name', numeric: true, disablePadding: false, label: 'Agent Name' },
         { id: 'Action', numeric: true, disablePadding: false, label: 'Action' }],
     [
         { id: 'submissionDate', numeric: true, disablePadding: false, label: 'Rejected Date' },
@@ -60,7 +56,6 @@ export default function EnhancedTableHead(props) {
         { id: 'kycContactMobile', numeric: true, disablePadding: false, label: 'Mobile Number' },
         { id: 'loanAmount', numeric: true, disablePadding: false, label: 'Loan Amount' },
         { id: 'reason', numeric: true, disablePadding: false, label: 'Reason' },
-        // { id: 'Agent Name', numeric: true, disablePadding: false, label: 'Agent Name' },
         { id: 'Action', numeric: true, disablePadding: false, label: 'Action' }],
     [
         { id: 'submissionDate', numeric: true, disablePadding: false, label: 'Re-Work Date' },
@@ -68,8 +63,6 @@ export default function EnhancedTableHead(props) {
         { id: 'name', numeric: true, disablePadding: false, label: 'Name' },
         { id: 'kycContactMobile', numeric: true, disablePadding: false, label: 'Mobile Number' },
         { id: 'loanAmount', numeric: true, disablePadding: false, label: 'Loan Amount' },
-        // { id: 'Case Status', numeric: true, disablePadding: false, label: 'Case Status' },
-        // { id: 'Agent Name', numeric: true, disablePadding: false, label: 'Agent Name' },
         { id: 'Action', numeric: true, disablePadding: false, label: 'Action' }]
     ];
 

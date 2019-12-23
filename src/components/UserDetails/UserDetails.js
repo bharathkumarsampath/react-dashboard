@@ -1,9 +1,5 @@
-import React, { useEffect } from 'react';
-import PersonIcon from '@material-ui/icons/Person';
-// import { widthStyles } from '@material-ui/styles';
+import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import $ from 'jquery';
 import LoanUser from '../../assets/images/LoanUser.png'
 import { Divider } from '@material-ui/core';
 const LoanDetails = (props) => {
@@ -12,7 +8,7 @@ const LoanDetails = (props) => {
     return (
         <div style={{ backgroundColor: 'white', width: '25rem', height: '28rem', borderRadius: '0.4rem', margin: '1rem', boxShadow: '-1px 2px 6px -2px rgba(0,0,0,0.27)' }}>
             <div style={{ display: 'flex', padding: '1rem 0rem 1rem 1rem' }}>
-                <img src={LoanUser} width="70" height='70' />
+                <img src={LoanUser} width="70" height='70' alt="profileImage"/>
                 <div style={{ paddingLeft: '1rem', textAlign: 'left' }}>
                     <Typography variant="subtitle2" gutterBottom style={{ height: '22px', color: '#000000', fontSize: '16px', fontWeight: '600', lineHeight: '22px' }}>
                         {props.LoanApp.name}

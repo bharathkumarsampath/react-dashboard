@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -10,7 +10,7 @@ import EnhancedTableHead from '../EnhancedTableHead/EnhancedTableHead'
 import EnhancedTableToolbar from '../EnhancedTableToolbar/EnhancedTableToolbar'
 import Spinner from '../Spinner/Spinner'
 import { StyledTableRow, useStyles } from './EnhancedTableStyles'
-import { useHistory, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { LoanAppContext } from '../../containers/Dashboard/Dashboard'
 
 
@@ -31,7 +31,6 @@ function getSorting(order, orderBy) {
 
 
 export default function EnhancedTable() {
-    let history = useHistory();
     const classes = useStyles();
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('loanAmount');
@@ -40,13 +39,11 @@ export default function EnhancedTable() {
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
     const [rows, setRows] = React.useContext(LoanAppContext);
-    //const [count, setCount] = React.useState({ loanApproved: 3, nachEmailSent: 27, disbursed: 5, rejected: 12, all: 167 });
     const [isFetching, setIsFetching] = React.useState(false);
-    const [spinner, setSpinner] = React.useState(true);
     const [error, setError] = React.useState({});
 
-    const [card, setCard] = useContext(CardContext);
-    const [count, setCount] = useContext(CountContext);
+    const [card] = useContext(CardContext);
+    const [count] = useContext(CountContext);
     const [latestCount, setLatestCount] = useContext(LatestCountContext);
 
     function unSelect() {
@@ -61,12 +58,11 @@ export default function EnhancedTable() {
             return a[1] - b[1];
         });
         console.log("stabilized array1" + JSON.stringify(stabilizedThis.map(el => el[0])));
-        //setRows(stabilizedThis);
         return stabilizedThis.map(el => el[0]);
     }
 
     async function bulkApprove() {
-        console.log("bulk approve is getting called " + JSON.stringify({ bulkApprove: selected }));
+        console.log("bulk approve is getting called " + JSON.stringify({ LoanApps: selected }));
         var settings = {
             "crossDomain": true,
             "url": "http://localhost:8080/services/api/clix/portal/bulkApprove",
@@ -83,7 +79,7 @@ export default function EnhancedTable() {
                 "Content-Type": "application/json",
                 "token": localStorage.getItem('token')
             },
-            body: JSON.stringify({ bulkApprove: selected, status: cardParse(card) })
+            body: JSON.stringify({ LoanApps: selected, status: cardParse(card) })
         }).then(res => res.json()
         ).then(res => {
             console.log('bulkapprove', res);
@@ -91,15 +87,11 @@ export default function EnhancedTable() {
             setRows(JSON.parse(res.data));
             console.log("count " + JSON.stringify(count));
             console.log("count length " + JSON.stringify(count.length));
-            // setIsFetching(false);
-            // setSpinner(false);
             setLatestCount(!latestCount);
 
         });
         unSelect();
-        //setCard(...card);
     }
-    const cardArray = ["nach_email_sent", "disbursed", "loan_approved", "data_entry", "disbursed"]
 
     function cardParse(card) {
         if (card[0]) {
@@ -145,9 +137,7 @@ export default function EnhancedTable() {
 
                 }).then(res => res.text()
                 ).then(res => {
-                    console.log(res);
-                    // setRows(JSON.parse(res.data));
-                    //setCount(JSON.parse(res.udrsCount));
+                    console.log("response for tables : " + res);
                 });
 
             } catch (e) {
@@ -164,10 +154,6 @@ export default function EnhancedTable() {
         const isDesc = orderBy === property && order === 'desc';
         setOrder(isDesc ? 'asc' : 'desc');
         setOrderBy(property);
-        console.log("sort function called ");
-        console.log("property " + property);
-        console.log("orderby " + orderBy);
-        console.log("order " + order);
     };
 
     const handleSelectAllClick = event => {
@@ -214,22 +200,6 @@ export default function EnhancedTable() {
     };
 
     const isSelected = loanApplicationNumber => selected.indexOf(loanApplicationNumber) !== -1;
-
-    function viewProfile(event) {
-        console.log(event.target.id);
-        var loanApplicationNumber = event.target.id;
-        localStorage.setItem('appNumber', event.target.id);
-        history.push({
-            pathname: '/userprofile',
-            //data: { loanApplicationNumber: loanApplicationNumber } // your data array of objects
-        });
-        // window.location.href = '/userprofile';
-    }
-
-    // useAsync({ promiseFn: fetchUsers })
-    // if (isFetching) return (<Spinner />)
-    // if (error) return (`Something went wrong: ${error.message}`)
-    // if (rows)
     return (
         <div className={classes.root}>
             {error && <div>Something went wrong ...</div>}

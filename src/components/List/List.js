@@ -9,7 +9,7 @@ const ListCell = (props) => {
             <Typography variant="subtitle2" align='left' gutterBottom style={{ fontSize: '14px', fontWeight: '400', heigth: '19px', letterSpacing: '0.25px', lineHeight: '19px' }}>
                 {props.name}
             </Typography>
-            <Typography variant="subtitle2" align='right' gutterBottom style={{ fontWeight: '400', textAlign: 'right', fontSize: '14px', fontWeight: '400', heigth: '20px', letterSpacing: '0.25px', lineHeight: '19px' }}>
+            <Typography variant="subtitle2" align='right' gutterBottom style={{ fontWeight: '400', textAlign: 'right', fontSize: '14px', heigth: '20px', letterSpacing: '0.25px', lineHeight: '19px' }}>
                 {props.value}
             </Typography>
         </div>

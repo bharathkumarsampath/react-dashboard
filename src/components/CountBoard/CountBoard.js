@@ -1,19 +1,16 @@
 import React, { useContext, useEffect } from 'react';
 import SimpleCard from '../Card/Card'
 import { CardContext, CountContext, LatestCountContext } from '../../containers/Dashboard/Dashboard'
-import Spinner from '../Spinner/Spinner'
 export default function Cards() {
 
     const [card, setCard] = useContext(CardContext);
     const [count, setCount] = useContext(CountContext);
-    const [latestCount, setLatestCount] = useContext(LatestCountContext);
+    const [latestCount] = useContext(LatestCountContext);
 
-    const [isFetching, setIsFetching] = React.useState(false);
     const [error, setError] = React.useState({});
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                setIsFetching(true);
                 setError(false);
                 var settings = {
                     "url": "http://localhost:8080/services/api/clix/portal/getStatusCount",
@@ -33,7 +30,6 @@ export default function Cards() {
                 }).then(res => res.json()
                 ).then(res => {
                     setCount(JSON.parse(res.udrsCount));
-                    setIsFetching(false);
                 });
 
             } catch (e) {

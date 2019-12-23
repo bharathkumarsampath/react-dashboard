@@ -11,7 +11,7 @@ export default function SimpleCard(props) {
     const [style, setStyle] = React.useState(classes.card);
 
     useEffect(() => {
-        if (props.card[props.index] == 0) {
+        if (props.card[props.index] === 0) {
             setStyle(classes.card);
         } else {
             setStyle(classes.activeCard);

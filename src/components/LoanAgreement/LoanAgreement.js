@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
-import { Divider, useScrollTrigger } from '@material-ui/core';
-import { Document, Page } from 'react-pdf';
+import { Divider } from '@material-ui/core';
 import agre from '../../assets/images/100000026909_loan_agreement.pdf'
-import Test from '../temp/temp'
 const LoanAgreement = () => {
 
     const [url, setUrl] = useState('');
@@ -18,20 +16,13 @@ const LoanAgreement = () => {
                         "token": localStorage.getItem('token')
                     }
                 }
-
-
-                // $.ajax(settings).done(function (response) {
-                //     console.log('url from backend');
-                //     console.log(response);
-                //     setUrl(JSON.parse(response))
-                // });
                 fetch(settings.url, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded",
                         "token": localStorage.getItem('token')
                     }
-                }).then(res => res.text())          // convert to plain text
+                }).then(res => res.text()) 
                     .then(res => {
                         console.log('url from backend');
                         console.log(res);
@@ -56,7 +47,7 @@ const LoanAgreement = () => {
             </div>
 
             <Divider />
-            <embed src={agre} width="940" height="600"></embed>
+            <embed src={agre} width="950" height="600"></embed>
         </div>
 
 

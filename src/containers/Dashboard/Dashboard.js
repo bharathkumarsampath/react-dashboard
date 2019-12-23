@@ -3,7 +3,6 @@ import Divider from '@material-ui/core/Divider';
 import '../../components/Search/Search.css'
 import Cards from '../../components/CountBoard/CountBoard'
 import EnhancedTable from '../../components/EnhancedTable/EnhancedTable';
-import useStyles from '../../components/Search/SearchStyles'
 import Toolbar from '../../components/Toolbar/Toolbar'
 
 
@@ -18,8 +17,6 @@ const Dashboard = () => {
   const [count, setCount] = useState({});
   const [latestCount, setLatestCount] = useState(false);
   const [rows, setRows] = useState([]);
-
-  const classes = useStyles();
   return (
     <div>
       <LoanAppContext.Provider value={[rows, setRows]}>
