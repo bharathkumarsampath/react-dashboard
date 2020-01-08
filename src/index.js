@@ -4,10 +4,14 @@ import { BrowserRouter } from 'react-router-dom';
 import App from "./containers/App";
 import './index.css';
 import registerServiceWorker from './registerServiceWorker';
+import { ModalProvider } from "react-modal-hook";
+import { TransitionGroup } from "react-transition-group";
 
 ReactDOM.render(
     <BrowserRouter>
-        <App />
+        <ModalProvider container={TransitionGroup}>
+            <App />
+        </ModalProvider>
     </BrowserRouter>,
     document.getElementById('root')
 );

@@ -4,25 +4,20 @@ import Button from '@material-ui/core/Button';
 
 const useToolbarStyles = makeStyles(theme => ({
     root: {
-        // paddingLeft: theme.spacing(2),
-        // paddingRight: theme.spacing(1),
+        display: 'flex'
     },
     highlight:
         theme.palette.type === 'light'
             ? {
-                // color: theme.palette.secondary.main,
                 color: 'rgb(113,183,62)',
-                // backgroundColor: lighten(theme.palette.secondary.light, 0.85),
                 backgroundColor: 'rgb(243,248,239)'
             }
             : {
-                // color: theme.palette.text.primary,
                 color: 'rgb(113,183,62)',
-                // backgroundColor: theme.palette.secondary.dark,
                 backgroundColor: 'rgb(243,248,239)'
             },
     title: {
-        marginRight: '70%',
+        marginRight: '80%',
         display: 'flex'
     },
 }));

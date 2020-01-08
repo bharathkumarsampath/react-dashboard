@@ -41,6 +41,18 @@ const useStyles = makeStyles(theme => ({
     margin: {
         margin: theme.spacing(1),
     },
+    profileView: {
+        width: '40px',
+        height: '19px',
+        fontSize: '14px',
+        fontWeight: '500',
+        fontStretch: 'normal',
+        fontStyle: 'normal',
+        lineHeight: 'normal',
+        letterSpacing: 'normal',
+        color: 'rgb(80,147,223)',
+        textDecoration: 'none'
+    }
 }));
 
 export { useStyles, StyledTableRow };

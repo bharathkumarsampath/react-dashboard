@@ -102,7 +102,9 @@ const useStyles = makeStyles(theme => ({
         height: "10px"
     },
     mrgnImage: {
-        marginTop: "40%"
+        marginTop: "40%",
+        cursor: 'pointer',
+        maxwidth: '10%'
     }
 
 }));

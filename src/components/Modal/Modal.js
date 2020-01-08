@@ -18,9 +18,13 @@ const TransitionsModal = forwardRef((props, ref) => {
 
     }));
 
-    const handleClose = () => {
+    const handleCloseAndApprove = () => {
         setOpen(false);
         props.bulkApprove();
+    };
+
+    const handleClose = () => {
+        setOpen(false);
     };
 
     return (
@@ -45,7 +49,7 @@ const TransitionsModal = forwardRef((props, ref) => {
                         </Typography>
                         <div className={classes.displayFlex}>
                             <Button text="CANCEL" onClick={handleClose}></Button>
-                            <Button text="APPROVE" onClick={handleClose}></Button>
+                            <Button text="APPROVE" onClick={handleCloseAndApprove}></Button>
                         </div>
                     </div>
                 </Fade>

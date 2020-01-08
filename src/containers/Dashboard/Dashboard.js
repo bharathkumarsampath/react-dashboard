@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Divider from '@material-ui/core/Divider';
 import '../../components/Search/Search.css'
 import Cards from '../../components/CountBoard/CountBoard'
-import EnhancedTable from '../../components/EnhancedTable/EnhancedTable';
+import EnhancedTable from '../../components/TableView/TableView';
 import Toolbar from '../../components/Toolbar/Toolbar'
 
 

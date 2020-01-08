@@ -1,242 +1,197 @@
-import React, { useEffect } from 'react';
-import clixLogo from '../../assets/images/clixLogo.png'
-import loginImage from '../../assets/images/loginImage.png'
-import InputBase from '@material-ui/core/InputBase';
-import { createMuiTheme, fade, makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
-import SearchIcon from '@material-ui/icons/Search';
-import LoginIcon from '@material-ui/icons/KeyboardArrowDownSharp';
-import Divider from '@material-ui/core/Divider';
-import Button from '@material-ui/core/Button';
-import { green } from '@material-ui/core/colors';
-import LetterAvatars from '../Avatar/Avatar'
+import React, { useEffect, useContext } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Avatar from '../Avatar/Avatar'
-import PropTypes from 'prop-types';
-import TableFooter from '@material-ui/core/TableFooter';
 import TablePagination from '@material-ui/core/TablePagination';
-import IconButton from '@material-ui/core/IconButton';
-import FirstPageIcon from '@material-ui/icons/FirstPage';
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import LastPageIcon from '@material-ui/icons/LastPage';
-import $ from 'jquery';
-import { useHistory } from "react-router-dom";
-import lifecycle from 'react-pure-lifecycle';
-import SimpleCard from '../Card/Card'
-import Cards from '../CountBoard/CountBoard'
+import Paper from '@material-ui/core/Paper';
+import Checkbox from '@material-ui/core/Checkbox';
+import { CardContext, CountContext, LatestCountContext } from '../../containers/Dashboard/Dashboard'
+import EnhancedTableHead from '../TableViewHead/TableViewHead'
+import EnhancedTableToolbar from '../TableViewToolbar/TableViewToolbar'
+import Spinner from '../Loader/Loader'
+import { StyledTableRow, useStyles } from './TableViewStyles'
+import { Link } from "react-router-dom";
+import { LoanAppContext } from '../../containers/Dashboard/Dashboard'
+import TimeAgo from 'react-timeago'
+import buildFormatter from 'react-timeago/lib/formatters/buildFormatter'
+import lockOpenImage from '../../assets/images/ic-lock-open.svg'
+import lockImage from '../../assets/images/ic-lock.svg'
+import Typography from '@material-ui/core/Typography';
+import { api } from '../../globals'
+
+const formatter = buildFormatter(buildFormatter)
 
 
 
-
-
-const TableView = () => {
-
-    let history = useHistory();
-
-    const useStyles1 = makeStyles(theme => ({
-        root: {
-            flexShrink: 0,
-            marginLeft: theme.spacing(2.5),
-        },
-    }));
-
-
-    function TablePaginationActions(props) {
-        const classes = useStyles1();
-        const theme = useTheme();
-        const { count, page, rowsPerPage, onChangePage } = props;
-
-        const handleFirstPageButtonClick = event => {
-            onChangePage(event, 0);
-        };
-
-        const handleBackButtonClick = event => {
-            onChangePage(event, page - 1);
-        };
-
-        const handleNextButtonClick = event => {
-            onChangePage(event, page + 1);
-        };
-
-        const handleLastPageButtonClick = event => {
-            onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
-        };
-
-        return (
-            <div className={classes.root}>
-                <IconButton
-                    onClick={handleFirstPageButtonClick}
-                    disabled={page === 0}
-                    aria-label="first page"
-                >
-                    {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
-                </IconButton>
-                <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
-                    {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-                </IconButton>
-                <IconButton
-                    onClick={handleNextButtonClick}
-                    disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-                    aria-label="next page"
-                >
-                    {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
-                </IconButton>
-                <IconButton
-                    onClick={handleLastPageButtonClick}
-                    disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-                    aria-label="last page"
-                >
-                    {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
-                </IconButton>
-            </div>
-        );
+function desc(a, b, orderBy) {
+    if (b[orderBy] < a[orderBy]) {
+        return -1;
     }
-
-    TablePaginationActions.propTypes = {
-        count: PropTypes.number.isRequired,
-        onChangePage: PropTypes.func.isRequired,
-        page: PropTypes.number.isRequired,
-        rowsPerPage: PropTypes.number.isRequired,
-    };
-
-
-
-    const StyledTableRow = withStyles(theme => ({
-        root: {
-            '&:nth-of-type(odd)': {
-                backgroundColor: theme.palette.background.default,
-            },
-
-        },
-    }))(TableRow);
-    const StyledTableCell = withStyles(theme => ({
-        head: {
-            //backgroundColor: theme.palette.common.black,
-            //color: theme.palette.common.white,
-
-            color: 'rgb(120,120,120)'
-        },
-        body: {
-            fontSize: 14,
-            fontWeight: "550",
-            color: 'rgb(76,76,76)',
-            height: '2%',
-        },
-    }))(TableCell);
-    const StyledTableHeadCell = withStyles(theme => ({
-        head: {
-            backgroundColor: theme.palette.common.black,
-            color: theme.palette.common.white,
-        },
-        body: {
-            color: 'rgb(150,150,150)'
-        },
-    }))(TableCell);
-    const ColoredTableCell = withStyles(theme => ({
-        head: {
-            backgroundColor: theme.palette.common.black,
-            color: theme.palette.common.white,
-        },
-        body: {
-            fontSize: 14,
-            fontWeight: "550",
-            color: "rgb(128,177,232)",
-            cursor: 'pointer',
-        },
-    }))(TableCell);
-    const useStyles = makeStyles(theme => ({
-        root: {
-            width: '100%',
-            paddingTop: '1%',
-            overflowX: 'auto',
-        },
-        table: {
-            minWidth: 650,
-        },
-
-        tableWrapper: {
-            overflowX: 'auto',
-        },
-        button: {
-            margin: theme.spacing(1),
-        },
-    }));
-
-    function createData(name, mobile, emailId, submittedDate, offer, status, action) {
-
-
-        console.log({
-            name, mobile, emailId, submittedDate, offer, status, action
-        })
-        return {
-            name, mobile, emailId, submittedDate, offer, status, action
-        };
+    if (b[orderBy] > a[orderBy]) {
+        return 1;
     }
+    return 0;
+}
+
+function getSorting(order, orderBy) {
+    return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
+}
 
 
-
-
+export default function TableView() {
     const classes = useStyles();
+    const [order, setOrder] = React.useState('asc');
+    const [orderBy, setOrderBy] = React.useState('loanAmount');
+    const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-    const [rows, setRows] = React.useState([]);
-    const [fetching, setisfetching] = React.useState(false);
+    const [rows, setRows] = React.useContext(LoanAppContext);
+    const [isFetching, setIsFetching] = React.useState(false);
+    const [error, setError] = React.useState({});
+
+    const [card] = useContext(CardContext);
+    const [count] = useContext(CountContext);
+    const [latestCount, setLatestCount] = useContext(LatestCountContext);
+
+    function unSelect() {
+        setSelected([]);
+    }
+    function stableSort(array, cmp) {
+
+        const stabilizedThis = array.map((el, index) => [el, index]);
+        stabilizedThis.sort((a, b) => {
+            const order = cmp(a[0], b[0]);
+            if (order !== 0) return order;
+            return a[1] - b[1];
+        });
+        console.log("stabilized array1" + JSON.stringify(stabilizedThis.map(el => el[0])));
+        return stabilizedThis.map(el => el[0]);
+    }
+
+    async function bulkApprove() {
+        console.log("bulk approve is getting called " + JSON.stringify({ LoanApps: selected }));
+        var settings = {
+            "crossDomain": true,
+            "url": api.HOST + "approve",
+        }
+
+        await fetch(settings.url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "token": localStorage.getItem('token'),
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({ LoanApps: selected })
+        }).then(res => res.json()
+        ).then(res => {
+            console.log('bulkapprove', res);
+            console.log("count " + JSON.stringify(count));
+            console.log("count length " + JSON.stringify(count.length));
+            setLatestCount(!latestCount);
+
+        });
+        unSelect();
+    }
+
+    function cardParse(card) {
+        if (card[0]) {
+            return "nach_email_sent";
+        }
+        else if (card[1]) {
+            return "disbursed";
+        }
+
+        else if (card[2]) {
+
+            return "loan_approved";
+        }
+        else if (card[3]) {
+            return "data_entry";
+        }
+
+        else if (card[4]) {
+            return "disbursed";
+        }
+    }
+
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                // if (localStorage.getItem('token') == null) {
-                //     window.location.href = '/';
-                // } else {
-                setRows(rows);
-                setisfetching(true);
-                // const response = await axios.get(USER_SERVICE_URL);
+                setIsFetching(true);
+                setError(false);
                 var settings = {
-                    "url": "http://lstaging2.whizdm.com/loans/services/api/clix/portal/getAllLoanApplication?status=disbursed",
+                    "mode": "no-cors",
+                    "url": api.HOST + "getAllLoanApplication?status=" + cardParse(card),
                     "method": "GET",
                     "headers": {
                         "Content-Type": "application/x-www-form-urlencoded",
                         "token": localStorage.getItem('token')
                     }
                 }
-                fetch(settings.url, {
+                await fetch(settings.url, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded",
                         "token": localStorage.getItem('token')
                     }
+
                 }).then(res => res.json()
                 ).then(res => {
-                    console.log('tableview through fetch', res);
-                    setRows(res);
-                    setisfetching(false);
+                    console.log("response for tables : " + JSON.parse(res.data));
+                    setRows(JSON.parse(res.data));
                 });
-
-
-                // $.ajax(settings).done(function (response) {
-                //     console.log('first');
-                //     console.log(response);
-                //     setRows(JSON.parse(response));
-                //     setisfetching(false);
-                // });
-                // console.log("token in local storage " + localStorage.getItem('token'));
-                //}
 
             } catch (e) {
                 console.log(e);
-                setRows(rows);
-                setisfetching(false);
+                setError(true);
             }
+            setIsFetching(false);
         };
         fetchUsers();
-    }, []);
+    }, [card, latestCount]);
 
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+    const handleRequestSort = (event, property) => {
+
+        const isDesc = orderBy === property && order === 'desc';
+        setOrder(isDesc ? 'asc' : 'desc');
+        setOrderBy(property);
+    };
+
+    const handleSelectAllClick = event => {
+        if (event.target.checked) {
+            const newSelecteds = rows.map(n => n.loanApplicationNumber);
+            setSelected(newSelecteds);
+            return;
+        }
+        setSelected([]);
+    };
+
+
+
+    const handleClick = (event, loanApplicationNumber) => {
+
+
+        const selectedIndex = selected.indexOf(loanApplicationNumber);
+        let newSelected = [];
+
+        if (selectedIndex === -1) {
+            newSelected = newSelected.concat(selected, loanApplicationNumber);
+        } else if (selectedIndex === 0) {
+            newSelected = newSelected.concat(selected.slice(1));
+        } else if (selectedIndex === selected.length - 1) {
+            newSelected = newSelected.concat(selected.slice(0, -1));
+        } else if (selectedIndex > 0) {
+            newSelected = newSelected.concat(
+                selected.slice(0, selectedIndex),
+                selected.slice(selectedIndex + 1),
+            );
+        }
+
+        setSelected(newSelected);
+        console.log("selected " + selected);
+    };
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -247,84 +202,133 @@ const TableView = () => {
         setPage(0);
     };
 
-    function viewProfile(event) {
-        console.log(event.target.id);
-        var loanApplicationNumber = event.target.id;
-        localStorage.setItem('appNumber', event.target.id);
-        history.push({
-            pathname: '/userprofile',
-            //data: { loanApplicationNumber: loanApplicationNumber } // your data array of objects
-        });
-        // window.location.href = '/userprofile';
-    }
-
+    const isSelected = loanApplicationNumber => selected.indexOf(loanApplicationNumber) !== -1;
     return (
-        <div>
-            <Paper className={classes.root}>
-                <div className={classes.tableWrapper}>
-                    <Table className={classes.table} aria-label="custom pagination table">
-                        <TableHead>
-                            <TableRow>
-                                <StyledTableCell align="left" style
-                                    ={{ paddingLeft: '5.4%' }}>Name </StyledTableCell>
-                                <StyledTableCell align="left">Mobile</StyledTableCell>
-                                <StyledTableCell align="left" fontWeight="bold">Email ID</StyledTableCell>
-                                <StyledTableCell align="left">Submitted On</StyledTableCell>
-                                <StyledTableCell align="left">Offer</StyledTableCell>
-                                <StyledTableCell align="left">Status</StyledTableCell>
-                                <StyledTableCell align="left">Action</StyledTableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {(rowsPerPage > 0
-                                ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                : rows
+        <div className={classes.root}>
+            {error && <div>Something went wrong ...</div>}
+            {(isFetching) ? (<Spinner />) :
+                (<Paper className={classes.paper}>
+                    <EnhancedTableToolbar numSelected={selected.length} bulkApprove={bulkApprove} />
+                    <div className={classes.tableWrapper}>
+                        <Table
+                            className={classes.table}
+                            aria-labelledby="tableTitle"
+                            aria-label="enhanced table"
+                        >
+                            <EnhancedTableHead
+                                classes={classes}
+                                numSelected={selected.length}
+                                order={order}
+                                orderBy={orderBy}
+                                onSelectAllClick={handleSelectAllClick}
+                                onRequestSort={handleRequestSort}
+                                rowCount={rows.length}
+                            />
+                            <TableBody>
+                                {stableSort(rows, getSorting(order, orderBy))
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((row, index) => {
+                                        const isItemSelected = isSelected(row.loanApplicationNumber);
+                                        const labelId = `enhanced-table-checkbox-${index}`;
 
-                            ).map(row => (
-                                <StyledTableRow key={row.id}>
-                                    <StyledTableCell component="th" align="left" scope="row">
-                                        <div style={{ float: 'left' }}></div>
-                                        <div style={{ paddingTop: '0.5rem', paddingLeft: '5rem' }}>{row.name}</div>
-                                    </StyledTableCell>
-                                    <StyledTableCell align="left">{row.kycContactMobile}</StyledTableCell>
-                                    <StyledTableCell align="left">{row.kycEmailId}</StyledTableCell>
-                                    <StyledTableCell align="left">{row.submissionDate}</StyledTableCell>
-                                    <StyledTableCell align="left">{row.loanAmount}</StyledTableCell>
-                                    <ColoredTableCell align="left">{row.userDataReviewStatus}</ColoredTableCell>
-                                    <ColoredTableCell id={row.loanApplicationNumber} onClick={viewProfile} align="left">VIEW</ColoredTableCell>
-                                </StyledTableRow>
-                            ))}
-                            {emptyRows > 0 && (
-                                <TableRow style={{ height: 53 * emptyRows }}>
-                                    <TableCell colSpan={6} />
-                                </TableRow>
-                            )}
-                        </TableBody>
-                        <TableFooter>
-                            <TableRow >
-                                <TablePagination
+                                        return (
+                                            <StyledTableRow
+                                                hover
+                                                onClick={event => handleClick(event, row.loanApplicationNumber)}
+                                                role="checkbox"
+                                                aria-checked={isItemSelected}
+                                                tabIndex={-1}
+                                                key={row.id}
+                                                selected={isItemSelected}
+                                            >
+                                                {
+                                                    (card[0] || card[4]) ? (
+                                                        <TableCell padding="checkbox">
+                                                            <Checkbox
+                                                                checked={isItemSelected}
+                                                                inputProps={{ 'aria-labelledby': labelId }}
+                                                            />
+                                                        </TableCell>) : null
 
-                                    rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                                    colSpan={3}
-                                    count={rows.length}
-                                    rowsPerPage={rowsPerPage}
-                                    page={page}
-                                    SelectProps={{
-                                        inputProps: { 'aria-label': 'rows per page' },
-                                        native: true,
-                                    }}
-                                    onChangePage={handleChangePage}
-                                    onChangeRowsPerPage={handleChangeRowsPerPage}
-                                    ActionsComponent={TablePaginationActions}
-                                />
-                            </TableRow>
-                        </TableFooter>
-                    </Table>
-                </div>
-            </Paper>
+                                                }
+
+                                                <TableCell component="th" id={labelId} scope="row" align="left">
+                                                    <TimeAgo date={row.submissionDate} formatter={formatter}></TimeAgo>
+                                                    {
+                                                        (row.submissionDate) ?
+                                                            ("s ago") :
+                                                            ("--")
+                                                    }
+
+                                                </TableCell>
+                                                <TableCell align="left">{row.loanApplicationNumber}</TableCell>
+                                                <TableCell align="left">{row.name}</TableCell>
+                                                <TableCell align="left">{row.kycContactMobile}</TableCell>
+                                                <TableCell align="left">{row.loanAmount}</TableCell>
+                                                {
+                                                    (card[0]) ? (
+
+                                                        (row.agentName) ?
+                                                            (<TableCell align="left" style={{ display: 'flex' }}>
+                                                                <img src={lockImage} alt="lock image" style={{ paddingRight: '0.5rem' }} />
+                                                                <Typography>Locked</Typography>
+                                                            </TableCell>)
+                                                            : (<TableCell align="left" style={{ display: 'flex' }}>
+                                                                <img src={lockOpenImage} alt="lock open image" style={{ paddingRight: '0.5rem' }} />
+                                                                <Typography>Available</Typography>
+                                                            </TableCell>)
+
+                                                    ) : (null)
+
+                                                }
+                                                {
+                                                    (card[0]) ? (
+
+                                                        (row.agentName) ? (<TableCell align="left">{row.agentName}</TableCell>)
+                                                            : (<TableCell align="left">---</TableCell>)
+
+                                                    ) : (null)
+
+                                                }
+                                                {
+                                                    (card[3]) ? (
+                                                        <TableCell align="left">{row.documentsRejectReason}</TableCell>) : (
+                                                            // <div style={{ blockSize: '2rem' }}></div>
+                                                            null
+                                                        )
+
+                                                }
+                                                <TableCell align="left" id={row.loanApplicationNumber} style={{ cursor: 'pointer' }}>
+                                                    <Link className={classes.profileView} to={{
+                                                        pathname: '/userprofile',
+                                                        state: {
+                                                            LoanApp: row
+                                                        }
+                                                    }}>{(card[0]) ? ("Verify") : ("View")}
+                                                    </Link>
+                                                </TableCell>
+                                            </StyledTableRow>
+                                        );
+                                    })}
+                            </TableBody>
+                        </Table>
+                    </div>
+                    <TablePagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        component="div"
+                        count={rows.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        backIconButtonProps={{
+                            'aria-label': 'previous page',
+                        }}
+                        nextIconButtonProps={{
+                            'aria-label': 'next page',
+                        }}
+                        onChangePage={handleChangePage}
+                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                    />
+                </Paper>)}
         </div>
     );
 }
-
-
-export default TableView;

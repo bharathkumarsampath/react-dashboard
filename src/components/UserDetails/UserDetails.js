@@ -6,9 +6,9 @@ const LoanDetails = (props) => {
 
 
     return (
-        <div style={{ backgroundColor: 'white', width: '25rem', height: '28rem', borderRadius: '0.4rem', margin: '1rem', boxShadow: '-1px 2px 6px -2px rgba(0,0,0,0.27)' }}>
+        <div style={{ backgroundColor: 'white', width: '28vw', height: '28rem', borderRadius: '0.4rem', margin: '1rem', boxShadow: '-1px 2px 6px -2px rgba(0,0,0,0.27)' }}>
             <div style={{ display: 'flex', padding: '1rem 0rem 1rem 1rem' }}>
-                <img src={LoanUser} width="70" height='70' alt="profileImage"/>
+                <img src={LoanUser} width="70" height='70' alt="profileImage" />
                 <div style={{ paddingLeft: '1rem', textAlign: 'left' }}>
                     <Typography variant="subtitle2" gutterBottom style={{ height: '22px', color: '#000000', fontSize: '16px', fontWeight: '600', lineHeight: '22px' }}>
                         {props.LoanApp.name}

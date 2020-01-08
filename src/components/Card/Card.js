@@ -3,6 +3,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import CardStyles from './Card-Styles'
+import ErrorLoadingCount from '../../assets/images/ic-error.png'
 
 
 export default function SimpleCard(props) {
@@ -33,9 +34,12 @@ export default function SimpleCard(props) {
                         <div className={classes.tick}>
                         </div>
                     </div>) : (<div style={{ paddingTop: '1rem' }}>   </div>)}
-                    <Typography variant="h6" gutterBottom>
-                        {props.count}
-                    </Typography>
+                    {
+                        (props.count) ? (<Typography variant="h6" gutterBottom>
+                            {props.count}
+                        </Typography>) : (<img src={ErrorLoadingCount} alt="ErrorLoadingCount" />)
+                    }
+
                     <Typography variant="button" display="block" gutterBottom>
                         {props.text}
                     </Typography>

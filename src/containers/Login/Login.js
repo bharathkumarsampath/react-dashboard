@@ -8,7 +8,8 @@ import { Checkbox, Grid, TextField, Typography, FormControlLabel } from '@materi
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Box from '@material-ui/core/Box';
 import logImage from '../../assets/images/login_bg.png';
-
+import ForgotPasswordModal from './Modal';
+import { api } from '../../globals'
 
 const Login = () => {
 
@@ -17,22 +18,20 @@ const Login = () => {
 
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
+    const [error, setError] = React.useState(false);
     const classes = useStyles();
 
     const navigateToDashboard = () => {
-        setTimeout(function () { //Start the timer
-            history.push("/dashboard"); //After 1 second, set render to true
-        }, 1000)
+        history.push("/dashboard"); //After 1 second, set render to true
     };
 
     function authentication() {
 
-        console.log("authentication function ");
-
         var settings = {
+            "mode": "no-cors",
             "async": true,
             "crossDomain": true,
-            "url": "http://localhost:8080/services/api/clix/portal/gettoken?username=" + username + "&password=" + password,
+            "url": api.HOST + "gettoken?username=" + username + "&password=" + password,
             "method": "GET",
             "headers": {
                 "Content-Type": "application/x-www-form-urlencoded",
@@ -45,14 +44,12 @@ const Login = () => {
                 "Content-Type": "application/x-www-form-urlencoded",
             }
         })
-            // .then(response => response.json())
-            .then(res => res.text())          // convert to plain text
-            // .then(text => console.log(" text " + text))
+            .then(res => res.text())
             .then(response => {
                 console.log("ajax call starting " + response);
                 if (response === "please provide valid credentials") {
-                    //handleClick();
                     console.log("please provide valid credentials");
+                    setError(true);
                 } else if (response === "Please try again later") {
                     console.log("Please try again later");
                 } else {
@@ -71,9 +68,7 @@ const Login = () => {
                 </div>
             </AppBar>
 
-            <div className={classes.bgcolor}
-            // style={{ backgroundColor: 'rgb(252,252,252)' }}
-            >
+            <div className={classes.bgcolor}>
                 <Grid container spacing={3}>
                     <Grid item xs={6}>
                         <div className={classes.loginBox}>
@@ -108,6 +103,7 @@ const Login = () => {
                                         autoFocus
                                         placeholder="UserName"
                                         onChange={e => setUsername(e.target.value)}
+                                        error={error}
 
                                     />
 
@@ -124,7 +120,7 @@ const Login = () => {
                                         placeholder="Password"
                                         autoComplete="current-password"
                                         onChange={e => setPassword(e.target.value)}
-
+                                        error={error}
                                     />
 
                                     <Grid container>
@@ -135,6 +131,8 @@ const Login = () => {
                                             />
                                         </Grid>
                                         <Grid item className={classes.topmrgn} >
+
+                                            <ForgotPasswordModal />
                                         </Grid>
                                     </Grid>
 

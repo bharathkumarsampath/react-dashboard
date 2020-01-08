@@ -24,7 +24,20 @@ const BootstrapButton = withStyles({
             '"Apple Color Emoji"',
             '"Segoe UI Emoji"',
             '"Segoe UI Symbol"',
-        ].join(',')
+        ].join(','),
+        '&:hover': {
+            backgroundColor: 'rgb(113,184,62)',
+            color: 'white',
+            boxShadow: 'none',
+        },
+        '&:active': {
+            boxShadow: 'none',
+            backgroundColor: 'rgb(113,184,62)',
+            color: 'white',
+        },
+        '&:focus': {
+            boxShadow: '0 0 0 0.2rem rgba(0,123,255,.5)',
+        },
     },
 })(Button);
 

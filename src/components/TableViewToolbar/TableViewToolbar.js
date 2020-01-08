@@ -5,10 +5,10 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import TransitionsModal from '../Modal/Modal'
 import { CardContext } from '../../containers/Dashboard/Dashboard'
-import { BootstrapButton, useToolbarStyles } from './EnhancedTableToolbarStyle'
+import { BootstrapButton, useToolbarStyles } from './TableViewToolbarStyle'
 
 
-export default function EnhancedTableToolbar(props) {
+export default function TableViewToolbar(props) {
     const classes = useToolbarStyles();
     const { numSelected, bulkApprove } = props;
     const childRef = useRef();
@@ -46,8 +46,7 @@ export default function EnhancedTableToolbar(props) {
                         {cardParse(card)}
                     </Typography>
                 )}
-
-            <div>
+            <div style={{ float: 'right', display: 'block' }}>
                 {numSelected > 0 ? (
                     <div>
                         <BootstrapButton variant="contained" color="primary" disableRipple className={classes.margin} onClick={() => childRef.current.handleOpen()}>
@@ -63,6 +62,6 @@ export default function EnhancedTableToolbar(props) {
     );
 };
 
-EnhancedTableToolbar.propTypes = {
+TableViewToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,
 };

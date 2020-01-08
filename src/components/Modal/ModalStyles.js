@@ -5,6 +5,7 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        height: '300'
 
 
     },
@@ -12,7 +13,8 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: theme.palette.background.paper,
         padding: theme.spacing(2, 4, 3),
         borderRadius: '0.6rem',
-        width: '26rem'
+        width: '26rem',
+        height: '14.3rem'
     },
     displayFlex: {
         display: 'flex',

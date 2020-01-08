@@ -7,7 +7,7 @@ const OfferDetails = (props) => {
 
 
     return (
-        <div style={{ backgroundColor: 'white', width: '25rem', height: '30rem', borderRadius: '0.4rem', margin: '1rem', boxShadow: '-1px 2px 6px -2px rgba(0,0,0,0.27)' }}>
+        <div style={{ backgroundColor: 'white', width: '28vw', height: '30rem', borderRadius: '0.4rem', margin: '1rem', boxShadow: '-1px 2px 6px -2px rgba(0,0,0,0.27)' }}>
             <div style={{ display: 'flex', padding: '1rem' }}>
                 <Typography variant="subtitle2" gutterBottom style={{ fontSize: '1.1rem', fontWeight: '500', textAlign: 'left', marginRight: '15rem' }}>
                     Offer Details
