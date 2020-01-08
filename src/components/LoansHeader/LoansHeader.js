@@ -14,15 +14,15 @@ const LoansHeader = (props) => {
             </div>
             <div style={{ paddingLeft: '1%', paddingTop: '1%' }}>
                 <Typography variant="body2" gutterBottom style={{ height: '30px', width: '235px', color: '#000000', fontSize: '20px', fontWeight: '600' }}>
-                    LAN - MV{props.LoanApp.loanApplicationNumber}
+                    LAN - MV{props.LoanApp.loanApplicationNo}
                 </Typography>
 
             </div>
             {
-                (props.LoanApp.userDataReviewStatus === "DATA_ENTRY") ?
+                (props.LoanApp.mvStatus.toLowerCase() === "rejected") ?
                     (
                         <div style={{ paddingLeft: '1%', paddingTop: '1%', color: 'rgb(92,154,224)' }}>
-                            <ViewReason reason={props.LoanApp.documentsRejectReason} date={props.LoanApp.dateCreated} />
+                            <ViewReason reason={props.LoanApp.remarks} date={props.LoanApp.dateCreated} />
                         </div>
                     ) :
                     (null)
@@ -31,7 +31,7 @@ const LoansHeader = (props) => {
 
 
             {
-                (props.LoanApp.userDataReviewStatus === "NACH_EMAIL_SENT") ?
+                (props.LoanApp.mvStatus.toLowerCase() === "pending") ?
                     (
                         <ReworkModal />
                     ) :

@@ -16,8 +16,8 @@ const OfferDetails = (props) => {
             </div>
 
             <Divider />
-            <ListCell name='Amount Applied For' value={'₹' + props.LoanApp.appliedAmount} />
-            <ListCell name='Loan Amount' value={'₹' + props.LoanApp.loanAmount} />
+            <ListCell name='Amount Applied For' value={'₹' + props.LoanApp.loanDetails.appliedAmount} />
+            <ListCell name='Loan Amount' value={'₹' + props.LoanApp.loanDetails.appliedAmount} />
             <ListCell name='Pre EMI' value={'₹' + props.LoanApp.preEmiAmount} />
             <ListCell name='Transferrable Amount' value={'₹' + props.LoanApp.transferrableAmount} />
             <ListCell name='Processing Fee' value={'₹' + props.LoanApp.processingFee} />
