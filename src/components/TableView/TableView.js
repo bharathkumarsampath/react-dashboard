@@ -261,8 +261,8 @@ export default function TableView() {
                                                     }
 
                                                 </TableCell>
-                                                <TableCell align="left">{row.loanApplicationNumber}</TableCell>
-                                                <TableCell align="left">{row.name}</TableCell>
+                                                <TableCell align="left">{row.loanApplicationNo}</TableCell>
+                                                <TableCell align="left">{row.firstName + " " + row.middleName + " " + row.lastName}</TableCell>
                                                 <TableCell align="left">{row.kycContactMobile}</TableCell>
                                                 <TableCell align="left">{row.loanAmount}</TableCell>
                                                 {
