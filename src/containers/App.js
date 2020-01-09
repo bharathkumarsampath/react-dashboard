@@ -15,7 +15,7 @@ const App = () => {
       { /* Container stuff goes here  */}
       <Switch>
         <Route exact path="/" component={Login}></Route>
-        <AuthRoute path="/dashboard" component={Dashboard} />
+        <AuthRoute exact path="/dashboard" component={Dashboard} />
         <AuthRoute exact path="/userprofile" component={UserProfile} />
         <Route component={NoPageFound} />
       </Switch>

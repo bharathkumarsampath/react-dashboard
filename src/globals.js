@@ -22,43 +22,45 @@ export const rework = {
 
 export const table = {
     HEADING: [[
-        { id: 'submissionDate', numeric: false, disablePadding: false, label: 'Submitted Date' },
-        { id: 'loanApplicationNumber', numeric: true, disablePadding: false, label: 'Loan ID' },
+        { id: 'submissionDate', numeric: false, disablePadding: false, label: 'MV Submitted On' },
+        { id: 'loanApplicationNumber', numeric: true, disablePadding: false, label: 'LAN ID' },
         { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
-        { id: 'kycContactMobile', numeric: true, disablePadding: false, label: 'Mobile Number' },
+        { id: 'mobileNumber', numeric: true, disablePadding: false, label: 'Mobile Number' },
         { id: 'loanAmount', numeric: true, disablePadding: false, label: 'Loan Amount' },
         { id: 'Case Status', numeric: true, disablePadding: false, label: 'Case Status' },
         { id: 'agentName', numeric: true, disablePadding: false, label: 'Agent Name' },
         { id: 'Action', numeric: true, disablePadding: false, label: 'Action' }],
     [
-        { id: 'submissionDate', numeric: true, disablePadding: false, label: 'Re-Work Date' },
+        { id: 'reWorkDate', numeric: true, disablePadding: false, label: 'Re-Work Date' },
         { id: 'loanApplicationNumber', numeric: true, disablePadding: false, label: 'Loan ID' },
         { id: 'name', numeric: true, disablePadding: false, label: 'Name' },
         { id: 'kycContactMobile', numeric: true, disablePadding: false, label: 'Mobile Number' },
         { id: 'loanAmount', numeric: true, disablePadding: false, label: 'Loan Amount' },
         { id: 'Action', numeric: true, disablePadding: false, label: 'Action' }],
     [
-        { id: 'submissionDate', numeric: true, disablePadding: false, label: 'Approved Date' },
-        { id: 'loanApplicationNumber', numeric: true, disablePadding: false, label: 'LAN' },
+        { id: 'approvedDate', numeric: true, disablePadding: false, label: 'Approved Date' },
+        { id: 'loanApplicationNumber', numeric: true, disablePadding: false, label: 'LAN ID' },
         { id: 'name', numeric: true, disablePadding: false, label: 'Name' },
         { id: 'kycContactMobile', numeric: true, disablePadding: false, label: 'Mobile Number' },
         { id: 'loanAmount', numeric: true, disablePadding: false, label: 'Loan Amount' },
         { id: 'Action', numeric: true, disablePadding: false, label: 'Action' }],
     [
-        { id: 'submissionDate', numeric: true, disablePadding: false, label: 'Rejected Date' },
-        { id: 'loanApplicationNumber', numeric: true, disablePadding: false, label: 'LAN' },
+        { id: 'rejectedDate', numeric: true, disablePadding: false, label: 'Rejected/Cancelled Date' },
+        { id: 'loanApplicationNumber', numeric: true, disablePadding: false, label: 'LAN ID' },
         { id: 'name', numeric: true, disablePadding: false, label: 'Name' },
         { id: 'kycContactMobile', numeric: true, disablePadding: false, label: 'Mobile Number' },
         { id: 'loanAmount', numeric: true, disablePadding: false, label: 'Loan Amount' },
         { id: 'reason', numeric: true, disablePadding: false, label: 'Reason' },
         { id: 'Action', numeric: true, disablePadding: false, label: 'Action' }],
     [
-        { id: 'submissionDate', numeric: true, disablePadding: false, label: 'Re-Work Date' },
-        { id: 'loanApplicationNumber', numeric: true, disablePadding: false, label: 'Loan ID' },
+        { id: 'updatedDate', numeric: true, disablePadding: false, label: 'Last Updated On' },
+        { id: 'loanApplicationNumber', numeric: true, disablePadding: false, label: 'LAN ID' },
         { id: 'name', numeric: true, disablePadding: false, label: 'Name' },
-        { id: 'kycContactMobile', numeric: true, disablePadding: false, label: 'Mobile Number' },
         { id: 'loanAmount', numeric: true, disablePadding: false, label: 'Loan Amount' },
-        { id: 'Action', numeric: true, disablePadding: false, label: 'Action' }]
+        { id: 'caseStatus', numeric: true, disablePadding: false, label: 'Case Status' },
+        { id: 'agentName', numeric: true, disablePadding: false, label: 'Agent Name' },
+        { id: 'appStatus', numeric: true, disablePadding: false, label: 'App Status' },
+        { id: 'action', numeric: true, disablePadding: false, label: 'Action' }]
     ]
 };
 
