@@ -3,7 +3,6 @@ import SearchIcon from '@material-ui/icons/Search';
 import './Search.css'
 import { Typography } from '@material-ui/core';
 import Popover from '@material-ui/core/Popover';
-import { Link } from "react-router-dom";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
 import ApplicationState from '../ApplicationState/ApplicationState'
