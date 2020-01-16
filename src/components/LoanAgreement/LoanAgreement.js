@@ -25,8 +25,7 @@ const LoanAgreement = (props) => {
                     }
                 }).then(res => res.text())
                     .then(res => {
-                        console.log('url from backend');
-                        console.log(res);
+                        // console.log(res);
                         setUrl(res);
                     });
 

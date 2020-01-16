@@ -31,7 +31,6 @@ const UserProfile = (props) => {
         setSnackBar(false);
     };
     async function getReworkReasons() {
-        console.log("inside unlockApp");
         try {
             var settings = {
                 "mode": "no-cors",
@@ -46,9 +45,7 @@ const UserProfile = (props) => {
 
             }).then(res => res.json()
             ).then(res => {
-                console.log("unlockApp ", JSON.parse(JSON.stringify(res.reworkReasons)));
                 var reasonsArray = res.reworkReasons.split(',');
-                console.log(reasonsArray);
                 for (var x = 0; x < reasonsArray.length; x++) {
                     rework.REASONS[x] = { text: reasonsArray[x], value: x };
                 }
@@ -76,7 +73,7 @@ const UserProfile = (props) => {
 
                 }).then(res => res.json()
                 ).then(res => {
-                    console.log(JSON.stringify(res.response));
+                    // console.log(JSON.stringify(res.response));
                     if (typeof res.response === "string" && res.response.includes("Application Locked")) {
                         setSnackBarMessage(res.response);
                         setSnackBarVariant("info");
@@ -100,7 +97,7 @@ const UserProfile = (props) => {
                         localStorage.clear();
                         setTimeout(function () { history.push('/'); }, 2000);
                     } else {
-                        console.log("response for tables : " + JSON.parse(JSON.stringify(res[0])));
+                        // console.log("response for tables : " + JSON.parse(JSON.stringify(res[0])));
                         setLoanApp(JSON.parse(JSON.stringify(res[0])));
                         unLockApp();
                     }

@@ -1,6 +1,5 @@
 import { api } from './globals'
 function unLockApp() {
-    console.log("inside unlockApp");
     try {
         var settings = {
             "mode": "no-cors",

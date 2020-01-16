@@ -42,7 +42,7 @@ const Modal = (props) => {
 
             }).then(res => res.text())
                 .then(response => {
-                    console.log("res ", JSON.stringify(response));
+                    // console.log("res ", JSON.stringify(response));
                     if (String(response) === "Password reset status successful") {
                         console.log("password reset successfull");
                         setSnackBarMessage("Notification to reset password was sent to admin successfully");

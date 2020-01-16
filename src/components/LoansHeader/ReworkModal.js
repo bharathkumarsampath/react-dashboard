@@ -31,7 +31,7 @@ const ReworkModal = (props) => {
 
     const handleChange = event => {
 
-        console.log("checkedItems: ", checkedItems);
+        // console.log("checkedItems: ", checkedItems);
         setCheckedItems({
             ...checkedItems,
             [event.target.name]: event.target.checked
@@ -52,7 +52,7 @@ const ReworkModal = (props) => {
         } else {
             remarks = remarks.substring(0, remarks.length - 2);
         }
-        console.log("remarks : " + remarks);
+        // console.log("remarks : " + remarks);
         if (remarks) {
             handleClose();
 
@@ -78,7 +78,7 @@ const ReworkModal = (props) => {
                 })
             }).then(res => res.text()
             ).then(res => {
-                console.log('mark rework', res);
+                // console.log('mark rework', res);
                 if (res === "Success") {
                     props.setSnackBarMessage("Application successfully marked Rework");
                     props.setSnackBarVariant("success");
@@ -126,7 +126,7 @@ const ReworkModal = (props) => {
             })
         }).then(res => res.text()
         ).then(res => {
-            console.log('mark approve', res);
+            // console.log('mark approve', res);
             if (res === "Success") {
                 props.setSnackBarMessage("Application successfully Approved");
                 props.setSnackBarVariant("info");

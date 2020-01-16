@@ -5,7 +5,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TablePagination from '@material-ui/core/TablePagination';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
-import { CardContext, CountContext, LatestCountContext } from '../../containers/Dashboard/Dashboard'
+import { CardContext, LatestCountContext } from '../../containers/Dashboard/Dashboard'
 import EnhancedTableHead from '../TableViewHead/TableViewHead'
 import EnhancedTableToolbar from '../TableViewHeader/TableViewHeader'
 import Spinner from '../Loader/Loader'
@@ -99,7 +99,6 @@ export default function TableView() {
     const [error, setError] = React.useState(false);
     const [queueEmpty, setQueueEmpty] = React.useState(false);
     const [card] = useContext(CardContext);
-    const [count] = useContext(CountContext);
     const [latestCount, setLatestCount] = useContext(LatestCountContext);
 
     const [snackBar, setSnackBar] = React.useState();
@@ -132,7 +131,6 @@ export default function TableView() {
     }
 
     async function bulkApprove() {
-        console.log("bulk approve is getting called " + JSON.stringify({ LoanApps: selected }));
         var settings = {
             "crossDomain": true,
             "url": api.HOST + "approve",
@@ -148,9 +146,6 @@ export default function TableView() {
             body: JSON.stringify({ LoanApps: selected })
         }).then(res => res.json()
         ).then(res => {
-            console.log('bulkapprove', res);
-            console.log("count " + JSON.stringify(count));
-            console.log("count length " + JSON.stringify(count.length));
             setLatestCount(!latestCount);
 
         });

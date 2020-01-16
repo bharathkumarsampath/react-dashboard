@@ -61,7 +61,7 @@ const search = () => {
 
             }).then(res => res.json()
             ).then(res => {
-                console.log("search response " + res);
+                // console.log("search response " + res);
                 if (res) {
                     setLoanApp(res);
                     setPopupMessage(
