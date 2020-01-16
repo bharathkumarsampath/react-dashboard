@@ -1,14 +1,12 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 import './Search.css'
-import { LoanAppContext } from '../../containers/Dashboard/Dashboard'
-import { Grid, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import Popover from '@material-ui/core/Popover';
-import Loader from '../Loader/Loader';
 import { Link } from "react-router-dom";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
-import Box from '@material-ui/core/Box';
+import ApplicationState from '../ApplicationState/ApplicationState'
 import { api } from '../../globals'
 
 
@@ -27,12 +25,10 @@ const search = () => {
     const classes = useStyles();
     const [searchTerm, setSearchTerm] = React.useState("");
     const [loanApp, setLoanApp] = React.useState({});
-    const isFirstRun = useRef(true);
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [popupMessage, setPopupMessage] = React.useState("Enter Application ID and click on search or press enter");
-    const [isFetching, setIsFetching] = React.useState(false);
-    const [noResults, setNoResults] = React.useState(false);
+
 
     const handleClick = event => {
         setPopupMessage(<div style={{ padding: '3% 90% 3% 3%', display: 'flex' }}>
@@ -43,7 +39,6 @@ const search = () => {
                 <Typography className="Searching">Searching...</Typography >
             </div>
         </div >);
-        setIsFetching(true);
         setAnchorEl(event.currentTarget);
         try {
 
@@ -72,18 +67,17 @@ const search = () => {
                     setPopupMessage(
                         <div style={{ padding: '3% 3% 3% 3%', display: 'flex', color: '#000000' }}>
                             <div style={{ marginRight: '2%', fontWeight: '600' }}>
-                                <Typography>MV{res.loanApplicationNumber}</Typography>
+                                <Typography>MV{res.loanApplicationNo}</Typography>
                             </div>
-                            <div style={{ marginRight: '1%', letterSpacing: '0.25px', }}>
-                                <Typography>{res.name}</Typography>
+                            <div style={{ marginRight: '1%', letterSpacing: '0.25px', verticalAlign: 'middle' }}>
+                                <Typography>{(res.firstName) ? (res.firstName + " ") : (null) + (res.middleName) ? (res.middleName + " ") : (null) + (res.lastName) ? (res.lastName + " ") : (null)}</Typography>
                             </div>
-                            <div style={{ marginRight: '1%' }}>
-                                <Typography>{res.userDataReviewStatus}</Typography>
+                            <div style={{ marginRight: '1%', marginLeft: '1%', verticalAlign: 'middle' }}>
+                                <ApplicationState state={res.mvStatus} />
                             </div>
                         </div>
                     );
                 } else {
-                    setNoResults(true);
                     setPopupMessage(
                         <div style={{ padding: '5% 80% 5% 5%', color: '#000000', width: '402px' }}>
                             <Typography> No results found...</Typography>
@@ -95,7 +89,6 @@ const search = () => {
         } catch (e) {
             console.log(e);
         }
-        setIsFetching(false);
 
     };
 
@@ -133,7 +126,7 @@ const search = () => {
                     </Link>
                 </div>
             </Popover>
-            <input type="text" onChange={e => { setSearchTerm(e.target.value); if (e.target.length === 12) { handleClick(); } }} className="searchTerm" placeholder="Search by Loan ID, mobile number or email ID" />
+            <input type="text" onChange={e => { setSearchTerm(e.target.value); if (e.target.length === 12) { handleClick(); } }} className="searchTerm" placeholder="Search by Loan Application Number" />
             <button type="submit" className="searchButton" onClick={handleClick}>
                 <SearchIcon style={{ color: 'white', paddingTop: '14%' }} />
             </button>

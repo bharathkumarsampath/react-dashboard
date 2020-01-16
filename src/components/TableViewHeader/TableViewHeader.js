@@ -5,7 +5,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import TransitionsModal from '../Modal/Modal'
 import { CardContext } from '../../containers/Dashboard/Dashboard'
-import { BootstrapButton, useToolbarStyles } from './TableViewToolbarStyle'
+import { BootstrapButton, useToolbarStyles } from './TableViewHeaderStyle'
 
 
 export default function TableViewToolbar(props) {
@@ -38,26 +38,26 @@ export default function TableViewToolbar(props) {
 
     return (
         <Toolbar className={clsx(classes.root, { [classes.highlight]: numSelected > 0, })}>
-            {numSelected > 0 ? (
-                <Typography className={classes.title} color="inherit" variant="subtitle1" style={{ fontSize: '1rem' }} >
-                    {numSelected} Applications Selected
-                </Typography>) : (
-                    <Typography className={classes.title} variant="h6" id="tableTitle" >
-                        {cardParse(card)}
-                    </Typography>
-                )}
-            <div style={{ float: 'right', display: 'block' }}>
+
+
+            <div>
                 {numSelected > 0 ? (
-                    <div>
-                        <BootstrapButton variant="contained" color="primary" disableRipple className={classes.margin} onClick={() => childRef.current.handleOpen()}>
-                            Approve
-                </BootstrapButton>
-                        <TransitionsModal ref={childRef} bulkApprove={bulkApprove}></TransitionsModal>
-                    </div>
-                ) : (
-                        null
+                    <Typography className={classes.title} color="inherit" variant="subtitle1" style={{ fontSize: '1rem' }} >
+                        {numSelected} Applications Selected
+                </Typography>) : (
+                        <Typography className={classes.title} variant="h6" id="tableTitle" >
+                            {cardParse(card)}
+                        </Typography>
                     )}
             </div>
+            <div style={{ textAlign: 'right' }}>
+                <BootstrapButton disabled={(numSelected) ? (false) : (true)} variant="contained" color="primary" disableRipple onClick={() => childRef.current.handleOpen()}>
+                    APPROVE
+                </BootstrapButton>
+                <TransitionsModal ref={childRef} bulkApprove={bulkApprove}></TransitionsModal>
+            </div>
+
+
         </Toolbar >
     );
 };

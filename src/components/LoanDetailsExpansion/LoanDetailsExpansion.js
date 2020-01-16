@@ -1,94 +1,85 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import MuiExpansionPanel from '@material-ui/core/ExpansionPanel';
-import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import { makeStyles } from '@material-ui/core/styles';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import LoanDetails from '../../components/UserDetails/UserDetails'
+import OfferDetails from '../../components/OfferDetails/OfferDetails'
+import KycDetails from '../../components/KycDetails/KycDetails'
+import EmployerDetails from '../../components/EmployerDetails/EmployerDetails'
 
-const ExpansionPanel = withStyles({
+const useStyles = makeStyles(theme => ({
     root: {
-        border: '1px solid rgba(0, 0, 0, .125)',
-        boxShadow: 'none',
-        '&:not(:last-child)': {
-            borderBottom: 0,
-        },
-        '&:before': {
-            display: 'none',
-        },
-        '&$expanded': {
-            margin: 'auto',
-        },
+        width: '100%',
     },
-    expanded: {},
-})(MuiExpansionPanel);
+    heading: {
+        fontSize: theme.typography.pxToRem(15),
+        flexShrink: 0,
+    },
+    secondaryHeading: {
+        fontSize: theme.typography.pxToRem(15),
+        color: theme.palette.text.secondary,
+    },
+}));
 
-const ExpansionPanelSummary = withStyles({
-    root: {
-        backgroundColor: 'rgba(0, 0, 0, .03)',
-        borderBottom: '1px solid rgba(0, 0, 0, .125)',
-        marginBottom: -1,
-        minHeight: 56,
-        '&$expanded': {
-            minHeight: 56,
-        },
-    },
-    content: {
-        '&$expanded': {
-            margin: '12px 0',
-        },
-    },
-    expanded: {},
-})(MuiExpansionPanelSummary);
-
-const ExpansionPanelDetails = withStyles(theme => ({
-    root: {
-        padding: theme.spacing(2),
-    },
-}))(MuiExpansionPanelDetails);
-
-export default function CustomizedExpansionPanels() {
+export default function ControlledExpansionPanels(props) {
+    const classes = useStyles();
     const [expanded, setExpanded] = React.useState('panel1');
 
-    const handleChange = panel => (event, newExpanded) => {
-        setExpanded(newExpanded ? panel : false);
+    const handleChange = panel => (event, isExpanded) => {
+        setExpanded(isExpanded ? panel : false);
     };
 
     return (
-        <div>
-            <ExpansionPanel square expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
-                <ExpansionPanelSummary aria-controls="panel1d-content" id="panel1d-header">
-                    <Typography>User Profile</Typography>
+        <div className={classes.root} style={{ backgroundColor: 'white', width: '28vw', height: '80vh', flex: "auto", flexDirection: 'column', overflow: 'auto', borderRadius: '0.4rem', margin: '1rem', boxShadow: '-1px 2px 6px -2px rgba(0,0,0,0.27)' }}>
+            <ExpansionPanel expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+                <ExpansionPanelSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1bh-content"
+                    id="panel1bh-header"
+                >
+                    <Typography className={classes.heading}>User Profile</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                    <Typography>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-                        sit amet blandit leo lobortis eget. Lorem ipsum dolor sit amet, consectetur adipiscing
-                        elit. Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.
-          </Typography>
+                    <LoanDetails LoanApp={props.LoanApp} />
                 </ExpansionPanelDetails>
             </ExpansionPanel>
-            <ExpansionPanel square expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
-                <ExpansionPanelSummary aria-controls="panel2d-content" id="panel2d-header">
-                    <Typography>Offer Details</Typography>
+            <ExpansionPanel expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
+                <ExpansionPanelSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel2bh-content"
+                    id="panel2bh-header"
+                >
+                    <Typography className={classes.heading}>Offer Details</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                    <Typography>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-                        sit amet blandit leo lobortis eget. Lorem ipsum dolor sit amet, consectetur adipiscing
-                        elit. Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.
-          </Typography>
+                    <OfferDetails LoanApp={props.LoanApp} />
                 </ExpansionPanelDetails>
             </ExpansionPanel>
-            <ExpansionPanel square expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
-                <ExpansionPanelSummary aria-controls="panel3d-content" id="panel3d-header">
-                    <Typography>Collapsible Group Item #3</Typography>
+            <ExpansionPanel expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
+                <ExpansionPanelSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel3bh-content"
+                    id="panel3bh-header"
+                >
+                    <Typography className={classes.heading}>KYC Details</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                    <Typography>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-                        sit amet blandit leo lobortis eget. Lorem ipsum dolor sit amet, consectetur adipiscing
-                        elit. Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.
-          </Typography>
+                    <KycDetails LoanApp={props.LoanApp} />
+                </ExpansionPanelDetails>
+            </ExpansionPanel>
+            <ExpansionPanel expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
+                <ExpansionPanelSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel4bh-content"
+                    id="panel4bh-header"
+                >
+                    <Typography className={classes.heading}>Employer Details</Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                    <EmployerDetails LoanApp={props.LoanApp} />
                 </ExpansionPanelDetails>
             </ExpansionPanel>
         </div>

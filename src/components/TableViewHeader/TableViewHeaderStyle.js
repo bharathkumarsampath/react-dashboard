@@ -4,7 +4,8 @@ import Button from '@material-ui/core/Button';
 
 const useToolbarStyles = makeStyles(theme => ({
     root: {
-        display: 'flex'
+        display: 'flex',
+        justifyContent: 'space-between'
     },
     highlight:
         theme.palette.type === 'light'
@@ -17,8 +18,8 @@ const useToolbarStyles = makeStyles(theme => ({
                 backgroundColor: 'rgb(243,248,239)'
             },
     title: {
-        marginRight: '80%',
-        display: 'flex'
+        display: 'flex',
+
     },
 }));
 

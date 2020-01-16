@@ -6,12 +6,17 @@ import './index.css';
 import registerServiceWorker from './registerServiceWorker';
 import { ModalProvider } from "react-modal-hook";
 import { TransitionGroup } from "react-transition-group";
+import { ThemeProvider } from '@material-ui/core/styles';
+import theme from './styles'
 
 ReactDOM.render(
     <BrowserRouter>
-        <ModalProvider container={TransitionGroup}>
-            <App />
-        </ModalProvider>
+        <ThemeProvider theme={theme}>
+            <ModalProvider container={TransitionGroup}>
+                <App />
+            </ModalProvider>
+        </ThemeProvider>
+
     </BrowserRouter>,
     document.getElementById('root')
 );

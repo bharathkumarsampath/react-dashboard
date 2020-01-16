@@ -5,7 +5,8 @@ import UserProfile from "./Userprofile/Userprofile";
 import Login from './Login/Login'
 import '../containers/App.css'
 import AuthRoute from './auth'
-import NoPageFound from '../containers/NoPageFound/NoPageFound'
+import NoPageFound from './NoPageFound/NoPageFound';
+
 
 
 const App = () => {

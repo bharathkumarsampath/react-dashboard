@@ -52,6 +52,18 @@ const useStyles = makeStyles(theme => ({
         letterSpacing: 'normal',
         color: 'rgb(80,147,223)',
         textDecoration: 'none'
+    },
+    profileLocked: {
+        width: '40px',
+        height: '19px',
+        fontSize: '14px',
+        fontWeight: '500',
+        fontStretch: 'normal',
+        fontStyle: 'normal',
+        lineHeight: 'normal',
+        letterSpacing: 'normal',
+        color: '#cec3d8',
+        textDecoration: 'none'
     }
 }));
 

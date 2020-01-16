@@ -23,7 +23,10 @@ export default function MouseOverPopover(props) {
         setAnchorEl(event.currentTarget);
     };
 
-    const handlePopoverClose = () => {
+    const handlePopoverClose = (reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
         setAnchorEl(null);
     };
 
@@ -34,7 +37,7 @@ export default function MouseOverPopover(props) {
             <Typography
                 aria-owns={open ? 'mouse-over-popover' : undefined}
                 aria-haspopup="true"
-                onMouseEnter={handlePopoverOpen}
+                onClick={handlePopoverOpen}
                 onMouseLeave={handlePopoverClose}
             >
                 View Reason
@@ -63,7 +66,10 @@ export default function MouseOverPopover(props) {
                         <Typography>{props.date}</Typography>
                         <CancelIcon style={{ marginLeft: '5vw' }} />
                     </div>
-                    <Typography>{props.reason}</Typography>
+                    <div style={{ flex: "auto", flexDirection: 'column', overflow: 'auto' }}>
+
+                        <Typography>{props.reason}</Typography>
+                    </div>
                 </div>
 
             </Popover>

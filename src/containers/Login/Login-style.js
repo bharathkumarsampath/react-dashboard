@@ -20,8 +20,8 @@ const useStyles = makeStyles(theme => ({
     forgetPassStyle: {
         color: 'rgb(131,195,230)',
         textDecoration: 'underline',
-        marginLeft: '1%',
-        fontWeight: '500'
+        marginLeft: '4%',
+        fontWeight: '500',
     },
     buttonStyle: {
         border: '1px solid #ccc',

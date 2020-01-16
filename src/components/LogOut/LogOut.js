@@ -2,7 +2,7 @@ import React from 'react';
 import './LogOut.css'
 import LogoutProfile from '../../assets/images/ic-profile.png'
 import LogoutNav from '../../assets/images/ic-logout.png'
-
+import { unLockApp } from '../../utils'
 import { useHistory } from "react-router-dom";
 
 
@@ -12,7 +12,7 @@ import { useHistory } from "react-router-dom";
 const LogOut = () => {
     let history = useHistory();
     function navLogOut() {
-
+        unLockApp();
         localStorage.clear();
         history.push('/');
     }
@@ -23,7 +23,7 @@ const LogOut = () => {
                 <p style={{ paddingLeft: '10px' }}>clixagent1@clix.com</p>
             </div>
             <div style={{ display: 'flex', cursor: 'pointer', padding: '0px 25px 0px 25px' }} onClick={navLogOut}>
-                <img src={LogoutNav} alt="LogoutNav" style={{ cursor: 'pointer' }} height="25px" style={{ paddingTop: '12px' }} />
+                <img src={LogoutNav} alt="LogoutNav" height="25px" style={{ paddingTop: '12px', cursor: 'pointer' }} />
                 <p style={{ paddingLeft: '10px' }}>Logout</p>
             </div>
         </div>

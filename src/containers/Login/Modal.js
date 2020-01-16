@@ -1,20 +1,38 @@
 import React from "react";
-import { Button, Dialog, DialogActions, DialogTitle, Link } from "@material-ui/core";
+import { Dialog, DialogTitle, Link } from "@material-ui/core";
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import TextField from '@material-ui/core/TextField'
 import { useModal } from 'react-modal-hook';
 import { ModalButton } from '../../components/LoansHeader/LoansHeaderStyles'
 import { api } from '../../globals'
+import SnackBar from '../../components/Snackbar/SnackBar'
 
+const Modal = (props) => {
 
-const Modal = () => {
+    const [snackBar, setSnackBar] = React.useState();
+    const [snackBarVariant, setSnackBarVariant] = React.useState();
+    const [snackBarMessage, setSnackBarMessage] = React.useState();
 
-    const [otherReasons, setOtherReasons] = React.useState();
+    function updateUsername(username) {
+        localStorage.setItem('username', username)
+
+    }
+    const showSnackBar = () => {
+        setSnackBar(true);
+    };
+
+    const hideSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setSnackBar(false);
+    };
     async function resetPassword() {
         try {
             var settings = {
-                "url": api.HOST + "forgotpassword?username=clix&email=bharaths223@gmail.com",
+                "url": api.HOST + "forgotpassword?username=" + localStorage.getItem('username'),
             }
             fetch(settings.url, {
                 method: "GET",
@@ -25,12 +43,21 @@ const Modal = () => {
             }).then(res => res.text())
                 .then(response => {
                     console.log("res ", JSON.stringify(response));
-                    if (String(response) === "Password reset status successfull") {
+                    if (String(response) === "Password reset status successful") {
                         console.log("password reset successfull");
+                        setSnackBarMessage("Notification to reset password was sent to admin successfully");
+                        setSnackBarVariant("success");
+                        showSnackBar();
                     } else if (String(response) === "Username entered is not valid") {
                         console.log("Username entered is not valid");
+                        setSnackBarMessage("Username entered is not valid");
+                        setSnackBarVariant("info");
+                        showSnackBar();
                     } else {
                         console.log("Something went wrong please try again later");
+                        setSnackBarMessage("Something went wrong please try again later");
+                        setSnackBarVariant("warning");
+                        showSnackBar();
                     }
                 });
 
@@ -46,7 +73,7 @@ const Modal = () => {
 
                 <DialogContent >
                     <DialogContentText>
-                        Enter the Email ID associated with the account.We will send the new password to the email provided.
+                        Enter the Email ID associated with the account.We will send the new password to the below email provided.
             </DialogContentText >
                     <TextField
                         variant="outlined"
@@ -56,6 +83,7 @@ const Modal = () => {
                         label="Username"
                         type="email"
                         style={{ width: '60%' }}
+                        onChange={e => updateUsername(e.target.value)}
                     />
                 </DialogContent>
 
@@ -73,10 +101,11 @@ const Modal = () => {
 
 
             </Dialog>
+
         </div>
     ));
 
-    return <Link onClick={showModal}>Forget password</Link>;
+    return <React.Fragment><Link onClick={showModal}>Forgot password</Link><SnackBar message={snackBarMessage} variant={snackBarVariant} snackBar={snackBar} showSnackBar={showSnackBar} hideSnackBar={hideSnackBar} /></React.Fragment>;
 };
 
 export default Modal;
