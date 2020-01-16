@@ -1,75 +1,73 @@
-import React, { useEffect } from 'react';
-import PersonIcon from '@material-ui/icons/Person';
-// import { widthStyles } from '@material-ui/styles';
+import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import $ from 'jquery';
 import LoanUser from '../../assets/images/LoanUser.png'
 import { Divider } from '@material-ui/core';
 const LoanDetails = (props) => {
 
 
     return (
-        <div style={{ backgroundColor: 'white', width: '25rem', height: '29rem', borderRadius: '0.4rem', margin: '1rem', boxShadow: '-1px 2px 6px -2px rgba(0,0,0,0.27)' }}>
-            <div style={{ display: 'flex', padding: '1rem 6rem 1rem 1rem' }}>
-                <img src={LoanUser} width="70" height='70' />
+        <div
+        // style={{ backgroundColor: 'white', width: '28vw', height: '28rem', borderRadius: '0.4rem', margin: '1rem', boxShadow: '-1px 2px 6px -2px rgba(0,0,0,0.27)' }}
+        >
+            <div style={{ display: 'flex', padding: '1rem 0rem 1rem 1rem' }}>
+                <img src={LoanUser} width="70" height='70' alt="profileImage" />
                 <div style={{ paddingLeft: '1rem', textAlign: 'left' }}>
-                    <Typography variant="subtitle2" gutterBottom>
+                    <Typography variant="subtitle2" gutterBottom style={{ height: '37px', color: '#000000', fontSize: '16px', fontWeight: '600', lineHeight: '22px' }}>
                         {props.LoanApp.name}
                     </Typography>
-                    <Typography variant="button" display="block" gutterBottom>
+                    <Typography variant="button" gutterBottom style={{ height: ' 17px', color: ' rgba(42,41,42,0.87)', fontSize: '12px', fontWeight: ' 600', letterSpacing: ' 1px', lineHeight: ' 17px' }}>
                         {props.LoanApp.occupation}
                     </Typography>
-                    <Typography variant="body1" gutterBottom>
-                        Location : {props.LoanApp.kycPermanentAddressCity}
+                    <Typography variant="body1" style={{ height: ' 17px', color: ' #000000', fontSize: ' 12px', letterSpacing: ' 0.4px', lineHeight: ' 17px', marginTop: '6px' }}>
+                        Location : {props.LoanApp.location}
                     </Typography>
                 </div>
             </div>
             <Divider />
             <div style={{ textAlign: 'left' }}>
                 <div style={{ padding: '1rem' }}>
-                    <Typography variant="body1" gutterBottom>
+                    <Typography variant="body1" gutterBottom style={{ height: ' 17px', width: ' 103.97px', color: ' #000000', fontSize: ' 12px', letterSpacing: ' 0.4px', lineHeight: ' 17px', }}>
                         Email Address
                 </Typography>
-                    <Typography variant="subtitle2" gutterBottom>
-                        {props.LoanApp.kycEmailId}
+                    <Typography variant="subtitle2" gutterBottom style={{ fontSize: '14px', fontWeight: '600', lineHeight: '19px' }}>
+                        {props.LoanApp.emailId}
                     </Typography>
                 </div>
 
                 <div style={{ display: 'flex' }}>
                     <div style={{ paddingLeft: '1rem' }}>
-                        <Typography variant="body1" gutterBottom>
+                        <Typography variant="body1" gutterBottom style={{ height: ' 17px', width: ' 103.97px', color: ' #000000', fontSize: ' 12px', letterSpacing: ' 0.4px', lineHeight: ' 17px' }}>
                             Mobile Number
             </Typography>
-                        <Typography variant="subtitle2" gutterBottom>
-                            {props.LoanApp.kycContactMobile}
+                        <Typography variant="subtitle1" gutterBottom style={{ height: ' 19px', width: ' 121px', fontSize: ' 14px', fontWeight: '600', lineHeight: ' 19px' }}>
+                            {props.LoanApp.mobileNumber}
                         </Typography>
                     </div>
                     <div style={{ paddingLeft: '2.3rem' }}>
-                        <Typography variant="body1" gutterBottom>
+                        <Typography variant="body1" gutterBottom style={{ height: ' 17px', width: ' 179px', color: ' #000000', fontSize: ' 12px', letterSpacing: ' 0.4px', lineHeight: ' 17px' }}>
                             Alternate Number
             </Typography>
-                        <Typography variant="subtitle2" gutterBottom>
-                            {props.LoanApp.alternatePhone}
+                        <Typography variant="subtitle1" gutterBottom style={{ height: ' 19px', width: ' 121px', fontSize: ' 14px', fontWeight: '600', lineHeight: ' 19px' }}>
+                            {props.LoanApp.alternateMobile}
                         </Typography>
                     </div>
                 </div>
                 <div style={{ padding: '1rem' }}>
-                    <Typography variant="body1" gutterBottom>
+                    <Typography variant="body1" gutterBottom style={{ height: ' 17px', width: ' 103.97px', fontSize: ' 12px', letterSpacing: ' 0.4px', lineHeight: ' 17px' }}>
                         Current Address
                     </Typography>
-                    <Typography variant="subtitle2" gutterBottom>
-                        {props.LoanApp.kycCurrentAddressStreet}
+                    <Typography variant="body2" gutterBottom style={{ width: ' 328px', fontSize: ' 14px', fontWeight: '600', lineHeight: ' 19px' }}>
+                        {props.LoanApp.currentAddress}
                     </Typography>
                 </div>
             </div>
             <Divider />
             <div style={{ display: 'flex', padding: '1rem' }}>
-                <Typography variant="subtitle1" gutterBottom>
+                <Typography variant="subtitle1" gutterBottom style={{ height: ' 19px', fontSize: ' 14px', letterSpacing: ' 0.25px', lineHeight: ' 19px' }}>
                     Geo Tagging:
                 </Typography>
-                <Typography variant="subtitle1" gutterBottom style={{ backgroundColor: 'rgb(209,249,170)', borderRadius: '0.4rem', padding: '0.1rem 0.8rem', marginLeft: '.5rem' }}>
-                    Yes
+                <Typography variant="subtitle1" gutterBottom style={{ height: ' 17px', width: ' 22px', fontSize: ' 12px', letterSpacing: ' 0.4px', lineHeight: ' 17px', backgroundColor: 'rgb(209,249,170)', borderRadius: '4px', padding: '0.1rem 0.8rem', marginLeft: '.5rem' }}>
+                    {props.LoanApp.geoTagging}
                 </Typography>
 
             </div>

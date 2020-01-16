@@ -3,7 +3,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 
-const CardStyles = makeStyles({
+const CardStyles = makeStyles(theme => ({
     card: {
         maxWidth: 200,
         minWidth: 180,
@@ -60,9 +60,12 @@ const CardStyles = makeStyles({
         marginTop: '-5px',
         marginLeft: '-2px',
 
+    },
+    loader: {
+        color: 'rgb(113,183,61)'
     }
 
 
-});
+}));
 
 export default CardStyles;

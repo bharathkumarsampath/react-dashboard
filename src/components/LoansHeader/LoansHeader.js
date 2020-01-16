@@ -1,80 +1,101 @@
-import React, { useContext } from 'react';
-import Search from '../../components/Search/Search'
-import '../../components/Search/Search.css'
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import React from 'react';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-
-const useStyles = makeStyles(theme => ({
-    margin: {
-        margin: theme.spacing(1),
-    },
-}));
-
-const BootstrapButton = withStyles({
-    root: {
-        boxShadow: 'none',
-        textTransform: 'none',
-        fontSize: 16,
-        padding: '6px 12px',
-        border: '1px solid',
-        lineHeight: 1.5,
-        backgroundColor: 'white',
-        borderColor: 'rgb(113,184,62)',
-        color: 'rgb(113,184,62)',
-        padding: '0.5rem 2.3rem 0.5rem 2.3rem',
-        fontWeight: 'bolder',
-        fontFamily: [
-            '-apple-system',
-            'BlinkMacSystemFont',
-            '"Segoe UI"',
-            'Roboto',
-            '"Helvetica Neue"',
-            'Arial',
-            'sans-serif',
-            '"Apple Color Emoji"',
-            '"Segoe UI Emoji"',
-            '"Segoe UI Symbol"',
-        ].join(','),
-        '&:hover': {
-            backgroundColor: 'rgb(113,184,62)',
-            borderColor: 'rgb(113,184,62)',
-            boxShadow: 'none',
-            color: 'white'
-        },
-        '&:active': {
-            boxShadow: 'none',
-            backgroundColor: 'rgb(113,184,62)',
-            borderColor: 'rgb(113,184,62)',
-            color: 'white'
-        },
-        '&:focus': {
-            boxShadow: '0 0 0 0.2rem rgba(0,123,255,.5)',
-        },
-    },
-})(Button);
+import { useHistory } from "react-router-dom";
+import ReworkModal from './ReworkModal'
+import ViewReason from './ViewReason'
+import { state } from '../../globals'
+import SnackBar from '../Snackbar/SnackBar'
+import ApplicationState from '../ApplicationState/ApplicationState'
+import { unLockApp } from '../../utils'
 const LoansHeader = (props) => {
-    const classes = useStyles();
+    let history = useHistory();
+
+    const [snackBar, setSnackBar] = React.useState();
+    const [snackBarVariant, setSnackBarVariant] = React.useState();
+    const [snackBarMessage, setSnackBarMessage] = React.useState();
+    var [checkBoxArray, setCheckBoxArray] = React.useState([0, 0, 0, 0, 0, 0, 0, 0]);
+    const showSnackBar = () => {
+        setSnackBar(true);
+    };
+
+    const hideSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setSnackBar(false);
+    };
+    function unlockAndNavBack() {
+        unLockApp();
+        history.push('/dashboard');
+    }
     return (
-        <div className="toolbar" style={{ display: "flex", marginTop: '0.2rem', backgroundColor: 'white' }}>
-            <div style={{ textAlign: 'left', paddingLeft: '2%', paddingTop: '1%', color: 'grey' }}>
-                <ArrowBackIcon />
+        <div className="displayFlex" style={{ marginTop: '0.2rem', backgroundColor: 'white', justifyContent: "space-between", paddingLeft: '2%' }}>
+
+            <div style={{ display: 'flex', paddingTop: '1%' }}>
+                <div style={{ textAlign: 'left', color: 'grey', cursor: 'pointer', marginLeft: '2%', marginTop: '1%' }} onClick={unlockAndNavBack}>
+                    <ArrowBackIcon />
+                </div>
+                <div style={{ marginLeft: '2%', marginTop: '1%' }}>
+                    <Typography variant="body2" gutterBottom style={{ height: '30px', width: '235px', color: '#000000', fontSize: '20px', fontWeight: '600' }}>
+                        LAN - MV{props.LoanApp.loanApplicationNo}
+                    </Typography>
+
+                </div>
+                <div style={{ color: 'rgb(92,154,224)', marginLeft: '3%' }}>
+                    <ApplicationState state={props.LoanApp.mvStatus} />
+                </div>
+                <div style={{ color: 'rgb(92,154,224)', cursor: 'pointer', marginLeft: '2%', marginTop: '1.3%', width: '10vw' }}>
+                    {
+                        (props.LoanApp.mvStatus === state.REWORK) ?
+                            (<ViewReason reason={props.LoanApp.reworkReason} date={props.LoanApp.reworkDate} />) : (null)
+
+                    }
+                </div>
             </div>
-            <div style={{ paddingLeft: '1%', paddingTop: '0.8%' }}>
-                <Typography variant="h5" gutterBottom>
-                    LAN - MV{props.LoanApp.loanApplicationNumber}
-                </Typography>
+            <SnackBar message={snackBarMessage} variant={snackBarVariant} snackBar={snackBar} showSnackBar={showSnackBar} hideSnackBar={hideSnackBar} />
+            <div style={{ textAlign: 'right', marginRight: '3vw', paddingTop: '1%' }}>
+
+                {
+                    (props.LoanApp.mvStatus === state.PENDING || props.LoanApp.mvStatus === state.RE_SUBMITTED) ?
+                        (
+                            <ReworkModal LoanApp={props.LoanApp} showSnackBar={showSnackBar} setSnackBarVariant={setSnackBarVariant} setSnackBarMessage={setSnackBarMessage} checkBoxArray={checkBoxArray} setCheckBoxArray={setCheckBoxArray} />
+                        ) :
+                        (null)
+                }
+                {
+                    (props.LoanApp.mvStatus === state.REWORK) ?
+                        (
+                            <Typography>Rework Date : {props.LoanApp.reworkDate}</Typography>
+                        ) :
+                        (null)
+                }
+                {
+                    (props.LoanApp.mvStatus === state.APPROVED || props.LoanApp.mvStatus === state.SYSTEM_APPROVED) ?
+                        (
+                            <Typography >Approved Date : {props.LoanApp.approvedDate}</Typography>
+                        ) :
+                        (null)
+                }
+                {
+                    (props.LoanApp.mvStatus === state.CANCELLED) ?
+                        (
+                            <Typography>Cancelled Date : {props.LoanApp.rejectedOrCancelledDate}</Typography>
+                        ) :
+                        (null)
+                }
+                {
+                    (props.LoanApp.mvStatus === state.REJECTED) ?
+                        (
+                            <Typography>Rejected Date : {props.LoanApp.rejectedOrCancelledDate}</Typography>
+                        ) :
+                        (null)
+                }
+
             </div>
-            <div style={{ paddingLeft: '45rem' }}>
-                <BootstrapButton variant="contained" color="primary" disableRipple className={classes.margin}>
-                    RE-WORK
-                </BootstrapButton>
-                <BootstrapButton variant="contained" color="primary" disableRipple className={classes.margin}>
-                    APPROVE
-                </BootstrapButton>
-            </div>
+
+
 
         </div>
     );

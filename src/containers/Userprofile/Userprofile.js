@@ -1,66 +1,142 @@
 import React, { useEffect } from 'react';
-import Divider from '@material-ui/core/Divider';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import UserDetails from '../../components/UserDetails/UserDetails'
-import Grid from '@material-ui/core/Grid';
 import Toolbar from '../../components/Toolbar/Toolbar'
 import LoansHeader from '../../components/LoansHeader/LoansHeader'
-import LoanDetails from '../../components/UserDetails/UserDetails'
-import OfferDetails from '../../components/OfferDetails/OfferDetails'
-import KycDetails from '../../components/KycDetails/KycDetails'
-import EmployerDetails from '../../components/EmployerDetails/EmployerDetails'
 import LoanAgreement from '../../components/LoanAgreement/LoanAgreement'
-import $ from 'jquery'
-const UserProfile = () => {
+import { api, rework } from '../../globals'
+import Spinner from '../../components/Loader/Loader'
+import ExpansionPanel from '../../components/LoanDetailsExpansion/LoanDetailsExpansion'
+import { useHistory } from "react-router-dom"
+import LoanDetailPageError from '../../components/LoanDetailPageError/LoanDetailPageError'
+import SnackBar from '../../components/Snackbar/SnackBar'
+import { unLockApp } from '../../utils'
+export const ReloadAppContext = React.createContext();
 
+const UserProfile = (props) => {
+    let history = useHistory();
     const [LoanApp, setLoanApp] = React.useState({});
+    const [reload, setReload] = React.useState();
+    const [snackBar, setSnackBar] = React.useState();
+    const [snackBarVariant, setSnackBarVariant] = React.useState();
+    const [snackBarMessage, setSnackBarMessage] = React.useState();
+    const [error, setError] = React.useState();
+    const showSnackBar = () => {
+        setSnackBar(true);
+    };
 
+    const hideSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
 
+        setSnackBar(false);
+    };
+    async function getReworkReasons() {
+        try {
+            var settings = {
+                "mode": "no-cors",
+                "url": api.HOST + "getReworkReasons",
+            }
+            await fetch(settings.url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "token": localStorage.getItem('token')
+                }
+
+            }).then(res => res.json()
+            ).then(res => {
+                var reasonsArray = res.reworkReasons.split(',');
+                for (var x = 0; x < reasonsArray.length; x++) {
+                    rework.REASONS[x] = { text: reasonsArray[x], value: x };
+                }
+            });
+
+        } catch (e) {
+            console.log(e);
+        }
+    }
     useEffect(() => {
         const fetchUsers = async () => {
             try {
                 var settings = {
-                    "url": "http://localhost:8080/services/api/clix/portal/getLoanApplication?id=" + localStorage.getItem('appNumber'),
-                    "method": "GET",
-                    "headers": {
-                        "Content-Type": "application/x-www-form-urlencoded",
-                        "token": localStorage.getItem('token')
-                    }
+                    "mode": "no-cors",
+                    "crossDomain": true,
+                    "url": api.HOST + "getLoanApplication?loanAppNo=" + localStorage.getItem('loanAppNo') + "&agentName=" + localStorage.getItem('agentName'),
+
                 }
+                await fetch(settings.url, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "token": localStorage.getItem('token'),
+                    }
+
+                }).then(res => res.json()
+                ).then(res => {
+                    // console.log(JSON.stringify(res.response));
+                    if (typeof res.response === "string" && res.response.includes("Application Locked")) {
+                        setSnackBarMessage(res.response);
+                        setSnackBarVariant("info");
+                        showSnackBar();
+                        setTimeout(function () { history.push('/dashboard'); }, 2000);
+                    } else if (res.response === "Please provide valid loan application no") {
+                        setSnackBarMessage("Please provide valid loan application no");
+                        setSnackBarVariant("info");
+                        showSnackBar();
+                        setTimeout(function () { history.push('/dashboard'); }, 2000);
+                    } else if (res.response === "Exception occurred") {
+                        setSnackBarMessage("Exception occurred, try again later");
+                        setSnackBarVariant("info");
+                        showSnackBar();
+                        setTimeout(function () { history.push('/dashboard'); }, 2000);
+                    } else if (res.response === "Either token is invalid or token expired") {
+                        setSnackBarMessage("Your Session expired,try signing in again");
+                        setSnackBarVariant("info");
+                        showSnackBar();
+                        unLockApp();
+                        localStorage.clear();
+                        setTimeout(function () { history.push('/'); }, 2000);
+                    } else {
+                        // console.log("response for tables : " + JSON.parse(JSON.stringify(res[0])));
+                        setLoanApp(JSON.parse(JSON.stringify(res[0])));
+                        unLockApp();
+                    }
 
 
-                $.ajax(settings).done(function (response) {
-                    console.log('user profile page');
-                    console.log(response);
-                    setLoanApp(JSON.parse(response));
                 });
-                console.log("token in local storage " + localStorage.getItem('token'));
-
 
             } catch (e) {
                 console.log(e);
-                setLoanApp(LoanApp);
+                setError(true);
             }
         };
         fetchUsers();
-    }, []);
-    return (
-        <div style={{ backgroundColor: 'rgb(245,247,251)' }}>
-            <Toolbar />
-            <LoansHeader LoanApp={LoanApp} />
-            <div style={{ display: 'flex' }}>
-                <div>
-                    <LoanDetails LoanApp={LoanApp} />
-                    <OfferDetails LoanApp={LoanApp} />
-                    <KycDetails LoanApp={LoanApp} />
-                    <EmployerDetails LoanApp={LoanApp} />
-                </div>
-                <div>
-                    <LoanAgreement LoanApp={LoanApp} />
-                </div>
-            </div>
+        getReworkReasons();
+    }, [reload]);
 
-        </div>
+    return (
+        <ReloadAppContext.Provider value={[reload, setReload]}>
+            <div style={{ backgroundColor: 'rgb(245,247,251)', fontFamily: "Open Sans" }}>
+                {
+                    (error) ? (<LoanDetailPageError />) : (
+                        (LoanApp.loanApplicationNo) ?
+                            (<div>
+                                <Toolbar />
+                                <LoansHeader LoanApp={LoanApp} />
+                                <div style={{ display: 'flex' }}>
+                                    <div>
+                                        <ExpansionPanel LoanApp={LoanApp} />
+                                    </div>
+                                    <div>
+                                        <LoanAgreement LoanApp={LoanApp} />
+                                    </div>
+                                </div></div>) :
+                            (<Spinner />))
+                }
+            </div>
+            <SnackBar message={snackBarMessage} variant={snackBarVariant} snackBar={snackBar} showSnackBar={showSnackBar} hideSnackBar={hideSnackBar} />
+        </ReloadAppContext.Provider>
+
     );
 }
 

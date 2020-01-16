@@ -1,0 +1,22 @@
+.LogOut {
+    width: 218px;
+    height: 72px;
+    border-radius: 8px;
+    box-shadow: 0 7px 8px -4px rgba(0, 0, 0, 0.2), 0 5px 22px 4px rgba(0, 0, 0, 0.12), 0 12px 17px 2px rgba(0, 0, 0, 0.14);
+    background-color: #ffffff;
+  }
+
+  .LogoutUser {
+    width: 218px;
+    height: 40px;
+    border-radius: 8px;
+    background-color: #d7dee5;
+  }
+
+  .LogoutNavigation {
+    width: 218px;
+    height: 32px;
+    opacity: 0.2;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.26);
+  }

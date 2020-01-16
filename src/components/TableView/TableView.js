@@ -1,242 +1,273 @@
-import React, { useEffect } from 'react';
-import clixLogo from '../../assets/images/clixLogo.png'
-import loginImage from '../../assets/images/loginImage.png'
-import InputBase from '@material-ui/core/InputBase';
-import { createMuiTheme, fade, makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
-import SearchIcon from '@material-ui/icons/Search';
-import LoginIcon from '@material-ui/icons/KeyboardArrowDownSharp';
-import Divider from '@material-ui/core/Divider';
-import Button from '@material-ui/core/Button';
-import { green } from '@material-ui/core/colors';
-import LetterAvatars from '../Avatar/Avatar'
+import React, { useEffect, useContext } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Avatar from '../Avatar/Avatar'
-import PropTypes from 'prop-types';
-import TableFooter from '@material-ui/core/TableFooter';
 import TablePagination from '@material-ui/core/TablePagination';
-import IconButton from '@material-ui/core/IconButton';
-import FirstPageIcon from '@material-ui/icons/FirstPage';
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import LastPageIcon from '@material-ui/icons/LastPage';
-import $ from 'jquery';
-import { useHistory } from "react-router-dom";
-import lifecycle from 'react-pure-lifecycle';
-import SimpleCard from '../Card/Card'
-import Cards from '../CountBoard/CountBoard'
+import Paper from '@material-ui/core/Paper';
+import Checkbox from '@material-ui/core/Checkbox';
+import { CardContext, LatestCountContext } from '../../containers/Dashboard/Dashboard'
+import EnhancedTableHead from '../TableViewHead/TableViewHead'
+import EnhancedTableToolbar from '../TableViewHeader/TableViewHeader'
+import Spinner from '../Loader/Loader'
+import { StyledTableRow, useStyles } from './TableViewStyles'
+import { LoanAppContext } from '../../containers/Dashboard/Dashboard'
+import TimeAgo from 'react-timeago'
+import buildFormatter from 'react-timeago/lib/formatters/buildFormatter'
+import Typography from '@material-ui/core/Typography';
+import { api, state } from '../../globals'
+import { useHistory } from "react-router-dom"
+import ApplicationState from '../ApplicationState/ApplicationState'
+import TableServerError from '../TableServerError/TableServerError'
+import SnackBar from '../Snackbar/SnackBar'
+const formatter = buildFormatter(buildFormatter)
 
 
 
+function desc(a, b, orderBy) {
+    if (orderBy === 'submissionDate' || orderBy === 'reworkDate' || orderBy === 'approvedDate' ||
+        orderBy === 'rejectedOrCancelledDate' || orderBy === 'updatedDate') {
+        if (b.orderBy < a.orderBy) {
+            return -1;
+        }
+        if (b.orderBy > a.orderBy) {
+            return 1;
+        }
+    } else {
+        if (b[orderBy] < a[orderBy]) {
+            return -1;
+        }
+        if (b[orderBy] > a[orderBy]) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+function getSorting(order, orderBy) {
+    return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
+}
 
 
-const TableView = () => {
+export default function TableView() {
 
     let history = useHistory();
-
-    const useStyles1 = makeStyles(theme => ({
-        root: {
-            flexShrink: 0,
-            marginLeft: theme.spacing(2.5),
-        },
-    }));
-
-
-    function TablePaginationActions(props) {
-        const classes = useStyles1();
-        const theme = useTheme();
-        const { count, page, rowsPerPage, onChangePage } = props;
-
-        const handleFirstPageButtonClick = event => {
-            onChangePage(event, 0);
-        };
-
-        const handleBackButtonClick = event => {
-            onChangePage(event, page - 1);
-        };
-
-        const handleNextButtonClick = event => {
-            onChangePage(event, page + 1);
-        };
-
-        const handleLastPageButtonClick = event => {
-            onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
-        };
-
-        return (
-            <div className={classes.root}>
-                <IconButton
-                    onClick={handleFirstPageButtonClick}
-                    disabled={page === 0}
-                    aria-label="first page"
-                >
-                    {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
-                </IconButton>
-                <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
-                    {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-                </IconButton>
-                <IconButton
-                    onClick={handleNextButtonClick}
-                    disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-                    aria-label="next page"
-                >
-                    {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
-                </IconButton>
-                <IconButton
-                    onClick={handleLastPageButtonClick}
-                    disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-                    aria-label="last page"
-                >
-                    {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
-                </IconButton>
-            </div>
-        );
+    function navLoanDetails(event) {
+        localStorage.setItem('loanAppNo', event.target.id)
+        history.push('/userprofile');
     }
+    function numberWithCommas(x) {
+        x = x.toString();
+        var lastThree = x.substring(x.length - 3);
+        var otherNumbers = x.substring(0, x.length - 3);
+        if (otherNumbers !== '')
+            lastThree = ',' + lastThree;
+        return otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
+    }
+    function statusToDate(row) {
+        switch (row.mvStatus) {
+            case state.PENDING:
+                return row.submissionDate;
+            case state.RE_SUBMITTED:
+                return row.submissionDate;
+            case state.REWORK:
+                return row.reworkDate;
+            case state.APPROVED:
+                return row.approvedDate;
+            case state.SYSTEM_APPROVED:
+                return row.approvedDate;
+            case state.REJECTED:
+                return row.rejectedOrCancelledDate;
+            case state.CANCELLED:
+                return row.rejectedOrCancelledDate;
+            default:
+                return row.submissionDate;
+        }
+    }
+    function reloadTable() {
+        setLatestCount(!latestCount);
+    }
+    const classes = useStyles();
+    const [order, setOrder] = React.useState('asc');
+    const [orderBy, setOrderBy] = React.useState();
+    const [selected, setSelected] = React.useState([]);
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-    TablePaginationActions.propTypes = {
-        count: PropTypes.number.isRequired,
-        onChangePage: PropTypes.func.isRequired,
-        page: PropTypes.number.isRequired,
-        rowsPerPage: PropTypes.number.isRequired,
+    const [rows, setRows] = React.useContext(LoanAppContext);
+    const [isFetching, setIsFetching] = React.useState(false);
+    const [error, setError] = React.useState(false);
+    const [queueEmpty, setQueueEmpty] = React.useState(false);
+    const [card] = useContext(CardContext);
+    const [latestCount, setLatestCount] = useContext(LatestCountContext);
+
+    const [snackBar, setSnackBar] = React.useState();
+    const [snackBarVariant, setSnackBarVariant] = React.useState();
+    const [snackBarMessage, setSnackBarMessage] = React.useState();
+    const showSnackBar = () => {
+        setSnackBar(true);
     };
 
+    const hideSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
 
+        setSnackBar(false);
+    };
 
-    const StyledTableRow = withStyles(theme => ({
-        root: {
-            '&:nth-of-type(odd)': {
-                backgroundColor: theme.palette.background.default,
-            },
+    function unSelect() {
+        setSelected([]);
+    }
+    function stableSort(array, cmp) {
 
-        },
-    }))(TableRow);
-    const StyledTableCell = withStyles(theme => ({
-        head: {
-            //backgroundColor: theme.palette.common.black,
-            //color: theme.palette.common.white,
-
-            color: 'rgb(120,120,120)'
-        },
-        body: {
-            fontSize: 14,
-            fontWeight: "550",
-            color: 'rgb(76,76,76)',
-            height: '2%',
-        },
-    }))(TableCell);
-    const StyledTableHeadCell = withStyles(theme => ({
-        head: {
-            backgroundColor: theme.palette.common.black,
-            color: theme.palette.common.white,
-        },
-        body: {
-            color: 'rgb(150,150,150)'
-        },
-    }))(TableCell);
-    const ColoredTableCell = withStyles(theme => ({
-        head: {
-            backgroundColor: theme.palette.common.black,
-            color: theme.palette.common.white,
-        },
-        body: {
-            fontSize: 14,
-            fontWeight: "550",
-            color: "rgb(128,177,232)",
-            cursor: 'pointer',
-        },
-    }))(TableCell);
-    const useStyles = makeStyles(theme => ({
-        root: {
-            width: '100%',
-            paddingTop: '1%',
-            overflowX: 'auto',
-        },
-        table: {
-            minWidth: 650,
-        },
-
-        tableWrapper: {
-            overflowX: 'auto',
-        },
-        button: {
-            margin: theme.spacing(1),
-        },
-    }));
-
-    function createData(name, mobile, emailId, submittedDate, offer, status, action) {
-
-
-        console.log({
-            name, mobile, emailId, submittedDate, offer, status, action
-        })
-        return {
-            name, mobile, emailId, submittedDate, offer, status, action
-        };
+        const stabilizedThis = array.map((el, index) => [el, index]);
+        stabilizedThis.sort((a, b) => {
+            const order = cmp(a[0], b[0]);
+            if (order !== 0) return order;
+            return a[1] - b[1];
+        });
+        return stabilizedThis.map(el => el[0]);
     }
 
+    async function bulkApprove() {
+        var settings = {
+            "crossDomain": true,
+            "url": api.HOST + "approve",
+        }
 
+        await fetch(settings.url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "token": localStorage.getItem('token'),
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({ LoanApps: selected })
+        }).then(res => res.json()
+        ).then(res => {
+            setLatestCount(!latestCount);
 
+        });
+        unSelect();
+    }
 
-    const classes = useStyles();
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    function cardParse(card) {
+        if (card[0]) {
+            return state.PENDING;
+        }
+        else if (card[1]) {
+            return state.REWORK;
+        }
 
-    const [rows, setRows] = React.useState([]);
-    const [fetching, setisfetching] = React.useState(false);
+        else if (card[2]) {
+
+            return state.APPROVED;
+        }
+        else if (card[3]) {
+
+            return state.REJECTED;
+        }
+
+        else if (card[4]) {
+            return state.ALL;
+        }
+    }
+
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                // if (localStorage.getItem('token') == null) {
-                //     window.location.href = '/';
-                // } else {
-                setRows(rows);
-                setisfetching(true);
-                // const response = await axios.get(USER_SERVICE_URL);
+                setIsFetching(true);
+                setError(false);
+                setPage(0);
                 var settings = {
-                    "url": "http://lstaging2.whizdm.com/loans/services/api/clix/portal/getAllLoanApplication?status=disbursed",
+                    "mode": "no-cors",
+                    "url": api.HOST + "getAllLoanApplication?status=" + cardParse(card),
                     "method": "GET",
                     "headers": {
                         "Content-Type": "application/x-www-form-urlencoded",
                         "token": localStorage.getItem('token')
                     }
                 }
-                fetch(settings.url, {
+                await fetch(settings.url, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded",
                         "token": localStorage.getItem('token')
                     }
+
                 }).then(res => res.json()
                 ).then(res => {
-                    console.log('tableview through fetch', res);
-                    setRows(res);
-                    setisfetching(false);
-                });
+                    if (JSON.stringify(res) === "Either token is invalid or token expired") {
+                        console.log("Either token is invalid or token expired");
+                        setSnackBarMessage("Session has expired , Sign in again");
+                        setSnackBarVariant("info");
+                        showSnackBar();
+                        localStorage.clear();
+                        setTimeout(history.push('/'), 2000);
+                    } else if (JSON.stringify(res) === "Application queue is empty") {
+                        console.log("Application queue is empty");
+                        setQueueEmpty(true);
+                    } else if (JSON.stringify(res) === "Exception occurred") {
+                        console.log("Exception occurred");
+                        setError(true);
+                    } else {
+                        setRows(JSON.parse(res.data));
 
-
-                // $.ajax(settings).done(function (response) {
-                //     console.log('first');
-                //     console.log(response);
-                //     setRows(JSON.parse(response));
-                //     setisfetching(false);
-                // });
-                // console.log("token in local storage " + localStorage.getItem('token'));
-                //}
+                    }
+                }
+                )
 
             } catch (e) {
                 console.log(e);
-                setRows(rows);
-                setisfetching(false);
+                setError(true);
             }
+            setIsFetching(false);
         };
         fetchUsers();
-    }, []);
+        // setQueueEmpty(true);
+    }, [card, latestCount]);
 
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+    const handleRequestSort = (event, property) => {
+
+        const isDesc = orderBy === property && order === 'desc';
+        setOrder(isDesc ? 'asc' : 'desc');
+        setOrderBy(property);
+    };
+
+    const handleSelectAllClick = event => {
+        if (event.target.checked) {
+            const newSelecteds = rows.map(n => n.loanApplicationNo);
+            setSelected(newSelecteds);
+            return;
+        }
+        setSelected([]);
+    };
+
+
+
+    // const handleClick = (event, loanApplicationNo, mvStatus) => {
+
+    //     if (mvStatus === state.PENDING || mvStatus === state.RE_SUBMITTED) {
+    //         const selectedIndex = selected.indexOf(loanApplicationNo);
+    //         let newSelected = [];
+
+    //         if (selectedIndex === -1) {
+    //             newSelected = newSelected.concat(selected, loanApplicationNo);
+    //         } else if (selectedIndex === 0) {
+    //             newSelected = newSelected.concat(selected.slice(1));
+    //         } else if (selectedIndex === selected.length - 1) {
+    //             newSelected = newSelected.concat(selected.slice(0, -1));
+    //         } else if (selectedIndex > 0) {
+    //             newSelected = newSelected.concat(
+    //                 selected.slice(0, selectedIndex),
+    //                 selected.slice(selectedIndex + 1),
+    //             );
+    //         }
+    //         setSelected(newSelected);
+    //     }
+    //     console.log("selected " + selected);
+    // };
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -247,84 +278,210 @@ const TableView = () => {
         setPage(0);
     };
 
-    function viewProfile(event) {
-        console.log(event.target.id);
-        var loanApplicationNumber = event.target.id;
-        localStorage.setItem('appNumber', event.target.id);
-        history.push({
-            pathname: '/userprofile',
-            //data: { loanApplicationNumber: loanApplicationNumber } // your data array of objects
-        });
-        // window.location.href = '/userprofile';
-    }
-
+    const isSelected = loanApplicationNo => selected.indexOf(loanApplicationNo) !== -1;
     return (
-        <div>
-            <Paper className={classes.root}>
-                <div className={classes.tableWrapper}>
-                    <Table className={classes.table} aria-label="custom pagination table">
-                        <TableHead>
-                            <TableRow>
-                                <StyledTableCell align="left" style
-                                    ={{ paddingLeft: '5.4%' }}>Name </StyledTableCell>
-                                <StyledTableCell align="left">Mobile</StyledTableCell>
-                                <StyledTableCell align="left" fontWeight="bold">Email ID</StyledTableCell>
-                                <StyledTableCell align="left">Submitted On</StyledTableCell>
-                                <StyledTableCell align="left">Offer</StyledTableCell>
-                                <StyledTableCell align="left">Status</StyledTableCell>
-                                <StyledTableCell align="left">Action</StyledTableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {(rowsPerPage > 0
-                                ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                : rows
+        <div className={classes.root}>
+            <EnhancedTableToolbar numSelected={selected.length} bulkApprove={bulkApprove} />
+            {(error) ? (<TableServerError reload={reloadTable} />) : ((queueEmpty) ? (
+                <Typography style={{
+                    width: '370px',
+                    height: '30px',
+                    fontSize: '22px',
+                    fontWeight: '600',
+                    letterSpacing: '0.25px',
+                    textAlign: 'center',
+                    color: '#9096ba',
+                    paddingTop: '15%',
+                    paddingLeft: '40%'
+                }}>
+                    No Pending Applications in Queue
+                </Typography>
+            ) :
+                ((isFetching) ? (<Spinner />) : (
+                    <Paper className={classes.paper}>
 
-                            ).map(row => (
-                                <StyledTableRow key={row.id}>
-                                    <StyledTableCell component="th" align="left" scope="row">
-                                        <div style={{ float: 'left' }}></div>
-                                        <div style={{ paddingTop: '0.5rem', paddingLeft: '5rem' }}>{row.name}</div>
-                                    </StyledTableCell>
-                                    <StyledTableCell align="left">{row.kycContactMobile}</StyledTableCell>
-                                    <StyledTableCell align="left">{row.kycEmailId}</StyledTableCell>
-                                    <StyledTableCell align="left">{row.submissionDate}</StyledTableCell>
-                                    <StyledTableCell align="left">{row.loanAmount}</StyledTableCell>
-                                    <ColoredTableCell align="left">{row.userDataReviewStatus}</ColoredTableCell>
-                                    <ColoredTableCell id={row.loanApplicationNumber} onClick={viewProfile} align="left">VIEW</ColoredTableCell>
-                                </StyledTableRow>
-                            ))}
-                            {emptyRows > 0 && (
-                                <TableRow style={{ height: 53 * emptyRows }}>
-                                    <TableCell colSpan={6} />
-                                </TableRow>
-                            )}
-                        </TableBody>
-                        <TableFooter>
-                            <TableRow >
-                                <TablePagination
-
-                                    rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                                    colSpan={3}
-                                    count={rows.length}
-                                    rowsPerPage={rowsPerPage}
-                                    page={page}
-                                    SelectProps={{
-                                        inputProps: { 'aria-label': 'rows per page' },
-                                        native: true,
-                                    }}
-                                    onChangePage={handleChangePage}
-                                    onChangeRowsPerPage={handleChangeRowsPerPage}
-                                    ActionsComponent={TablePaginationActions}
+                        <div className={classes.tableWrapper}>
+                            <Table
+                                className={classes.table}
+                                aria-labelledby="tableTitle"
+                                aria-label="enhanced table"
+                            >
+                                <EnhancedTableHead
+                                    classes={classes}
+                                    numSelected={selected.length}
+                                    order={order}
+                                    orderBy={orderBy}
+                                    onSelectAllClick={handleSelectAllClick}
+                                    onRequestSort={handleRequestSort}
+                                    rowCount={rows.length}
                                 />
-                            </TableRow>
-                        </TableFooter>
-                    </Table>
-                </div>
-            </Paper>
+                                <TableBody>
+                                    {stableSort(rows, getSorting(order, orderBy))
+                                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                        .map((row, index) => {
+                                            const isItemSelected = isSelected(row.loanApplicationNo);
+                                            const labelId = `enhanced-table-checkbox-${index}`;
+
+                                            return (
+                                                <StyledTableRow
+                                                    hover
+                                                    // onClick={event => handleClick(event, row.loanApplicationNo, row.mvStatus)}
+                                                    role="checkbox"
+                                                    aria-checked={isItemSelected}
+                                                    tabIndex={-1}
+                                                    key={row.loanApplicationNo}
+                                                    selected={isItemSelected}
+                                                >
+                                                    {
+                                                        (card[0] || card[4]) ? (
+                                                            <TableCell padding="checkbox">
+                                                                <Checkbox
+                                                                    checked={isItemSelected}
+                                                                    inputProps={{ 'aria-labelledby': labelId }}
+                                                                />
+                                                            </TableCell>) : null
+
+                                                    }
+                                                    {
+                                                        (!card[4]) ? (
+                                                            <TableCell component="th" id={labelId} scope="row" align="left" style={{ display: 'flex' }}>
+                                                                <TimeAgo date={statusToDate(row)} formatter={formatter}></TimeAgo>
+                                                                {
+                                                                    (statusToDate(row)) ?
+                                                                        ("s ago") :
+                                                                        ("--")
+                                                                }
+                                                                {
+                                                                    (row.mvStatus === state.RE_SUBMITTED) ? (
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" >
+                                                                            <path fill="#FF8256" fillRule="nonzero" d="M21 15.875L17.625 12.5v2.25H7.5c-1.24 0-2.25-1.01-2.25-2.25s1.01-2.25 2.25-2.25h7.875V8H7.5A4.505 4.505 0 0 0 3 12.5C3 14.981 5.019 17 7.5 17h10.125v2.25L21 15.875z" />
+                                                                        </svg>
+
+                                                                    ) : (null)
+                                                                }
+                                                            </TableCell>
+                                                        ) : (
+                                                                <TableCell component="th" id={labelId} scope="row" align="left" style={{ display: 'flex' }}>
+                                                                    <TimeAgo date={row.updatedDate} formatter={formatter}></TimeAgo>
+                                                                    {
+                                                                        (row.updatedDate) ?
+                                                                            ("s ago") :
+                                                                            ("--")
+                                                                    }
+                                                                    {
+                                                                        (row.mvStatus === state.RE_SUBMITTED) ? (
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                                                                <path fill="#FF8256" fillRule="nonzero" d="M21 15.875L17.625 12.5v2.25H7.5c-1.24 0-2.25-1.01-2.25-2.25s1.01-2.25 2.25-2.25h7.875V8H7.5A4.505 4.505 0 0 0 3 12.5C3 14.981 5.019 17 7.5 17h10.125v2.25L21 15.875z" />
+                                                                            </svg>
+
+                                                                        ) : (null)
+                                                                    }
+
+                                                                </TableCell>
+                                                            )
+                                                    }
+
+                                                    <TableCell align="left">{row.loanApplicationNo}</TableCell>
+                                                    <TableCell align="left">{row.name}</TableCell>
+                                                    {
+                                                        (!card[4]) ? (<TableCell align="left">{row.mobileNumber}</TableCell>) : (null)
+                                                    }
+
+                                                    <TableCell align="left">{'₹' + numberWithCommas(row.loanAmount)}</TableCell>
+                                                    {
+                                                        (card[0] || card[4]) ? (
+
+                                                            (row.lockedBy && row.lockedBy !== localStorage.getItem('agentName')) ?
+                                                                (
+                                                                    <React.Fragment>
+                                                                        <TableCell align="left" style={{ display: 'flex' }}>
+                                                                            {/* <img src={lockImage} alt="lock image" style={{ paddingRight: '0.5rem' }} /> */}
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style={{ paddingRight: '0.5rem' }}>
+                                                                                <g fill="#EC7474" fillRule="nonzero">
+                                                                                    <path d="M6 20h12V10H6v10zm6-7c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z" opacity=".3" />
+                                                                                    <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" />
+                                                                                </g>
+                                                                            </svg>
+
+                                                                            <Typography style={{ paddingTop: '0.4rem' }}>Locked</Typography>
+                                                                        </TableCell>
+                                                                        <TableCell align="left">
+                                                                            <Typography>{row.lockedBy}</Typography>
+                                                                        </TableCell>
+                                                                    </React.Fragment>
+                                                                )
+                                                                : (<React.Fragment>
+                                                                    <TableCell align="left" style={{ display: 'flex' }}>
+                                                                        {/* <img src={lockOpenImage} alt="lock open image" style={{ paddingRight: '0.5rem' }} /> */}
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style={{ paddingRight: '0.5rem' }}>
+                                                                            <g fill="none" fillRule="nonzero">
+                                                                                <path fill="#FFF" d="M6 20h12V10H6v10zm6-7c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z" />
+                                                                                <path fill="#6FB934" d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h2c0-1.66 1.34-3 3-3s3 1.34 3 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" />
+                                                                                <path d="M0 0h24v24H0z" />
+                                                                            </g>
+                                                                        </svg>
+
+                                                                        <Typography style={{ paddingTop: '0.4rem' }}>Available</Typography>
+                                                                    </TableCell>
+                                                                    <TableCell align="left">---</TableCell>
+                                                                </React.Fragment>)
+
+                                                        ) : (null)
+
+                                                    }
+                                                    {/* {
+                                                    (card[0]) ? (
+
+                                                        (row.agentName) ? (<TableCell align="left">{row.agentName}</TableCell>)
+                                                            : (<TableCell align="left">---</TableCell>)
+
+                                                    ) : (null)
+
+                                                } */}
+                                                    {
+                                                        (card[3]) ? (<TableCell align="left">{row.rejectReason}</TableCell>) : (null)
+
+                                                    }
+                                                    {
+                                                        (card[4]) ? (<TableCell align="left">
+                                                            <ApplicationState state={row.mvStatus} />
+                                                        </TableCell>) : (null)
+                                                    }
+                                                    {
+                                                        (row.lockedBy && row.lockedBy !== localStorage.getItem('agentName')) ?
+                                                            (<TableCell className={classes.profileLocked} align="left" style={{ cursor: 'pointer' }}>
+                                                                {(row.mvStatus === state.PENDING || row.mvStatus === state.RE_SUBMITTED) ? ("Verify") : ("View")}
+                                                            </TableCell>) :
+                                                            (<TableCell className={classes.profileView} align="left" id={row.loanApplicationNo} style={{ cursor: 'pointer' }} onClick={navLoanDetails}>
+                                                                {(row.mvStatus === state.PENDING || row.mvStatus === state.RE_SUBMITTED) ? ("Verify") : ("View")}
+                                                            </TableCell>
+
+                                                            )
+
+                                                    }
+                                                </StyledTableRow>
+                                            );
+                                        })}
+                                </TableBody>
+                            </Table>
+                        </div>
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 25]}
+                            component="div"
+                            count={rows.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            backIconButtonProps={{
+                                'aria-label': 'previous page',
+                            }}
+                            nextIconButtonProps={{
+                                'aria-label': 'next page',
+                            }}
+                            onChangePage={handleChangePage}
+                            onChangeRowsPerPage={handleChangeRowsPerPage}
+                        />
+                    </Paper>)))}
+            <SnackBar message={snackBarMessage} variant={snackBarVariant} snackBar={snackBar} showSnackBar={showSnackBar} hideSnackBar={hideSnackBar} />
         </div>
     );
 }
-
-
-export default TableView;
