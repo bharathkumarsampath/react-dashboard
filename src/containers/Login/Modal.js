@@ -4,7 +4,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import TextField from '@material-ui/core/TextField'
 import { useModal } from 'react-modal-hook';
-import { ModalButton } from '../../components/LoansHeader/LoansHeaderStyles'
+import Button from '@material-ui/core/Button';
 import { api } from '../../globals'
 import SnackBar from '../../components/Snackbar/SnackBar'
 
@@ -89,14 +89,14 @@ const Modal = (props) => {
 
 
                 <div>
-                    <ModalButton onClick={resetPassword} variant="contained" color="primary" disableRipple style={{ width: '60%', marginTop: '5%' }}>
+                    <Button onClick={resetPassword} variant="contained" color="primary" disableRipple style={{ width: '60%', marginTop: '5%' }}>
                         RESET PASSWORD
-                    </ModalButton>
+                    </Button>
                 </div>
                 <div>
-                    <ModalButton onClick={hideModal} variant="contained" color="primary" disableRipple style={{ width: '60%', marginTop: '5%', marginBottom: '5%' }}>
+                    <Button onClick={hideModal} variant="contained" color="primary" disableRipple style={{ width: '60%', marginTop: '5%', marginBottom: '5%' }}>
                         BACK TO LOGIN PAGE
-                    </ModalButton>
+                    </Button>
                 </div>
 
 
