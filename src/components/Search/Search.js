@@ -8,7 +8,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
 import ApplicationState from '../ApplicationState/ApplicationState'
 import { api } from '../../globals'
-
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const search = () => {
-
+    let history = useHistory();
 
     const classes = useStyles();
     const [searchTerm, setSearchTerm] = React.useState("");
@@ -29,6 +29,11 @@ const search = () => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [popupMessage, setPopupMessage] = React.useState("Enter Application ID and click on search or press enter");
 
+    function searchLoanApp() {
+        localStorage.setItem('loanAppNo', loanApp.loanApplicationNo);
+        history.push('/userprofile');
+
+    }
 
     const handleClick = event => {
         setPopupMessage(<div style={{ padding: '3% 90% 3% 3%', display: 'flex' }}>
@@ -61,7 +66,6 @@ const search = () => {
 
             }).then(res => res.json()
             ).then(res => {
-                // console.log("search response " + res);
                 if (res) {
                     setLoanApp(res);
                     setPopupMessage(
@@ -115,15 +119,8 @@ const search = () => {
                     horizontal: 'right',
                 }}
             >
-                <div >
-                    <Link style={{ textDecoration: 'none' }} to={{
-                        pathname: '/userprofile',
-                        state: {
-                            LoanApp: loanApp
-                        }
-                    }}>
-                        {popupMessage}
-                    </Link>
+                <div onClick={searchLoanApp} style={{ cursor: 'pointer' }}>
+                    {popupMessage}
                 </div>
             </Popover>
             <input type="text" onChange={e => { setSearchTerm(e.target.value); if (e.target.length === 12) { handleClick(); } }} className="searchTerm" placeholder="Search by Loan Application Number" />

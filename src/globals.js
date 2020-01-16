@@ -47,7 +47,7 @@ export const table = {
 };
 
 export const api = {
-    HOST: "http://localhost:8080/services/api/clix/portal/"
+    HOST: "http://10.60.1.223:8080/services/api/clix/portal/"
 };
 
 export const state = {
