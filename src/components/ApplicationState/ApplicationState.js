@@ -18,7 +18,7 @@ export default function ApplicationState(props) {
                 setStateText("Re-submitted");
                 break;
             }
-            case state.REWORK: {
+            case state.RE_WORK: {
                 setStateColor("#f1d8d8");
                 setStateText("Re-work");
                 break;

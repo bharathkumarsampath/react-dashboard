@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import Toolbar from '../../components/Toolbar/Toolbar'
-import { ReloadAppContext } from '../../containers/Userprofile/Userprofile'
+import { ReloadAppContext } from '../../containers/LoanDetail/LoanDetail'
 const LoanDetailPageError = (props) => {
     const [reload, setReload] = React.useContext(ReloadAppContext);
 
@@ -22,7 +22,7 @@ const LoanDetailPageError = (props) => {
                     letterSpacing: '0.25px',
                     textAlign: 'center',
                     color: '#9096ba',
-                    paddingLeft: '23rem',
+                    paddingLeft: '27vw',
                     fontSize: '22px',
                     fontWeight: '600',
                     paddingTop: '0.6rem'
@@ -36,7 +36,7 @@ const LoanDetailPageError = (props) => {
                     textAlign: 'center',
                     color: '#9096ba',
                     fontSize: '14px',
-                    paddingLeft: '21rem',
+                    paddingLeft: '24vw',
                     paddingTop: '0.6rem'
                 }}>
                     An error occured while loading page. Try Reloading the page again

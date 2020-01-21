@@ -50,7 +50,7 @@ const toolbar = () => {
                     {/* <img src={clixLogo} width={220} height={50} alt="clix logo" /> */}
                 </div>
                 <Search />
-                <div onClick={handleClick} style={{ fontSize: '35', paddingTop: '1%', paddingLeft: '2%' }}>
+                <div onClick={handleClick} style={{ fontSize: '35', paddingTop: '1%', paddingLeft: '2%', cursor: 'pointer' }}>
                     <Account color="disabled" fontSize="large" />
                 </div>
             </div>

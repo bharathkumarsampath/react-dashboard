@@ -47,12 +47,12 @@ export const table = {
 };
 
 export const api = {
-    HOST: "http://10.60.1.223:8080/services/api/clix/portal/"
+    HOST: "http://localhost:8080/services/api/clix/portal/"
 };
 
 export const state = {
     PENDING: "PENDING",
-    REWORK: "REWORK",
+    RE_WORK: "RE_WORK",
     APPROVED: "APPROVED",
     SYSTEM_APPROVED: "SYSTEM_APPROVED",
     RE_SUBMITTED: "RE_SUBMITTED",
@@ -66,3 +66,23 @@ export const lockStatus = {
     AVAILABLE: "Available"
 
 };
+
+export const session = {
+    time_out: 300000,
+};
+
+export const routes = {
+    HOME: '/',
+    DASHBOARD: '/dashboard',
+    LOANDETAIL: '/loan',
+};
+
+export const cards = {
+
+    PENDING: 0,
+    RE_WORK: 1,
+    APPROVED: 2,
+    REJECTED_OR_CANCELLED: 3,
+    ALL: 4
+}
+

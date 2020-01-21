@@ -14,7 +14,7 @@ import { LoanAppContext } from '../../containers/Dashboard/Dashboard'
 import TimeAgo from 'react-timeago'
 import buildFormatter from 'react-timeago/lib/formatters/buildFormatter'
 import Typography from '@material-ui/core/Typography';
-import { api, state } from '../../globals'
+import { api, state, routes, cards } from '../../globals'
 import { useHistory } from "react-router-dom"
 import ApplicationState from '../ApplicationState/ApplicationState'
 import TableServerError from '../TableServerError/TableServerError'
@@ -54,7 +54,7 @@ export default function TableView() {
     let history = useHistory();
     function navLoanDetails(event) {
         localStorage.setItem('loanAppNo', event.target.id)
-        history.push('/userprofile');
+        history.push(routes.LOANDETAIL + '/' + event.target.id);
     }
     function numberWithCommas(x) {
         x = x.toString();
@@ -70,7 +70,7 @@ export default function TableView() {
                 return row.submissionDate;
             case state.RE_SUBMITTED:
                 return row.submissionDate;
-            case state.REWORK:
+            case state.RE_WORK:
                 return row.reworkDate;
             case state.APPROVED:
                 return row.approvedDate;
@@ -93,6 +93,7 @@ export default function TableView() {
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [selectAll, setSelectAll] = React.useState(false);
 
     const [rows, setRows] = React.useContext(LoanAppContext);
     const [isFetching, setIsFetching] = React.useState(false);
@@ -153,23 +154,23 @@ export default function TableView() {
     }
 
     function cardParse(card) {
-        if (card[0]) {
+        if (card[cards.PENDING]) {
             return state.PENDING;
         }
-        else if (card[1]) {
-            return state.REWORK;
+        else if (card[cards.RE_WORK]) {
+            return state.RE_WORK;
         }
 
-        else if (card[2]) {
+        else if (card[cards.APPROVED]) {
 
             return state.APPROVED;
         }
-        else if (card[3]) {
+        else if (card[cards.REJECTED_OR_CANCELLED]) {
 
             return state.REJECTED;
         }
 
-        else if (card[4]) {
+        else if (card[cards.ALL]) {
             return state.ALL;
         }
     }
@@ -179,7 +180,9 @@ export default function TableView() {
             try {
                 setIsFetching(true);
                 setError(false);
+                setQueueEmpty(false);
                 setPage(0);
+                setSelected([]);
                 var settings = {
                     "mode": "no-cors",
                     "url": api.HOST + "getAllLoanApplication?status=" + cardParse(card),
@@ -205,10 +208,10 @@ export default function TableView() {
                         showSnackBar();
                         localStorage.clear();
                         setTimeout(history.push('/'), 2000);
-                    } else if (JSON.stringify(res) === "Application queue is empty") {
+                    } else if (res.response === "Application queue is empty") {
                         console.log("Application queue is empty");
                         setQueueEmpty(true);
-                    } else if (JSON.stringify(res) === "Exception occurred") {
+                    } else if (res.response === "Exception occurred") {
                         console.log("Exception occurred");
                         setError(true);
                     } else {
@@ -236,38 +239,42 @@ export default function TableView() {
     };
 
     const handleSelectAllClick = event => {
-        if (event.target.checked) {
-            const newSelecteds = rows.map(n => n.loanApplicationNo);
+        if (!selectAll) {
+            const newSelecteds = rows.slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage).map(n => n.loanApplicationNo);
+            setSelectAll(!selectAll);
             setSelected(newSelecteds);
+            // console.log("length : ", selected.length, "content : ", selected);
             return;
         }
         setSelected([]);
+        setSelectAll(!selectAll);
+        // console.log("length : ", selected.length, "content : ", selected);
     };
 
 
 
-    // const handleClick = (event, loanApplicationNo, mvStatus) => {
+    const handleClick = (event, loanApplicationNo, mvStatus) => {
 
-    //     if (mvStatus === state.PENDING || mvStatus === state.RE_SUBMITTED) {
-    //         const selectedIndex = selected.indexOf(loanApplicationNo);
-    //         let newSelected = [];
+        if (mvStatus === state.PENDING || mvStatus === state.RE_SUBMITTED) {
+            const selectedIndex = selected.indexOf(loanApplicationNo);
+            let newSelected = [];
 
-    //         if (selectedIndex === -1) {
-    //             newSelected = newSelected.concat(selected, loanApplicationNo);
-    //         } else if (selectedIndex === 0) {
-    //             newSelected = newSelected.concat(selected.slice(1));
-    //         } else if (selectedIndex === selected.length - 1) {
-    //             newSelected = newSelected.concat(selected.slice(0, -1));
-    //         } else if (selectedIndex > 0) {
-    //             newSelected = newSelected.concat(
-    //                 selected.slice(0, selectedIndex),
-    //                 selected.slice(selectedIndex + 1),
-    //             );
-    //         }
-    //         setSelected(newSelected);
-    //     }
-    //     console.log("selected " + selected);
-    // };
+            if (selectedIndex === -1) {
+                newSelected = newSelected.concat(selected, loanApplicationNo);
+            } else if (selectedIndex === 0) {
+                newSelected = newSelected.concat(selected.slice(1));
+            } else if (selectedIndex === selected.length - 1) {
+                newSelected = newSelected.concat(selected.slice(0, -1));
+            } else if (selectedIndex > 0) {
+                newSelected = newSelected.concat(
+                    selected.slice(0, selectedIndex),
+                    selected.slice(selectedIndex + 1),
+                );
+            }
+            setSelected(newSelected);
+        }
+        // console.log("selected " + selected);
+    };
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -291,8 +298,8 @@ export default function TableView() {
                     letterSpacing: '0.25px',
                     textAlign: 'center',
                     color: '#9096ba',
-                    paddingTop: '15%',
-                    paddingLeft: '40%'
+                    paddingTop: '20vh',
+                    paddingLeft: '40vw'
                 }}>
                     No Pending Applications in Queue
                 </Typography>
@@ -325,7 +332,7 @@ export default function TableView() {
                                             return (
                                                 <StyledTableRow
                                                     hover
-                                                    // onClick={event => handleClick(event, row.loanApplicationNo, row.mvStatus)}
+                                                    onClick={event => handleClick(event, row.loanApplicationNo, row.mvStatus)}
                                                     role="checkbox"
                                                     aria-checked={isItemSelected}
                                                     tabIndex={-1}
@@ -333,7 +340,7 @@ export default function TableView() {
                                                     selected={isItemSelected}
                                                 >
                                                     {
-                                                        (card[0] || card[4]) ? (
+                                                        (card[cards.PENDING] || card[cards.ALL]) ? (
                                                             <TableCell padding="checkbox">
                                                                 <Checkbox
                                                                     checked={isItemSelected}
@@ -343,7 +350,7 @@ export default function TableView() {
 
                                                     }
                                                     {
-                                                        (!card[4]) ? (
+                                                        (!card[cards.ALL]) ? (
                                                             <TableCell component="th" id={labelId} scope="row" align="left" style={{ display: 'flex' }}>
                                                                 <TimeAgo date={statusToDate(row)} formatter={formatter}></TimeAgo>
                                                                 {
@@ -384,12 +391,12 @@ export default function TableView() {
                                                     <TableCell align="left">{row.loanApplicationNo}</TableCell>
                                                     <TableCell align="left">{row.name}</TableCell>
                                                     {
-                                                        (!card[4]) ? (<TableCell align="left">{row.mobileNumber}</TableCell>) : (null)
+                                                        (!card[cards.ALL]) ? (<TableCell align="left">{row.mobileNumber}</TableCell>) : (null)
                                                     }
 
                                                     <TableCell align="left">{'₹' + numberWithCommas(row.loanAmount)}</TableCell>
                                                     {
-                                                        (card[0] || card[4]) ? (
+                                                        (card[cards.PENDING] || card[cards.ALL]) ? (
 
                                                             (row.lockedBy && row.lockedBy !== localStorage.getItem('agentName')) ?
                                                                 (
@@ -443,7 +450,7 @@ export default function TableView() {
 
                                                     }
                                                     {
-                                                        (card[4]) ? (<TableCell align="left">
+                                                        (card[cards.ALL]) ? (<TableCell align="left">
                                                             <ApplicationState state={row.mvStatus} />
                                                         </TableCell>) : (null)
                                                     }

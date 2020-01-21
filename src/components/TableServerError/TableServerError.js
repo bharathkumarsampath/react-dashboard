@@ -13,7 +13,7 @@ const TableServerError = (props) => {
                 letterSpacing: '0.25px',
                 textAlign: 'center',
                 color: '#9096ba',
-                paddingLeft: '21rem',
+                paddingLeft: '23vw',
                 fontSize: '22px',
                 fontWeight: '600'
             }}>
@@ -26,7 +26,7 @@ const TableServerError = (props) => {
                 textAlign: 'center',
                 color: '#9096ba',
                 fontSize: '14px',
-                paddingLeft: '32rem'
+                paddingLeft: '35vw'
             }}>
                 Please try again
             </Typography>

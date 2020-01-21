@@ -43,7 +43,7 @@ export default function ControlledExpansionPanels(props) {
                     <Typography className={classes.heading}>User Profile</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                    <LoanDetails LoanApp={props.LoanApp} />
+                    <LoanDetails LoanApp={props.LoanApp} selfieUrl={props.selfieUrl} />
                 </ExpansionPanelDetails>
             </ExpansionPanel>
             <ExpansionPanel expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
