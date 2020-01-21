@@ -19,7 +19,7 @@ const TransitionsModal = forwardRef((props, ref) => {
 
     const handleCloseAndApprove = () => {
         setOpen(false);
-        props.bulkApprove();
+        // props.bulkApprove();
     };
 
     const handleClose = () => {
@@ -44,11 +44,11 @@ const TransitionsModal = forwardRef((props, ref) => {
                     <div className={classes.paper}>
                         {/* <h5 id="transition-modal-description">Are you sure you want to approve the selected applications</h5> */}
                         <Typography variant="h5" gutterBottom>
-                            Are you sure you want to approve the selected applications
+                            Are you sure you want to lock the selected applications
                         </Typography>
                         <div className={classes.displayFlex}>
                             <Button className="buttonPrimary" text="CANCEL" onClick={handleClose}></Button>
-                            <Button className="buttonPrimary" text="APPROVE" onClick={handleCloseAndApprove}></Button>
+                            <Button className="buttonPrimary" text="LOCK" onClick={handleCloseAndApprove}></Button>
                         </div>
                     </div>
                 </Fade>

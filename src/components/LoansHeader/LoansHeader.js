@@ -3,8 +3,8 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Typography from '@material-ui/core/Typography';
 import { useHistory } from "react-router-dom";
 import ReworkModal from './ReworkModal'
-import ViewReason from './ViewReason'
-import { state } from '../../globals'
+import ViewReason from '../LoansHeader/Popover'
+import { state, routes } from '../../globals'
 import SnackBar from '../Snackbar/SnackBar'
 import ApplicationState from '../ApplicationState/ApplicationState'
 import { unLockApp } from '../../utils'
@@ -28,7 +28,7 @@ const LoansHeader = (props) => {
     };
     function unlockAndNavBack() {
         unLockApp();
-        history.push('/dashboard');
+        history.push(routes.DASHBOARD);
     }
     return (
         <div className="displayFlex" style={{ marginTop: '0.2rem', backgroundColor: 'white', justifyContent: "space-between", paddingLeft: '2%' }}>
@@ -47,8 +47,13 @@ const LoansHeader = (props) => {
                     <ApplicationState state={props.LoanApp.mvStatus} />
                 </div>
                 <div style={{ color: 'rgb(92,154,224)', cursor: 'pointer', marginLeft: '2%', marginTop: '1.3%', width: '10vw' }}>
+                    {/* {
+                        (props.LoanApp.mvStatus === state.RE_WORK) ?
+                            (<ViewReason reason={props.LoanApp.reworkReason} date={props.LoanApp.reworkDate} />) : (null)
+
+                    } */}
                     {
-                        (props.LoanApp.mvStatus === state.REWORK) ?
+                        (props.LoanApp.mvStatus === state.RE_WORK) ?
                             (<ViewReason reason={props.LoanApp.reworkReason} date={props.LoanApp.reworkDate} />) : (null)
 
                     }
@@ -65,7 +70,7 @@ const LoansHeader = (props) => {
                         (null)
                 }
                 {
-                    (props.LoanApp.mvStatus === state.REWORK) ?
+                    (props.LoanApp.mvStatus === state.RE_WORK) ?
                         (
                             <Typography>Rework Date : {props.LoanApp.reworkDate}</Typography>
                         ) :

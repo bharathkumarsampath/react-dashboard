@@ -6,9 +6,10 @@ import Popover from '@material-ui/core/Popover';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
 import ApplicationState from '../ApplicationState/ApplicationState'
-import { api } from '../../globals'
+import { api, routes } from '../../globals'
 import { useHistory } from "react-router-dom";
-
+import { ReloadAppContext } from '../../containers/LoanDetail/LoanDetail'
+import { unLockApp } from '../../utils';
 const useStyles = makeStyles(theme => ({
     root: {
         display: 'flex',
@@ -28,10 +29,27 @@ const search = () => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [popupMessage, setPopupMessage] = React.useState("Enter Application ID and click on search or press enter");
 
-    function searchLoanApp() {
-        localStorage.setItem('loanAppNo', loanApp.loanApplicationNo);
-        history.push('/userprofile');
+    const [reload, setReload] = React.useContext(ReloadAppContext);
 
+    function searchLoanApp() {
+        if (loanApp.loanApplicationNo) {
+            if (window.location.pathname.includes(routes.LOANDETAIL)) {
+                // console.log("in loan detail ", window.location.pathname);
+                unLockApp();
+                history.push(routes.LOANDETAIL + '/' + loanApp.loanApplicationNo);
+                localStorage.setItem('loanAppNo', loanApp.loanApplicationNo);
+                setReload(!reload);
+            } else {
+                // console.log("not in  loan detail ", window.location.pathname);
+                localStorage.setItem('loanAppNo', loanApp.loanApplicationNo);
+                history.push(routes.LOANDETAIL + '/' + loanApp.loanApplicationNo);
+            }
+        }
+    }
+    function keyPress(e) {
+        if (e.key === 'Enter') {
+            handleClick(e);
+        }
     }
 
     const handleClick = event => {
@@ -68,14 +86,14 @@ const search = () => {
                 if (res) {
                     setLoanApp(res);
                     setPopupMessage(
-                        <div style={{ padding: '3% 3% 3% 3%', display: 'flex', color: '#000000' }}>
+                        <div style={{ padding: '3% 3% 3% 3%', display: 'flex', color: '#000000', verticalAlign: 'text-bottom' }}>
                             <div style={{ marginRight: '2%', fontWeight: '600' }}>
                                 <Typography>MV{res.loanApplicationNo}</Typography>
                             </div>
-                            <div style={{ marginRight: '1%', letterSpacing: '0.25px', verticalAlign: 'middle' }}>
+                            <div style={{ marginRight: '1%', letterSpacing: '0.25px' }}>
                                 <Typography>{(res.firstName) ? (res.firstName + " ") : (null) + (res.middleName) ? (res.middleName + " ") : (null) + (res.lastName) ? (res.lastName + " ") : (null)}</Typography>
                             </div>
-                            <div style={{ marginRight: '1%', marginLeft: '1%', verticalAlign: 'middle' }}>
+                            <div style={{ marginRight: '1%', marginLeft: '1%' }}>
                                 <ApplicationState state={res.mvStatus} />
                             </div>
                         </div>
@@ -122,7 +140,7 @@ const search = () => {
                     {popupMessage}
                 </div>
             </Popover>
-            <input type="text" onChange={e => { setSearchTerm(e.target.value); if (e.target.length === 12) { handleClick(); } }} className="searchTerm" placeholder="Search by Loan Application Number" />
+            <input type="text" onKeyDown={keyPress} onChange={e => { setSearchTerm(e.target.value); if (e.target.length === 12) { handleClick(); } }} className="searchTerm" placeholder="Search by Loan Application Number" />
             <button type="submit" className="searchButton" onClick={handleClick}>
                 <SearchIcon style={{ color: 'white', paddingTop: '14%' }} />
             </button>

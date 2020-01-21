@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import TransitionsModal from '../Modal/Modal'
 import { CardContext } from '../../containers/Dashboard/Dashboard'
 import { BootstrapButton, useToolbarStyles } from './TableViewHeaderStyle'
+import { cards } from '../../globals'
 
 
 export default function TableViewToolbar(props) {
@@ -14,22 +15,22 @@ export default function TableViewToolbar(props) {
     const childRef = useRef();
     const [card] = useContext(CardContext);
     function cardParse(card) {
-        if (card[0]) {
+        if (card[cards.PENDING]) {
             return "Pending Applications";
         }
-        else if (card[1]) {
+        else if (card[cards.RE_WORK]) {
             return "Re-work Applications";
         }
 
-        else if (card[2]) {
+        else if (card[cards.APPROVED]) {
 
             return "Approved Applications";
         }
-        else if (card[3]) {
+        else if (card[cards.REJECTED_OR_CANCELLED]) {
             return "Rejected/Cancelled Applications";
         }
 
-        else if (card[4]) {
+        else if (card[cards.ALL]) {
             return "All Applications";
         }
     }
@@ -51,8 +52,10 @@ export default function TableViewToolbar(props) {
                     )}
             </div>
             <div style={{ textAlign: 'right' }}>
-                <BootstrapButton disabled={(numSelected) ? (false) : (true)} variant="contained" color="primary" disableRipple onClick={() => childRef.current.handleOpen()}>
-                    APPROVE
+                <BootstrapButton disabled={(numSelected) ? (false) : (true)} variant="contained" color="primary" disableRipple
+                    onClick={() => childRef.current.handleOpen()}
+                >
+                    LOCK
                 </BootstrapButton>
                 <TransitionsModal ref={childRef} bulkApprove={bulkApprove}></TransitionsModal>
             </div>

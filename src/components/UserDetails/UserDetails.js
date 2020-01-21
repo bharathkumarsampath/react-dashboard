@@ -1,25 +1,22 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import LoanUser from '../../assets/images/LoanUser.png'
 import { Divider } from '@material-ui/core';
 const LoanDetails = (props) => {
 
 
     return (
-        <div
-        // style={{ backgroundColor: 'white', width: '28vw', height: '28rem', borderRadius: '0.4rem', margin: '1rem', boxShadow: '-1px 2px 6px -2px rgba(0,0,0,0.27)' }}
-        >
+        <div>
             <div style={{ display: 'flex', padding: '1rem 0rem 1rem 1rem' }}>
-                <img src={LoanUser} width="70" height='70' alt="profileImage" />
+                <img src={props.selfieUrl} width="70" height='70' alt="profile" />
                 <div style={{ paddingLeft: '1rem', textAlign: 'left' }}>
-                    <Typography variant="subtitle2" gutterBottom style={{ height: '37px', color: '#000000', fontSize: '16px', fontWeight: '600', lineHeight: '22px' }}>
-                        {props.LoanApp.name}
+                    <Typography variant="subtitle2" gutterBottom style={{ height: '24px', color: '#000000', fontSize: '16px', fontWeight: '600', lineHeight: '22px' }}>
+                        {props.LoanApp.firstName + " " + props.LoanApp.middleName + " " + props.LoanApp.lastName}
                     </Typography>
                     <Typography variant="button" gutterBottom style={{ height: ' 17px', color: ' rgba(42,41,42,0.87)', fontSize: '12px', fontWeight: ' 600', letterSpacing: ' 1px', lineHeight: ' 17px' }}>
                         {props.LoanApp.occupation}
                     </Typography>
                     <Typography variant="body1" style={{ height: ' 17px', color: ' #000000', fontSize: ' 12px', letterSpacing: ' 0.4px', lineHeight: ' 17px', marginTop: '6px' }}>
-                        Location : {props.LoanApp.location}
+                        Location  : {props.LoanApp.workAddressCity}
                     </Typography>
                 </div>
             </div>
@@ -57,7 +54,18 @@ const LoanDetails = (props) => {
                         Current Address
                     </Typography>
                     <Typography variant="body2" gutterBottom style={{ width: ' 328px', fontSize: ' 14px', fontWeight: '600', lineHeight: ' 19px' }}>
-                        {props.LoanApp.currentAddress}
+                        {(props.LoanApp.currentAddressStreet1) ?
+                            (props.LoanApp.currentAddressStreet1 + ',') : (null)}
+                        {(props.LoanApp.currentAddressStreet2) ?
+                            (props.LoanApp.currentAddressStreet2 + ',') : (null)}
+                        {(props.LoanApp.currentAddressCity) ?
+                            (props.LoanApp.currentAddressCity + ',') : (null)}
+                        {(props.LoanApp.currentAddressCity) ?
+                            (props.LoanApp.currentAddressCity + ',') : (null)}
+                        {(props.LoanApp.currentAddressState) ?
+                            (props.LoanApp.currentAddressState + ',') : (null)}
+                        {(props.LoanApp.currentAddressPinCode) ?
+                            (props.LoanApp.currentAddressPinCode) : (null)}
                     </Typography>
                 </div>
             </div>
@@ -71,11 +79,11 @@ const LoanDetails = (props) => {
                 </Typography>
 
             </div>
-            <div style={{ fontWeight: '700', display: 'flex', color: 'rgb(91,154,225)', marginLeft: '1rem' }}>
-                <Typography variant="subtitle1" gutterBottom >
+            <div style={{ fontWeight: '700', display: 'flex', color: '#4a90e2', marginLeft: '1rem' }}>
+                <Typography variant="subtitle1" gutterBottom style={{ color: '#4a90e2' }}>
                     Penny Drop Check
                 </Typography>
-                <Typography variant="subtitle1" gutterBottom style={{ marginLeft: '3rem' }}>
+                <Typography variant="subtitle1" gutterBottom style={{ marginLeft: '3rem', color: '#4a90e2' }}>
                     NSDL Check
                 </Typography>
             </div>

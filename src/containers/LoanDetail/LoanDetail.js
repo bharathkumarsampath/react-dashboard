@@ -2,23 +2,24 @@ import React, { useEffect } from 'react';
 import Toolbar from '../../components/Toolbar/Toolbar'
 import LoansHeader from '../../components/LoansHeader/LoansHeader'
 import LoanAgreement from '../../components/LoanAgreement/LoanAgreement'
-import { api, rework } from '../../globals'
+import { api, rework, routes } from '../../globals'
 import Spinner from '../../components/Loader/Loader'
 import ExpansionPanel from '../../components/LoanDetailsExpansion/LoanDetailsExpansion'
 import { useHistory } from "react-router-dom"
 import LoanDetailPageError from '../../components/LoanDetailPageError/LoanDetailPageError'
 import SnackBar from '../../components/Snackbar/SnackBar'
 import { unLockApp } from '../../utils'
-export const ReloadAppContext = React.createContext();
+export const ReloadAppContext = React.createContext([{}, function () { }]);
 
 const UserProfile = (props) => {
     let history = useHistory();
     const [LoanApp, setLoanApp] = React.useState({});
-    const [reload, setReload] = React.useState();
+    const [reload, setReload] = React.useState(true);
     const [snackBar, setSnackBar] = React.useState();
     const [snackBarVariant, setSnackBarVariant] = React.useState();
     const [snackBarMessage, setSnackBarMessage] = React.useState();
     const [error, setError] = React.useState();
+    const [selfieUrl, setSelfieUrl] = React.useState('');
     const showSnackBar = () => {
         setSnackBar(true);
     };
@@ -51,6 +52,8 @@ const UserProfile = (props) => {
                 }
             });
 
+
+
         } catch (e) {
             console.log(e);
         }
@@ -61,7 +64,7 @@ const UserProfile = (props) => {
                 var settings = {
                     "mode": "no-cors",
                     "crossDomain": true,
-                    "url": api.HOST + "getLoanApplication?loanAppNo=" + localStorage.getItem('loanAppNo') + "&agentName=" + localStorage.getItem('agentName'),
+                    "url": api.HOST + "getLoanApplication?loanAppNo=" + props.match.params.loanAppNo + "&agentName=" + localStorage.getItem('agentName'),
 
                 }
                 await fetch(settings.url, {
@@ -73,33 +76,31 @@ const UserProfile = (props) => {
 
                 }).then(res => res.json()
                 ).then(res => {
-                    // console.log(JSON.stringify(res.response));
                     if (typeof res.response === "string" && res.response.includes("Application Locked")) {
                         setSnackBarMessage(res.response);
                         setSnackBarVariant("info");
                         showSnackBar();
-                        setTimeout(function () { history.push('/dashboard'); }, 2000);
+                        setTimeout(function () { history.push(routes.DASHBOARD); }, 2000);
                     } else if (res.response === "Please provide valid loan application no") {
                         setSnackBarMessage("Please provide valid loan application no");
                         setSnackBarVariant("info");
                         showSnackBar();
-                        setTimeout(function () { history.push('/dashboard'); }, 2000);
+                        setTimeout(function () { history.push(routes.DASHBOARD); }, 2000);
                     } else if (res.response === "Exception occurred") {
                         setSnackBarMessage("Exception occurred, try again later");
                         setSnackBarVariant("info");
                         showSnackBar();
-                        setTimeout(function () { history.push('/dashboard'); }, 2000);
+                        setTimeout(function () { history.push(routes.DASHBOARD); }, 2000);
                     } else if (res.response === "Either token is invalid or token expired") {
                         setSnackBarMessage("Your Session expired,try signing in again");
                         setSnackBarVariant("info");
                         showSnackBar();
                         unLockApp();
                         localStorage.clear();
-                        setTimeout(function () { history.push('/'); }, 2000);
+                        setTimeout(function () { history.push(routes.HOME); }, 2000);
                     } else {
                         // console.log("response for tables : " + JSON.parse(JSON.stringify(res[0])));
-                        setLoanApp(JSON.parse(JSON.stringify(res[0])));
-                        unLockApp();
+                        setLoanApp(JSON.parse(JSON.stringify(res)));
                     }
 
 
@@ -125,10 +126,10 @@ const UserProfile = (props) => {
                                 <LoansHeader LoanApp={LoanApp} />
                                 <div style={{ display: 'flex' }}>
                                     <div>
-                                        <ExpansionPanel LoanApp={LoanApp} />
+                                        <ExpansionPanel LoanApp={LoanApp} selfieUrl={selfieUrl} />
                                     </div>
                                     <div>
-                                        <LoanAgreement LoanApp={LoanApp} />
+                                        <LoanAgreement LoanApp={LoanApp} setSelfieUrl={setSelfieUrl} />
                                     </div>
                                 </div></div>) :
                             (<Spinner />))

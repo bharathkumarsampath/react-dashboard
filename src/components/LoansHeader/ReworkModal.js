@@ -5,8 +5,8 @@ import TextField from '@material-ui/core/TextField';
 import './LoansHeader.css'
 import CheckBox from '../../components/CheckBox/CheckBox'
 import { useStyles, ModalButton } from './LoansHeaderStyles'
-import { rework, api, state } from '../../globals'
-import { ReloadAppContext } from '../../containers/Userprofile/Userprofile'
+import { rework, api, state, routes } from '../../globals'
+import { ReloadAppContext } from '../../containers/LoanDetail/LoanDetail'
 import { useHistory } from "react-router-dom";
 import Button from '@material-ui/core/Button';
 import { unLockApp } from '../../utils'
@@ -25,6 +25,7 @@ const ReworkModal = (props) => {
     };
     const handleOpen = () => {
         setOpen(true);
+        // console.log("checkbox object ", checkBoxObject.length);
     };
 
     const [checkedItems, setCheckedItems] = React.useState({});
@@ -43,7 +44,7 @@ const ReworkModal = (props) => {
         var remarks = "";
         Object.keys(checkedItems).forEach((key, index) => {
             if (checkedItems[key]) {
-                remarks = remarks + key.toString() + ", ";
+                remarks = remarks + key.toString() + ",\n";
             }
 
         })
@@ -73,7 +74,7 @@ const ReworkModal = (props) => {
                     agent_id: localStorage.getItem("agentName"),
                     loan_application_no: props.LoanApp.loanApplicationNo,
                     old_status: props.LoanApp.mvStatus,
-                    new_status: state.REWORK,
+                    new_status: state.RE_WORK,
                     remarks: (props.LoanApp.reworkReason) ? (props.LoanApp.reworkReason + "\n\n" + remarks) : (remarks),
                 })
             }).then(res => res.text()
@@ -132,18 +133,19 @@ const ReworkModal = (props) => {
                 props.setSnackBarVariant("info");
                 props.showSnackBar();
                 setReload(!reload);
-            } else if ("Either token is invalid or token expired") {
+            } else if (res === "Either token is invalid or token expired") {
                 props.setSnackBarMessage("Session Expired,try signing again");
                 props.setSnackBarVariant("warning");
                 props.showSnackBar();
                 unLockApp();
                 localStorage.clear();
-                setTimeout(history.push('/dashboard'), 2000); //add unlock app function
+                setTimeout(history.push(routes.DASHBOARD), 2000); //add unlock app function
             } else {
                 props.setSnackBarMessage("Failed to approve the application");
                 props.setSnackBarVariant("info");
                 props.showSnackBar();
             }
+
         });
     }
     return (
@@ -180,20 +182,48 @@ const ReworkModal = (props) => {
                     onClose={handleClose}
                 >
 
-                    <div className={classes.paper} >
+                    <div className={(checkBoxObject.length <= 8) ? (classes.paperone) : ((checkBoxObject.length <= 16) ? (classes.papertwo) : (classes.paperthree))}>
                         <Typography variant="h6" gutterBottom>
                             Re-Work Application
                     </Typography>
                         <Typography variant="body1" gutterBottom>
                             Please select the reason for re-work
                     </Typography>
-                        <div styles={{ height: '200px' }}>
-                            {(checkBoxObject) ? (checkBoxObject.map(checkBoxElem => (
+                        <div styles={{ maxHeight: '200vh' }} >
+                            <div style={{ display: 'flex' }}>
+                                <div>
+                                    {(checkBoxObject) ? (checkBoxObject.slice(0, 8).map(checkBoxElem => (
+                                        <CheckBox handleChange={handleChange}
+                                            text={checkBoxElem.text} value={checkBoxElem.value} key={checkBoxElem.value}
+                                            checked={checkedItems[checkBoxElem.text]}
+                                        />
+                                    ))) : (null)}
+                                </div>
+                                <div>
+                                    {(checkBoxObject && checkBoxObject.length > 8) ? (checkBoxObject.slice(8, 16).map(checkBoxElem => (
+                                        <CheckBox handleChange={handleChange}
+                                            text={checkBoxElem.text} value={checkBoxElem.value} key={checkBoxElem.value}
+                                            checked={checkedItems[checkBoxElem.text]}
+                                        />
+                                    ))) : (null)}
+                                </div>
+                                <div>
+                                    {(checkBoxObject && checkBoxObject.length > 16) ? (checkBoxObject.slice(16, 25).map(checkBoxElem => (
+                                        <CheckBox handleChange={handleChange}
+                                            text={checkBoxElem.text} value={checkBoxElem.value} key={checkBoxElem.value}
+                                            checked={checkedItems[checkBoxElem.text]}
+                                        />
+                                    ))) : (null)}
+                                </div>
+                            </div>
+                            {/* {(checkBoxObject) ? (checkBoxObject.map(checkBoxElem => (
                                 <CheckBox handleChange={handleChange}
                                     text={checkBoxElem.text} value={checkBoxElem.value} key={checkBoxElem.value}
                                     checked={checkedItems[checkBoxElem.text]}
                                 />
-                            ))) : (null)}
+                            ))) : (null)} */}
+
+
                             <div className={classes.textArea}>
                                 <TextField
                                     id="outlined-multiline-static"

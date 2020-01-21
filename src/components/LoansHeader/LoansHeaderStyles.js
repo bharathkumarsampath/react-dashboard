@@ -1,26 +1,51 @@
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
-
 const useStyles = makeStyles(theme => ({
     margin: {
         margin: theme.spacing(1),
     },
-    paper: {
+    paperone: {
         position: 'absolute',
-        width: 465,
         backgroundColor: theme.palette.background.paper,
         padding: theme.spacing(2, 4, 3),
         borderRadius: '8px',
+        marginLeft: '30vw',
         textAlign: 'center',
-        marginLeft: '32vw',
+        marginTop: '5vh'
+    },
+    papertwo: {
+        position: 'absolute',
+        backgroundColor: theme.palette.background.paper,
+        padding: theme.spacing(2, 4, 3),
+        borderRadius: '8px',
+        marginLeft: '20vw',
+        textAlign: 'center',
+        marginTop: '5vh'
+    },
+    paperthree: {
+        position: 'absolute',
+        backgroundColor: theme.palette.background.paper,
+        padding: theme.spacing(2, 4, 3),
+        borderRadius: '8px',
+        marginLeft: '7vw',
+        textAlign: 'center',
         marginTop: '5vh'
     },
     textArea: {
         '& .MuiTextField-root': {
             width: 400,
-            marginTop: '4%'
+            marginTop: '2%'
         },
+    },
+    onerow: {
+        marginLeft: '7vw'
+    },
+    tworow: {
+        marginLeft: '20vw'
+    },
+    threerow: {
+        marginLeft: '30vw'
     },
 }));
 

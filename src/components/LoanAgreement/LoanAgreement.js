@@ -9,8 +9,8 @@ const LoanAgreement = (props) => {
         const fetchUsers = async () => {
             try {
                 var settings = {
-                    "url": api.HOST + "getDocUrl?docType=loanAgreement&loanAppNo=153845593067",
-                    //+localStorage.getItem('loanAppNo'),
+                    "url": api.HOST + "getDocUrl?docType=loanAgreement&loanAppNo=" + props.LoanApp.loanApplicationNo,
+
                     "method": "GET",
                     "headers": {
                         "Content-Type": "application/x-www-form-urlencoded",
@@ -23,10 +23,11 @@ const LoanAgreement = (props) => {
                         "Content-Type": "application/x-www-form-urlencoded",
                         "token": localStorage.getItem('token')
                     }
-                }).then(res => res.text())
+                }).then(res => res.json())
                     .then(res => {
                         // console.log(res);
                         setUrl(res);
+                        props.setSelfieUrl(res.okycSelfie);
                     });
 
 
@@ -48,7 +49,7 @@ const LoanAgreement = (props) => {
             </div>
 
             <Divider />
-            <iframe src={url} title="Loan agreement"
+            <iframe src={url.loanAgreement} title="Loan agreement"
                 style={{ width: '67vw', height: '72vh' }} frameBorder="0"></iframe>
         </div >
 

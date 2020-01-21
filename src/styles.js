@@ -30,6 +30,11 @@ export const theme = createMuiTheme({
     },
 
     overrides: {
+        makeSyles: {
+            paper: {
+                width: '860px'
+            }
+        },
         MuiList: {
             root: {
                 paddingBottom: "0 !important",
@@ -52,6 +57,11 @@ export const theme = createMuiTheme({
                 fontSize: '0.875rem',
                 borderBottom: 'none'
             },
+        },
+        MuiTableSortLabel: {
+            root: {
+                fontWeight: 'bold',
+            }
         },
         MuiInputLabel: {
             root: {
@@ -443,7 +453,10 @@ theme.overrides.MuiSelect = {
     select: {
         "&:focus": {
             backgroundColor: "unset !important",
+
         },
+        fontWeight: 'normal',
+        fontSize: '1rem'
     },
     icon: {
         marginRight: "8px",

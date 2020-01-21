@@ -48,6 +48,7 @@ const Modal = (props) => {
                         setSnackBarMessage("Notification to reset password was sent to admin successfully");
                         setSnackBarVariant("success");
                         showSnackBar();
+
                     } else if (String(response) === "Username entered is not valid") {
                         console.log("Username entered is not valid");
                         setSnackBarMessage("Username entered is not valid");
@@ -94,7 +95,7 @@ const Modal = (props) => {
                     </Button>
                 </div>
                 <div>
-                    <Button onClick={hideModal} variant="contained" color="primary" disableRipple style={{ width: '60%', marginTop: '5%', marginBottom: '5%' }}>
+                    <Button onClick={hideModal} variant="outlined" color="primary" disableRipple style={{ width: '60%', marginTop: '5%', marginBottom: '5%' }}>
                         BACK TO LOGIN PAGE
                     </Button>
                 </div>

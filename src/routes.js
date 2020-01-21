@@ -6,7 +6,7 @@ import { Route } from 'react-router';
  */
 import App from './App';
 import Dashboard from './containers/Dashboard/Dashboard';
-import UserProfile from './containers/Userprofile/Userprofile'
+import UserProfile from './containers/LoanDetail/LoanDetail'
 
 /**
  * All routes go here.
@@ -16,6 +16,6 @@ import UserProfile from './containers/Userprofile/Userprofile'
 const routes = {
     "/": () => <App />,
     "/dashboard": () => <Dashboard />,
-    "/userprofile": () => <UserProfile />
+    "/loan": () => <UserProfile />
 };
 export default routes;

@@ -8,7 +8,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Box from '@material-ui/core/Box';
 import logImage from '../../assets/images/login_bg.png';
 import ForgotPasswordModal from './Modal';
-import { api } from '../../globals'
+import { api, session, routes } from '../../globals'
 
 const Login = () => {
 
@@ -21,8 +21,76 @@ const Login = () => {
     const classes = useStyles();
 
     const navigateToDashboard = () => {
-        history.push("/dashboard"); //After 1 second, set render to true
+        history.push(routes.DASHBOARD); //After 1 second, set render to true
     };
+
+    function keyPress(e) {
+        if (e.key === 'Enter') {
+            console.log('value', e.target.value);
+            authentication();
+        }
+    }
+
+    // useEffect(() => {
+    //     const fetchUsers = async () => {
+    //         console.log("loan detail props ", props.match.params.loanAppNo);
+    //         try {
+    //             setIsFetching(true);
+    //             var settings = {
+    //                 "mode": "no-cors",
+    //                 "crossDomain": true,
+    //                 "url": api.HOST + "getLoanApplication?loanAppNo=" + props.match.params.loanAppNo + "&agentName=" + localStorage.getItem('agentName'),
+
+    //             }
+    //             await fetch(settings.url, {
+    //                 method: "GET",
+    //                 headers: {
+    //                     "Content-Type": "application/x-www-form-urlencoded",
+    //                     "token": localStorage.getItem('token'),
+    //                 }
+
+    //             }).then(res => res.json()
+    //             ).then(res => {
+    //                 // console.log(JSON.stringify(res.response));
+    //                 if (typeof res.response === "string" && res.response.includes("Application Locked")) {
+    //                     setSnackBarMessage(res.response);
+    //                     setSnackBarVariant("info");
+    //                     showSnackBar();
+    //                     setTimeout(function () { history.push(routes.DASHBOARD); }, 2000);
+    //                 } else if (res.response === "Please provide valid loan application no") {
+    //                     setSnackBarMessage("Please provide valid loan application no");
+    //                     setSnackBarVariant("info");
+    //                     showSnackBar();
+    //                     setTimeout(function () { history.push(routes.DASHBOARD); }, 2000);
+    //                 } else if (res.response === "Exception occurred") {
+    //                     setSnackBarMessage("Exception occurred, try again later");
+    //                     setSnackBarVariant("info");
+    //                     showSnackBar();
+    //                     setTimeout(function () { history.push(routes.DASHBOARD); }, 2000);
+    //                 } else if (res.response === "Either token is invalid or token expired") {
+    //                     setSnackBarMessage("Your Session expired,try signing in again");
+    //                     setSnackBarVariant("info");
+    //                     showSnackBar();
+    //                     unLockApp();
+    //                     localStorage.clear();
+    //                     setTimeout(function () { history.push(routes.HOME); }, 2000);
+    //                 } else {
+    //                     // console.log("response for tables : " + JSON.parse(JSON.stringify(res[0])));
+    //                     setLoanApp(JSON.parse(JSON.stringify(res)));
+    //                 }
+
+
+    //             });
+
+    //         } catch (e) {
+    //             console.log(e);
+    //             setError(true);
+    //         }
+    //         setIsFetching(false);
+    //     };
+    //     fetchUsers();
+    //     getReworkReasons();
+    // }, []);
 
     function authentication() {
 
@@ -54,6 +122,7 @@ const Login = () => {
                     localStorage.setItem('token', response);
                     localStorage.setItem('agentName', username);
                     navigateToDashboard();
+                    setTimeout(function () { localStorage.clear(); }, session.time_out)
                 }
             });
 
@@ -115,6 +184,8 @@ const Login = () => {
                                         placeholder="UserName"
                                         onChange={e => setUsername(e.target.value)}
                                         error={error}
+                                        helperText={error ? 'Please enter a valid Username' : ' '}
+                                        onKeyDown={keyPress}
 
                                     />
 
@@ -132,6 +203,8 @@ const Login = () => {
                                         autoComplete="current-password"
                                         onChange={e => setPassword(e.target.value)}
                                         error={error}
+                                        helperText={error ? 'Password you have entered is incorrect' : ' '}
+                                        onKeyDown={keyPress}
                                     />
 
                                     <Grid container>

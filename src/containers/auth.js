@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
+import { routes } from '../globals';
 
 const checkAuth = () => {
     const token = localStorage.getItem('token');
@@ -16,7 +17,7 @@ const AuthRoute = ({ component: Component, ...rest }) => (
         checkAuth() ? (
             <Component {...props} />
         ) : (
-                <Redirect to={{ pathname: '/' }} />
+                <Redirect to={{ pathname: routes.HOME }} />
             )
     )} />
 

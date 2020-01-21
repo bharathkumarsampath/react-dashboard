@@ -6,7 +6,7 @@ const OfferDetails = (props) => {
     return (
         <div>
             <ListCell name='Amount Applied For' value={'₹' + props.LoanApp.appliedAmount} />
-            <ListCell name='Loan Amount' value={'₹' + props.LoanApp.loanAmount} />
+            <ListCell name='Loan Amount' value={'₹' + props.LoanApp.loanAmount} style={{ backgroundColor: '#f5f7fb' }} />
             <ListCell name='Pre EMI' value={'₹' + props.LoanApp.preEmiAmount} />
             <ListCell name='Transferrable Amount' value={'₹' + props.LoanApp.transferrableAmount} />
             <ListCell name='Processing Fee' value={'₹' + props.LoanApp.processingFee} />

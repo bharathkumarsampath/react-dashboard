@@ -1,13 +1,12 @@
 import React, { useContext, useEffect } from 'react';
 import SimpleCard from '../Card/Card'
 import { CardContext, CountContext, LatestCountContext } from '../../containers/Dashboard/Dashboard'
-import { api } from '../../globals'
+import { api, state } from '../../globals'
 export default function Cards() {
 
     const [card, setCard] = useContext(CardContext);
     const [count, setCount] = useContext(CountContext);
     const [latestCount] = useContext(LatestCountContext);
-
     const [error, setError] = React.useState(false);
     useEffect(() => {
         const fetchUsers = async () => {
@@ -26,8 +25,24 @@ export default function Cards() {
 
                 }).then(res => res.json()
                 ).then(res => {
-                    setCount(JSON.parse(res.udrsCount));
-                    //console.log(JSON.parse(res.udrsCount));
+                    const udrsCount = {
+                        PENDING: 0, RE_SUBMITTED: 0, RE_WORK: 0, APPROVED: 0, SYSTEM_APPROVED: 0, REJECTED: 0, CANCELLED: 0, ALL: 0
+                    }
+                    // console.log(JSON.parse(JSON.stringify(res)));
+                    for (var key in state) {
+                        if (JSON.parse(JSON.stringify(res))[key]) {
+                            udrsCount[key] = JSON.parse(JSON.stringify(res))[key];
+                        } else {
+                            udrsCount[key] = 0;
+                        }
+                    }
+                    udrsCount.PENDING = udrsCount.PENDING + udrsCount.RE_SUBMITTED;
+                    udrsCount.APPROVED = udrsCount.APPROVED + udrsCount.SYSTEM_APPROVED;
+                    udrsCount.REJECTED = udrsCount.REJECTED + udrsCount.CANCELLED;
+                    udrsCount.ALL = udrsCount.PENDING + udrsCount.RE_WORK + udrsCount.APPROVED + udrsCount.REJECTED;
+                    setCount(udrsCount);
+                    // console.log("udrscount", JSON.parse(JSON.stringify(res)));
+                    // console.log("count", udrsCount);
                 });
 
             } catch (e) {
@@ -42,11 +57,11 @@ export default function Cards() {
     return (<div>
         {
             <div style={{ display: 'flex', padding: '2.3rem', backgroundColor: 'rgb(245,247,251)' }}>
-                <SimpleCard count={count.pending + count.reSubmitted} text='PENDING' card={card} index={0} setCard={setCard} error={error} />
-                <SimpleCard count={count.rework} text='RE-WORK' card={card} index={1} setCard={setCard} error={error} />
-                <SimpleCard count={count.approved + count.systemApproved} text='APPROVED' card={card} index={2} setCard={setCard} error={error} />
-                <SimpleCard count={count.rejected + count.cancelled} text='REJECTED/CANCELLED' card={card} index={3} setCard={setCard} error={error} />
-                <SimpleCard count={count.pending + count.rework + count.approved + count.rejected} text='ALL' card={card} index={4} setCard={setCard} error={error} />
+                <SimpleCard count={count.PENDING} text='PENDING' card={card} index={0} setCard={setCard} error={error} />
+                <SimpleCard count={count.RE_WORK} text='RE-WORK' card={card} index={1} setCard={setCard} error={error} />
+                <SimpleCard count={count.APPROVED} text='APPROVED' card={card} index={2} setCard={setCard} error={error} />
+                <SimpleCard count={count.REJECTED} text='REJECTED/CANCELLED' card={card} index={3} setCard={setCard} error={error} />
+                <SimpleCard count={count.ALL} text='ALL' card={card} index={4} setCard={setCard} error={error} />
             </div>
         }
     </div>);

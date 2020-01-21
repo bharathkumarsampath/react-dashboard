@@ -6,7 +6,7 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { CardContext } from '../../containers/Dashboard/Dashboard'
-import { table } from '../../globals'
+import { table, cards } from '../../globals'
 
 
 
@@ -34,7 +34,7 @@ export default function TableViewHead(props) {
             <TableRow style={{ backgroundColor: 'rgb(215,222,229' }}>
 
                 {
-                    (card[0] || card[4]) ? (
+                    (card[cards.PENDING] || card[cards.ALL]) ? (
                         <TableCell padding="checkbox">
                             <Checkbox
                                 indeterminate={numSelected > 0 && numSelected < rowCount}
