@@ -2,13 +2,14 @@ import React, { useEffect } from 'react';
 import Toolbar from '../../components/Toolbar/Toolbar'
 import LoansHeader from '../../components/LoansHeader/LoansHeader'
 import LoanAgreement from '../../components/LoanAgreement/LoanAgreement'
-import { api, rework, routes } from '../../globals'
+import { globals } from '../../globals'
 import Spinner from '../../components/Loader/Loader'
 import ExpansionPanel from '../../components/LoanDetailsExpansion/LoanDetailsExpansion'
 import { useHistory } from "react-router-dom"
 import LoanDetailPageError from '../../components/LoanDetailPageError/LoanDetailPageError'
 import SnackBar from '../../components/Snackbar/SnackBar'
-import { unLockApp } from '../../utils'
+import { unLockApp, clearLocalStorage } from '../../utils'
+import fetch from 'fetch-timeout'
 export const ReloadAppContext = React.createContext([{}, function () { }]);
 
 const UserProfile = (props) => {
@@ -32,39 +33,44 @@ const UserProfile = (props) => {
         setSnackBar(false);
     };
     async function getReworkReasons() {
-        try {
-            var settings = {
-                "mode": "no-cors",
-                "url": api.HOST + "getReworkReasons",
-            }
-            await fetch(settings.url, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "token": localStorage.getItem('token')
-                }
-
-            }).then(res => res.json()
-            ).then(res => {
-                var reasonsArray = res.reworkReasons.split(',');
-                for (var x = 0; x < reasonsArray.length; x++) {
-                    rework.REASONS[x] = { text: reasonsArray[x], value: x };
-                }
-            });
-
-
-
-        } catch (e) {
-            console.log(e);
-        }
-    }
-    useEffect(() => {
-        const fetchUsers = async () => {
+        if (!localStorage.getItem("reworkReasons")) {
             try {
                 var settings = {
                     "mode": "no-cors",
+                    "url": globals.api.HOST + "getReworkReasons",
+                }
+                await fetch(settings.url, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "token": localStorage.getItem('token')
+                    }
+
+                }).then(res => res.json()
+                ).then(res => {
+                    var reasonsArray = res.reworkReasons.split(',');
+                    for (var x = 0; x < reasonsArray.length; x++) {
+                        globals.rework.REASONS[x] = { text: reasonsArray[x], value: x };
+                    }
+                    localStorage.setItem("reworkReasons", JSON.stringify(globals.rework.REASONS));
+                });
+
+
+
+            } catch (e) {
+                console.log(e);
+            }
+        }
+    }
+    useEffect(() => {
+
+        const fetchUsers = async () => {
+            try {
+                setError(false);
+                var settings = {
+                    "mode": "no-cors",
                     "crossDomain": true,
-                    "url": api.HOST + "getLoanApplication?loanAppNo=" + props.match.params.loanAppNo + "&agentName=" + localStorage.getItem('agentName'),
+                    "url": globals.api.HOST + "getLoanApplication?loanAppNo=" + props.match.params.loanAppNo + "&agentName=" + localStorage.getItem('agentName'),
 
                 }
                 await fetch(settings.url, {
@@ -74,33 +80,32 @@ const UserProfile = (props) => {
                         "token": localStorage.getItem('token'),
                     }
 
-                }).then(res => res.json()
+                }, globals.request.timeout, 'request timeout').then(res => res.json()
                 ).then(res => {
                     if (typeof res.response === "string" && res.response.includes("Application Locked")) {
                         setSnackBarMessage(res.response);
                         setSnackBarVariant("info");
                         showSnackBar();
-                        setTimeout(function () { history.push(routes.DASHBOARD); }, 2000);
+                        setTimeout(function () { history.push(globals.routes.DASHBOARD); }, 2000);
                     } else if (res.response === "Please provide valid loan application no") {
                         setSnackBarMessage("Please provide valid loan application no");
                         setSnackBarVariant("info");
                         showSnackBar();
-                        setTimeout(function () { history.push(routes.DASHBOARD); }, 2000);
+                        setTimeout(function () { history.push(globals.routes.DASHBOARD); }, 2000);
                     } else if (res.response === "Exception occurred") {
                         setSnackBarMessage("Exception occurred, try again later");
                         setSnackBarVariant("info");
                         showSnackBar();
-                        setTimeout(function () { history.push(routes.DASHBOARD); }, 2000);
+                        setTimeout(function () { history.push(globals.routes.DASHBOARD); }, 2000);
                     } else if (res.response === "Either token is invalid or token expired") {
                         setSnackBarMessage("Your Session expired,try signing in again");
                         setSnackBarVariant("info");
                         showSnackBar();
                         unLockApp();
-                        localStorage.clear();
-                        setTimeout(function () { history.push(routes.HOME); }, 2000);
+                        setTimeout(function () { clearLocalStorage(); history.push(globals.routes.HOME) }, globals.messageDisplayTime.sessionExpiry);
                     } else {
-                        // console.log("response for tables : " + JSON.parse(JSON.stringify(res[0])));
                         setLoanApp(JSON.parse(JSON.stringify(res)));
+
                     }
 
 
@@ -110,6 +115,7 @@ const UserProfile = (props) => {
                 console.log(e);
                 setError(true);
             }
+
         };
         fetchUsers();
         getReworkReasons();
@@ -129,7 +135,7 @@ const UserProfile = (props) => {
                                         <ExpansionPanel LoanApp={LoanApp} selfieUrl={selfieUrl} />
                                     </div>
                                     <div>
-                                        <LoanAgreement LoanApp={LoanApp} setSelfieUrl={setSelfieUrl} />
+                                        <LoanAgreement LoanApp={LoanApp} setSelfieUrl={setSelfieUrl} LoanAppNo={props.match.params.loanAppNo} />
                                     </div>
                                 </div></div>) :
                             (<Spinner />))

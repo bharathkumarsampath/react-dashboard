@@ -5,7 +5,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import TextField from '@material-ui/core/TextField'
 import { useModal } from 'react-modal-hook';
 import Button from '@material-ui/core/Button';
-import { api } from '../../globals'
+import { globals } from '../../globals'
 import SnackBar from '../../components/Snackbar/SnackBar'
 
 const Modal = (props) => {
@@ -32,7 +32,7 @@ const Modal = (props) => {
     async function resetPassword() {
         try {
             var settings = {
-                "url": api.HOST + "forgotpassword?username=" + localStorage.getItem('username'),
+                "url": globals.api.HOST + "forgotpassword?username=" + localStorage.getItem('username'),
             }
             fetch(settings.url, {
                 method: "GET",

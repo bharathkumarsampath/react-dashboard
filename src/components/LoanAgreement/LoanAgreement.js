@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { Divider } from '@material-ui/core';
-import { api } from '../../globals'
+import { globals } from '../../globals';
+import { ReloadAppContext } from '../../containers/LoanDetail/LoanDetail'
+import LoanAgreementStyles from './LoanAgreementStyles'
+import PdfViewer from './PdfViewer'
 const LoanAgreement = (props) => {
 
     const [url, setUrl] = useState('');
+    const [reload] = React.useContext(ReloadAppContext);
+    const classes = LoanAgreementStyles();
     useEffect(() => {
         const fetchUsers = async () => {
             try {
                 var settings = {
-                    "url": api.HOST + "getDocUrl?docType=loanAgreement&loanAppNo=" + props.LoanApp.loanApplicationNo,
+                    "url": globals.api.HOST + "getDocUrl?docType=loanAgreement&loanAppNo=" + props.LoanAppNo,
 
                     "method": "GET",
                     "headers": {
@@ -25,7 +30,6 @@ const LoanAgreement = (props) => {
                     }
                 }).then(res => res.json())
                     .then(res => {
-                        // console.log(res);
                         setUrl(res);
                         props.setSelfieUrl(res.okycSelfie);
                     });
@@ -37,20 +41,21 @@ const LoanAgreement = (props) => {
             }
         };
         fetchUsers();
-    }, []);
+    }, [reload]);
 
     return (
-        <div style={{ backgroundColor: 'white', width: '67vw', height: '80vh', borderRadius: '0.4rem', margin: '1rem', boxShadow: '-1px 2px 6px -2px rgba(0,0,0,0.27)' }}>
-            <div style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between' }}>
-                <Typography variant="subtitle2" style={{ fontSize: '1.1rem', fontWeight: '500', textAlign: 'left' }}>
+        <div className={classes.loanAgreementComponent}>
+            <div className={classes.loanAgreementHeader}>
+                <Typography variant="subtitle2" className={classes.loanAgreementText}>
                     Loan Agreement
             </Typography>
-                <Typography style={{ paddingTop: '0.7vh', textAlign: 'right' }}>Submitted On : {props.LoanApp.submissionDate}</Typography>
+                {/* <Typography className={classes.submittedOnText}>
+                    Submitted On : {props.LoanApp.submissionDate}</Typography> */}
             </div>
 
             <Divider />
-            <iframe src={url.loanAgreement} title="Loan agreement"
-                style={{ width: '67vw', height: '72vh' }} frameBorder="0"></iframe>
+            <PdfViewer src={url.loanAgreement} page={globals.loanAgreement.page} />
+            {/* <iframe id="iframe" src={url.loanAgreement} title="Loan agreement" className={classes.loanAgreementPdf}></iframe> */}
         </div >
 
 

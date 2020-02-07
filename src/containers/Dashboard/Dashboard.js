@@ -13,7 +13,7 @@ export const LatestCountContext = React.createContext(false);
 export const LoanAppContext = React.createContext([]);
 
 const Dashboard = () => {
-  const [card, setCard] = useState([1, 0, 0, 0, 0]);
+  const [card, setCard] = useState(JSON.parse(localStorage.getItem('cards') || "[]"));
   const [count, setCount] = useState({});
   const [latestCount, setLatestCount] = useState(false);
   const [rows, setRows] = useState([]);

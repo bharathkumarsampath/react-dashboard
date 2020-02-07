@@ -14,11 +14,13 @@ import { LoanAppContext } from '../../containers/Dashboard/Dashboard'
 import TimeAgo from 'react-timeago'
 import buildFormatter from 'react-timeago/lib/formatters/buildFormatter'
 import Typography from '@material-ui/core/Typography';
-import { api, state, routes, cards } from '../../globals'
+import { globals } from '../../globals'
 import { useHistory } from "react-router-dom"
 import ApplicationState from '../ApplicationState/ApplicationState'
 import TableServerError from '../TableServerError/TableServerError'
 import SnackBar from '../Snackbar/SnackBar'
+import { clearLocalStorage } from '../../utils';
+import fetch from 'fetch-timeout'
 const formatter = buildFormatter(buildFormatter)
 
 
@@ -54,7 +56,7 @@ export default function TableView() {
     let history = useHistory();
     function navLoanDetails(event) {
         localStorage.setItem('loanAppNo', event.target.id)
-        history.push(routes.LOANDETAIL + '/' + event.target.id);
+        history.push(globals.routes.LOANDETAIL + '/' + event.target.id);
     }
     function numberWithCommas(x) {
         x = x.toString();
@@ -66,19 +68,19 @@ export default function TableView() {
     }
     function statusToDate(row) {
         switch (row.mvStatus) {
-            case state.PENDING:
+            case globals.state.PENDING:
                 return row.submissionDate;
-            case state.RE_SUBMITTED:
+            case globals.state.RE_SUBMITTED:
                 return row.submissionDate;
-            case state.RE_WORK:
+            case globals.state.RE_WORK:
                 return row.reworkDate;
-            case state.APPROVED:
+            case globals.state.APPROVED:
                 return row.approvedDate;
-            case state.SYSTEM_APPROVED:
+            case globals.state.SYSTEM_APPROVED:
                 return row.approvedDate;
-            case state.REJECTED:
+            case globals.state.REJECTED:
                 return row.rejectedOrCancelledDate;
-            case state.CANCELLED:
+            case globals.state.CANCELLED:
                 return row.rejectedOrCancelledDate;
             default:
                 return row.submissionDate;
@@ -131,10 +133,10 @@ export default function TableView() {
         return stabilizedThis.map(el => el[0]);
     }
 
-    async function bulkApprove() {
+    async function bulkLock() {
         var settings = {
             "crossDomain": true,
-            "url": api.HOST + "approve",
+            "url": globals.api.HOST + "lock",
         }
 
         await fetch(settings.url, {
@@ -142,36 +144,50 @@ export default function TableView() {
             headers: {
                 "Content-Type": "application/json",
                 "token": localStorage.getItem('token'),
-                "Accept": "application/json"
             },
-            body: JSON.stringify({ LoanApps: selected })
-        }).then(res => res.json()
+            timeout: 3000,
+            body: JSON.stringify({ LoanApps: selected, agentName: localStorage.getItem('agentName') })
+        }, 5000).then(res => res.text()
         ).then(res => {
-            setLatestCount(!latestCount);
+
+            if (res.response === "Either token is invalid or token expired") {
+                console.log("Either token is invalid or token expired");
+                setSnackBarMessage("Session has expired , Sign in again");
+                setSnackBarVariant("info");
+                showSnackBar();
+                setTimeout(function () { clearLocalStorage(); history.push(globals.routes.HOME) }, globals.messageDisplayTime.sessionExpiry);
+            } else if (res === "Success") {
+                reloadTable();
+            } else {
+                setSnackBarMessage("Something went wrong ,  try again");
+                setSnackBarVariant("info");
+                showSnackBar();
+
+            }
 
         });
         unSelect();
     }
 
     function cardParse(card) {
-        if (card[cards.PENDING]) {
-            return state.PENDING;
+        if (card[globals.cards.PENDING]) {
+            return globals.state.PENDING;
         }
-        else if (card[cards.RE_WORK]) {
-            return state.RE_WORK;
-        }
-
-        else if (card[cards.APPROVED]) {
-
-            return state.APPROVED;
-        }
-        else if (card[cards.REJECTED_OR_CANCELLED]) {
-
-            return state.REJECTED;
+        else if (card[globals.cards.RE_WORK]) {
+            return globals.state.RE_WORK;
         }
 
-        else if (card[cards.ALL]) {
-            return state.ALL;
+        else if (card[globals.cards.APPROVED]) {
+
+            return globals.state.APPROVED;
+        }
+        else if (card[globals.cards.REJECTED_OR_CANCELLED]) {
+
+            return globals.state.REJECTED;
+        }
+
+        else if (card[globals.cards.ALL]) {
+            return globals.state.ALL;
         }
     }
 
@@ -185,7 +201,7 @@ export default function TableView() {
                 setSelected([]);
                 var settings = {
                     "mode": "no-cors",
-                    "url": api.HOST + "getAllLoanApplication?status=" + cardParse(card),
+                    "url": globals.api.HOST + "getAllLoanApplication?status=" + cardParse(card),
                     "method": "GET",
                     "headers": {
                         "Content-Type": "application/x-www-form-urlencoded",
@@ -199,15 +215,15 @@ export default function TableView() {
                         "token": localStorage.getItem('token')
                     }
 
-                }).then(res => res.json()
+                }, globals.request.timout, "request timeout"
+                ).then(res => res.json()
                 ).then(res => {
-                    if (JSON.stringify(res) === "Either token is invalid or token expired") {
+                    if (res.response === "Either token is invalid or token expired") {
                         console.log("Either token is invalid or token expired");
                         setSnackBarMessage("Session has expired , Sign in again");
                         setSnackBarVariant("info");
                         showSnackBar();
-                        localStorage.clear();
-                        setTimeout(history.push('/'), 2000);
+                        setTimeout(function () { clearLocalStorage(); history.push(globals.routes.HOME) }, globals.messageDisplayTime.sessionExpiry);
                     } else if (res.response === "Application queue is empty") {
                         console.log("Application queue is empty");
                         setQueueEmpty(true);
@@ -240,22 +256,27 @@ export default function TableView() {
 
     const handleSelectAllClick = event => {
         if (!selectAll) {
-            const newSelecteds = rows.slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage).map(n => n.loanApplicationNo);
+            const newSelecteds = rows.slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage).map(n => {
+                if (!n.lockedBy) {
+                    return n.loanApplicationNo;
+                }
+                else {
+                    return "";
+                }
+            });
             setSelectAll(!selectAll);
             setSelected(newSelecteds);
-            // console.log("length : ", selected.length, "content : ", selected);
             return;
         }
         setSelected([]);
         setSelectAll(!selectAll);
-        // console.log("length : ", selected.length, "content : ", selected);
     };
 
 
 
-    const handleClick = (event, loanApplicationNo, mvStatus) => {
+    const handleClick = (event, loanApplicationNo, mvStatus, lockedBy) => {
 
-        if (mvStatus === state.PENDING || mvStatus === state.RE_SUBMITTED) {
+        if ((mvStatus === globals.state.PENDING || mvStatus === globals.state.RE_SUBMITTED) && !lockedBy) {
             const selectedIndex = selected.indexOf(loanApplicationNo);
             let newSelected = [];
 
@@ -273,7 +294,6 @@ export default function TableView() {
             }
             setSelected(newSelected);
         }
-        // console.log("selected " + selected);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -288,7 +308,7 @@ export default function TableView() {
     const isSelected = loanApplicationNo => selected.indexOf(loanApplicationNo) !== -1;
     return (
         <div className={classes.root}>
-            <EnhancedTableToolbar numSelected={selected.length} bulkApprove={bulkApprove} />
+            <EnhancedTableToolbar numSelected={selected.length} bulkLock={bulkLock} />
             {(error) ? (<TableServerError reload={reloadTable} />) : ((queueEmpty) ? (
                 <Typography style={{
                     width: '370px',
@@ -332,7 +352,7 @@ export default function TableView() {
                                             return (
                                                 <StyledTableRow
                                                     hover
-                                                    onClick={event => handleClick(event, row.loanApplicationNo, row.mvStatus)}
+                                                    onClick={event => handleClick(event, row.loanApplicationNo, row.mvStatus, row.lockedBy)}
                                                     role="checkbox"
                                                     aria-checked={isItemSelected}
                                                     tabIndex={-1}
@@ -340,7 +360,7 @@ export default function TableView() {
                                                     selected={isItemSelected}
                                                 >
                                                     {
-                                                        (card[cards.PENDING] || card[cards.ALL]) ? (
+                                                        (card[globals.cards.PENDING]) ? (
                                                             <TableCell padding="checkbox">
                                                                 <Checkbox
                                                                     checked={isItemSelected}
@@ -350,7 +370,7 @@ export default function TableView() {
 
                                                     }
                                                     {
-                                                        (!card[cards.ALL]) ? (
+                                                        (!card[globals.cards.ALL]) ? (
                                                             <TableCell component="th" id={labelId} scope="row" align="left" style={{ display: 'flex' }}>
                                                                 <TimeAgo date={statusToDate(row)} formatter={formatter}></TimeAgo>
                                                                 {
@@ -359,7 +379,7 @@ export default function TableView() {
                                                                         ("--")
                                                                 }
                                                                 {
-                                                                    (row.mvStatus === state.RE_SUBMITTED) ? (
+                                                                    (row.mvStatus === globals.state.RE_SUBMITTED) ? (
                                                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" >
                                                                             <path fill="#FF8256" fillRule="nonzero" d="M21 15.875L17.625 12.5v2.25H7.5c-1.24 0-2.25-1.01-2.25-2.25s1.01-2.25 2.25-2.25h7.875V8H7.5A4.505 4.505 0 0 0 3 12.5C3 14.981 5.019 17 7.5 17h10.125v2.25L21 15.875z" />
                                                                         </svg>
@@ -376,7 +396,7 @@ export default function TableView() {
                                                                             ("--")
                                                                     }
                                                                     {
-                                                                        (row.mvStatus === state.RE_SUBMITTED) ? (
+                                                                        (row.mvStatus === globals.state.RE_SUBMITTED) ? (
                                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                                                                                 <path fill="#FF8256" fillRule="nonzero" d="M21 15.875L17.625 12.5v2.25H7.5c-1.24 0-2.25-1.01-2.25-2.25s1.01-2.25 2.25-2.25h7.875V8H7.5A4.505 4.505 0 0 0 3 12.5C3 14.981 5.019 17 7.5 17h10.125v2.25L21 15.875z" />
                                                                             </svg>
@@ -389,37 +409,31 @@ export default function TableView() {
                                                     }
 
                                                     <TableCell align="left">{row.loanApplicationNo}</TableCell>
+                                                    <TableCell align="left">{row.clixApplicationId}</TableCell>
                                                     <TableCell align="left">{row.name}</TableCell>
                                                     {
-                                                        (!card[cards.ALL]) ? (<TableCell align="left">{row.mobileNumber}</TableCell>) : (null)
+                                                        (!card[globals.cards.ALL]) ? (<TableCell align="left">{row.mobileNumber}</TableCell>) : (null)
                                                     }
 
                                                     <TableCell align="left">{'₹' + numberWithCommas(row.loanAmount)}</TableCell>
                                                     {
-                                                        (card[cards.PENDING] || card[cards.ALL]) ? (
+                                                        (card[globals.cards.PENDING] || card[globals.cards.ALL]) ? (
 
                                                             (row.lockedBy && row.lockedBy !== localStorage.getItem('agentName')) ?
                                                                 (
-                                                                    <React.Fragment>
-                                                                        <TableCell align="left" style={{ display: 'flex' }}>
-                                                                            {/* <img src={lockImage} alt="lock image" style={{ paddingRight: '0.5rem' }} /> */}
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style={{ paddingRight: '0.5rem' }}>
-                                                                                <g fill="#EC7474" fillRule="nonzero">
-                                                                                    <path d="M6 20h12V10H6v10zm6-7c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z" opacity=".3" />
-                                                                                    <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" />
-                                                                                </g>
-                                                                            </svg>
-
-                                                                            <Typography style={{ paddingTop: '0.4rem' }}>Locked</Typography>
-                                                                        </TableCell>
-                                                                        <TableCell align="left">
-                                                                            <Typography>{row.lockedBy}</Typography>
-                                                                        </TableCell>
-                                                                    </React.Fragment>
-                                                                )
-                                                                : (<React.Fragment>
                                                                     <TableCell align="left" style={{ display: 'flex' }}>
-                                                                        {/* <img src={lockOpenImage} alt="lock open image" style={{ paddingRight: '0.5rem' }} /> */}
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style={{ paddingRight: '0.5rem' }}>
+                                                                            <g fill="#EC7474" fillRule="nonzero">
+                                                                                <path d="M6 20h12V10H6v10zm6-7c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z" opacity=".3" />
+                                                                                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" />
+                                                                            </g>
+                                                                        </svg>
+
+                                                                        <Typography style={{ paddingTop: '0.4rem' }}>Locked</Typography>
+                                                                    </TableCell>
+                                                                )
+                                                                : (
+                                                                    <TableCell align="left" style={{ display: 'flex' }}>
                                                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style={{ paddingRight: '0.5rem' }}>
                                                                             <g fill="none" fillRule="nonzero">
                                                                                 <path fill="#FFF" d="M6 20h12V10H6v10zm6-7c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z" />
@@ -429,38 +443,41 @@ export default function TableView() {
                                                                         </svg>
 
                                                                         <Typography style={{ paddingTop: '0.4rem' }}>Available</Typography>
-                                                                    </TableCell>
-                                                                    <TableCell align="left">---</TableCell>
-                                                                </React.Fragment>)
+                                                                    </TableCell>)
 
                                                         ) : (null)
 
                                                     }
-                                                    {/* {
-                                                    (card[0]) ? (
-
-                                                        (row.agentName) ? (<TableCell align="left">{row.agentName}</TableCell>)
-                                                            : (<TableCell align="left">---</TableCell>)
-
-                                                    ) : (null)
-
-                                                } */}
                                                     {
-                                                        (card[3]) ? (<TableCell align="left">{row.rejectReason}</TableCell>) : (null)
+                                                        (card[globals.cards.PENDING] || card[globals.cards.ALL]) ? (
+
+                                                            (row.lockedBy) ?
+                                                                (<TableCell align="left">
+                                                                    <Typography>{row.lockedBy}</Typography>
+                                                                </TableCell>)
+                                                                : (<TableCell align="left">
+                                                                    <Typography>---</Typography>
+                                                                </TableCell>)
+
+                                                        ) : (null)
 
                                                     }
                                                     {
-                                                        (card[cards.ALL]) ? (<TableCell align="left">
+                                                        (card[globals.cards.REJECTED_OR_CANCELLED]) ? (<TableCell align="left">{row.rejectReason}</TableCell>) : (null)
+
+                                                    }
+                                                    {
+                                                        (card[globals.cards.ALL]) ? (<TableCell align="left">
                                                             <ApplicationState state={row.mvStatus} />
                                                         </TableCell>) : (null)
                                                     }
                                                     {
                                                         (row.lockedBy && row.lockedBy !== localStorage.getItem('agentName')) ?
                                                             (<TableCell className={classes.profileLocked} align="left" style={{ cursor: 'pointer' }}>
-                                                                {(row.mvStatus === state.PENDING || row.mvStatus === state.RE_SUBMITTED) ? ("Verify") : ("View")}
+                                                                {(row.mvStatus === globals.state.PENDING || row.mvStatus === globals.state.RE_SUBMITTED) ? ("Verify") : ("View")}
                                                             </TableCell>) :
                                                             (<TableCell className={classes.profileView} align="left" id={row.loanApplicationNo} style={{ cursor: 'pointer' }} onClick={navLoanDetails}>
-                                                                {(row.mvStatus === state.PENDING || row.mvStatus === state.RE_SUBMITTED) ? ("Verify") : ("View")}
+                                                                {(row.mvStatus === globals.state.PENDING || row.mvStatus === globals.state.RE_SUBMITTED) ? ("Verify") : ("View")}
                                                             </TableCell>
 
                                                             )

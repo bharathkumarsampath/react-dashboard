@@ -6,31 +6,31 @@ import Typography from '@material-ui/core/Typography';
 import TransitionsModal from '../Modal/Modal'
 import { CardContext } from '../../containers/Dashboard/Dashboard'
 import { BootstrapButton, useToolbarStyles } from './TableViewHeaderStyle'
-import { cards } from '../../globals'
+import { globals } from '../../globals'
 
 
 export default function TableViewToolbar(props) {
     const classes = useToolbarStyles();
-    const { numSelected, bulkApprove } = props;
+    const { numSelected, bulkLock } = props;
     const childRef = useRef();
     const [card] = useContext(CardContext);
     function cardParse(card) {
-        if (card[cards.PENDING]) {
+        if (card[globals.cards.PENDING]) {
             return "Pending Applications";
         }
-        else if (card[cards.RE_WORK]) {
+        else if (card[globals.cards.RE_WORK]) {
             return "Re-work Applications";
         }
 
-        else if (card[cards.APPROVED]) {
+        else if (card[globals.cards.APPROVED]) {
 
             return "Approved Applications";
         }
-        else if (card[cards.REJECTED_OR_CANCELLED]) {
+        else if (card[globals.cards.REJECTED_OR_CANCELLED]) {
             return "Rejected/Cancelled Applications";
         }
 
-        else if (card[cards.ALL]) {
+        else if (card[globals.cards.ALL]) {
             return "All Applications";
         }
     }
@@ -57,7 +57,7 @@ export default function TableViewToolbar(props) {
                 >
                     LOCK
                 </BootstrapButton>
-                <TransitionsModal ref={childRef} bulkApprove={bulkApprove}></TransitionsModal>
+                <TransitionsModal ref={childRef} bulkLock={bulkLock}></TransitionsModal>
             </div>
 
 

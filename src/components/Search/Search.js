@@ -6,10 +6,11 @@ import Popover from '@material-ui/core/Popover';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
 import ApplicationState from '../ApplicationState/ApplicationState'
-import { api, routes } from '../../globals'
+import { globals } from '../../globals'
 import { useHistory } from "react-router-dom";
 import { ReloadAppContext } from '../../containers/LoanDetail/LoanDetail'
-import { unLockApp } from '../../utils';
+import { unLockApp, clearLocalStorage } from '../../utils';
+import SnackBar from '../Snackbar/SnackBar'
 const useStyles = makeStyles(theme => ({
     root: {
         display: 'flex',
@@ -26,6 +27,22 @@ const search = () => {
     const [searchTerm, setSearchTerm] = React.useState("");
     const [loanApp, setLoanApp] = React.useState({});
 
+    const [snackBar, setSnackBar] = React.useState();
+    const [snackBarVariant, setSnackBarVariant] = React.useState();
+    const [snackBarMessage, setSnackBarMessage] = React.useState();
+
+    const showSnackBar = () => {
+        setSnackBar(true);
+    };
+
+    const hideSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setSnackBar(false);
+    };
+
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [popupMessage, setPopupMessage] = React.useState("Enter Application ID and click on search or press enter");
 
@@ -33,16 +50,16 @@ const search = () => {
 
     function searchLoanApp() {
         if (loanApp.loanApplicationNo) {
-            if (window.location.pathname.includes(routes.LOANDETAIL)) {
-                // console.log("in loan detail ", window.location.pathname);
+            if (window.location.pathname.includes(globals.routes.LOANDETAIL)) {
                 unLockApp();
-                history.push(routes.LOANDETAIL + '/' + loanApp.loanApplicationNo);
+                history.push(globals.routes.LOANDETAIL + '/' + loanApp.loanApplicationNo);
                 localStorage.setItem('loanAppNo', loanApp.loanApplicationNo);
                 setReload(!reload);
+
             } else {
-                // console.log("not in  loan detail ", window.location.pathname);
                 localStorage.setItem('loanAppNo', loanApp.loanApplicationNo);
-                history.push(routes.LOANDETAIL + '/' + loanApp.loanApplicationNo);
+                history.push(globals.routes.LOANDETAIL + '/' + loanApp.loanApplicationNo);
+
             }
         }
     }
@@ -53,62 +70,70 @@ const search = () => {
     }
 
     const handleClick = event => {
-        setPopupMessage(<div style={{ padding: '3% 90% 3% 3%', display: 'flex' }}>
-            <div className={classes.root}>
-                <CircularProgress style={{ color: "#6fb934" }} />
-            </div>
-            <div>
-                <Typography className="Searching">Searching...</Typography >
-            </div>
-        </div >);
-        setAnchorEl(event.currentTarget);
-        try {
+        if (searchTerm) {
+            setPopupMessage(<div style={{ padding: '3% 90% 3% 3%', display: 'flex' }}>
+                <div className={classes.root}>
+                    <CircularProgress style={{ color: "#6fb934" }} />
+                </div>
+                <div>
+                    <Typography className="Searching">Searching...</Typography >
+                </div>
+            </div >);
+            setAnchorEl(event.currentTarget);
+            try {
 
 
-            var settings = {
-                "mode": "no-cors",
-                "url": api.HOST + "searchLoanApplication?loanAppNo=" + searchTerm,
-                "method": "GET",
-                "headers": {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "token": localStorage.getItem('token')
+                var settings = {
+                    "mode": "no-cors",
+                    "url": globals.api.HOST + "searchLoanApplication?loanAppNo=" + searchTerm,
+                    "method": "GET",
+                    "headers": {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "token": localStorage.getItem('token')
+                    }
                 }
+                fetch(settings.url, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "token": localStorage.getItem('token')
+                    }
+
+                }).then(res => res.json()
+                ).then(res => {
+                    if (res && res.mvStatus !== globals.state.INITIATED) {
+                        setLoanApp(res);
+                        setPopupMessage(
+                            <div style={{ padding: '3% 3% 3% 3%', display: 'flex', color: '#000000', verticalAlign: 'text-bottom' }}>
+                                <div style={{ marginRight: '2%', fontWeight: '600' }}>
+                                    <Typography>MV{res.loanApplicationNo}</Typography>
+                                </div>
+                                <div style={{ marginRight: '1%', letterSpacing: '0.25px' }}>
+                                    <Typography>{(res.firstName) ? (res.firstName + " ") : (null) + (res.middleName) ? (res.middleName + " ") : (null) + (res.lastName) ? (res.lastName + " ") : (null)}</Typography>
+                                </div>
+                                <div style={{ marginRight: '1%', marginLeft: '1%' }}>
+                                    <ApplicationState state={res.mvStatus} />
+                                </div>
+                            </div>
+                        );
+                    } else if (res.response === "Either token is invalid or token expired") {
+                        setSnackBarMessage("Session Expired,try signing again");
+                        setSnackBarVariant("warning");
+                        showSnackBar();
+                        unLockApp();
+                        setTimeout(function () { clearLocalStorage(); history.push(globals.routes.HOME) }, globals.messageDisplayTime.sessionExpiry);
+                    } else {
+                        setPopupMessage(
+                            <div style={{ padding: '5% 80% 5% 5%', color: '#000000', width: '402px' }}>
+                                <Typography> No results found...</Typography>
+                            </div>
+                        );
+                    }
+                });
+
+            } catch (e) {
+                console.log(e);
             }
-            fetch(settings.url, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "token": localStorage.getItem('token')
-                }
-
-            }).then(res => res.json()
-            ).then(res => {
-                if (res) {
-                    setLoanApp(res);
-                    setPopupMessage(
-                        <div style={{ padding: '3% 3% 3% 3%', display: 'flex', color: '#000000', verticalAlign: 'text-bottom' }}>
-                            <div style={{ marginRight: '2%', fontWeight: '600' }}>
-                                <Typography>MV{res.loanApplicationNo}</Typography>
-                            </div>
-                            <div style={{ marginRight: '1%', letterSpacing: '0.25px' }}>
-                                <Typography>{(res.firstName) ? (res.firstName + " ") : (null) + (res.middleName) ? (res.middleName + " ") : (null) + (res.lastName) ? (res.lastName + " ") : (null)}</Typography>
-                            </div>
-                            <div style={{ marginRight: '1%', marginLeft: '1%' }}>
-                                <ApplicationState state={res.mvStatus} />
-                            </div>
-                        </div>
-                    );
-                } else {
-                    setPopupMessage(
-                        <div style={{ padding: '5% 80% 5% 5%', color: '#000000', width: '402px' }}>
-                            <Typography> No results found...</Typography>
-                        </div>
-                    );
-                }
-            });
-
-        } catch (e) {
-            console.log(e);
         }
 
     };
@@ -144,7 +169,7 @@ const search = () => {
             <button type="submit" className="searchButton" onClick={handleClick}>
                 <SearchIcon style={{ color: 'white', paddingTop: '14%' }} />
             </button>
-
+            <SnackBar message={snackBarMessage} variant={snackBarVariant} snackBar={snackBar} showSnackBar={showSnackBar} hideSnackBar={hideSnackBar} />
         </div>
 
 

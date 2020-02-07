@@ -1,21 +1,28 @@
 import React from 'react';
 import ListCell from '../../components/List/List'
+import { GetFormattedDate } from '../../utils'
 const OfferDetails = (props) => {
+
+
+    const transferrableAmount = props.LoanApp.loanAmount - props.LoanApp.preEmiAmount - Number(props.LoanApp.processingFee);
 
 
     return (
         <div>
-            <ListCell name='Amount Applied For' value={'₹' + props.LoanApp.appliedAmount} />
+            {/* <ListCell name='Amount Applied For' value={'₹' + props.LoanApp.loanAmount} /> need to change later */}
             <ListCell name='Loan Amount' value={'₹' + props.LoanApp.loanAmount} style={{ backgroundColor: '#f5f7fb' }} />
             <ListCell name='Pre EMI' value={'₹' + props.LoanApp.preEmiAmount} />
-            <ListCell name='Transferrable Amount' value={'₹' + props.LoanApp.transferrableAmount} />
+            <ListCell name='Transferrable Amount' value={'₹' + transferrableAmount} />
             <ListCell name='Processing Fee' value={'₹' + props.LoanApp.processingFee} />
             <ListCell name='EMI' value={'₹' + props.LoanApp.loanEmi} />
             <ListCell name='Tenure' value={props.LoanApp.loanTenure + ' Months'} />
             <ListCell name='Rate of Interest' value={props.LoanApp.rateOfInterest + '%'} />
-            <ListCell name='First EMI' value={props.LoanApp.firstEmiDate} />
-            <ListCell name='Maturity' value={props.LoanApp.maturityDate} />
-            <ListCell name='Application Submitted On' value={props.LoanApp.submissionDate} />
+            <ListCell name='First EMI' value={(props.LoanApp.firstEmiDate) ? (props.LoanApp.firstEmiDate.substring(0, 12)) : (null)} />
+            {/* {(props.LoanApp.maturityDate) ? (
+                <ListCell name='Maturity' value={props.LoanApp.maturityDate} />
+            ) : (null)} */}
+
+            {/* <ListCell name='Application Submitted On' value={props.LoanApp.submissionDate} /> */}
         </div>
 
 

@@ -2,21 +2,20 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Modal from '@material-ui/core/Modal';
 import TextField from '@material-ui/core/TextField';
-import './LoansHeader.css'
 import CheckBox from '../../components/CheckBox/CheckBox'
 import { useStyles, ModalButton } from './LoansHeaderStyles'
-import { rework, api, state, routes } from '../../globals'
+import { globals } from '../../globals'
 import { ReloadAppContext } from '../../containers/LoanDetail/LoanDetail'
 import { useHistory } from "react-router-dom";
 import Button from '@material-ui/core/Button';
-import { unLockApp } from '../../utils'
+import { unLockApp, clearLocalStorage } from '../../utils'
 const ReworkModal = (props) => {
     let history = useHistory();
 
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [otherReasons, setOtherReasons] = React.useState();
-    const checkBoxObject = rework.REASONS;
+    const checkBoxObject = JSON.parse(localStorage.getItem("reworkReasons") || "[]");
     const [reload, setReload] = React.useContext(ReloadAppContext);
 
     const handleClose = () => {
@@ -44,7 +43,7 @@ const ReworkModal = (props) => {
         var remarks = "";
         Object.keys(checkedItems).forEach((key, index) => {
             if (checkedItems[key]) {
-                remarks = remarks + key.toString() + ",\n";
+                remarks = remarks + key.toString() + ",";
             }
 
         })
@@ -53,14 +52,13 @@ const ReworkModal = (props) => {
         } else {
             remarks = remarks.substring(0, remarks.length - 2);
         }
-        // console.log("remarks : " + remarks);
         if (remarks) {
             handleClose();
 
             var settings = {
                 "mode": "no-cors",
                 "crossDomain": true,
-                "url": api.HOST + "markRework",
+                "url": globals.api.HOST + "markRework",
             }
 
             await fetch(settings.url, {
@@ -74,8 +72,9 @@ const ReworkModal = (props) => {
                     agent_id: localStorage.getItem("agentName"),
                     loan_application_no: props.LoanApp.loanApplicationNo,
                     old_status: props.LoanApp.mvStatus,
-                    new_status: state.RE_WORK,
-                    remarks: (props.LoanApp.reworkReason) ? (props.LoanApp.reworkReason + "\n\n" + remarks) : (remarks),
+                    new_status: globals.state.RE_WORK,
+                    remarks: remarks,
+                    clix_application_id: props.LoanApp.clixApplicationId
                 })
             }).then(res => res.text()
             ).then(res => {
@@ -85,13 +84,13 @@ const ReworkModal = (props) => {
                     props.setSnackBarVariant("success");
                     props.showSnackBar();
                     setReload(!reload);
-                } else if (res === "Either token is invalid or token expired") {
+                    unLockApp();
+                } else if (res.response === "Either token is invalid or token expired") {
                     props.setSnackBarMessage("Session Expired,try signing again");
                     props.setSnackBarVariant("warning");
                     props.showSnackBar();
                     unLockApp();
-                    localStorage.clear();
-                    setTimeout(history.push('/'), 2000);
+                    setTimeout(function () { clearLocalStorage(); history.push(globals.routes.HOME) }, globals.messageDisplayTime.sessionExpiry);
                 } else {
                     props.setSnackBarMessage("Failed to mark the application as  Rework");
                     props.setSnackBarVariant("info");
@@ -109,7 +108,7 @@ const ReworkModal = (props) => {
         var settings = {
             "mode": "no-cors",
             "crossDomain": true,
-            "url": api.HOST + "approve",
+            "url": globals.api.HOST + "approve",
         }
 
         await fetch(settings.url, {
@@ -123,23 +122,23 @@ const ReworkModal = (props) => {
                 agent_id: localStorage.getItem("agentName"),
                 loan_application_no: props.LoanApp.loanApplicationNo,
                 old_status: props.LoanApp.mvStatus,
-                new_status: state.APPROVED
+                new_status: globals.state.APPROVED,
+                clix_application_id: props.LoanApp.clixApplicationId
             })
         }).then(res => res.text()
         ).then(res => {
-            // console.log('mark approve', res);
             if (res === "Success") {
                 props.setSnackBarMessage("Application successfully Approved");
                 props.setSnackBarVariant("info");
                 props.showSnackBar();
                 setReload(!reload);
-            } else if (res === "Either token is invalid or token expired") {
+                unLockApp();
+            } else if (res.response === "Either token is invalid or token expired") {
                 props.setSnackBarMessage("Session Expired,try signing again");
                 props.setSnackBarVariant("warning");
                 props.showSnackBar();
                 unLockApp();
-                localStorage.clear();
-                setTimeout(history.push(routes.DASHBOARD), 2000); //add unlock app function
+                setTimeout(function () { clearLocalStorage(); history.push(globals.routes.HOME) }, globals.messageDisplayTime.sessionExpiry); //add unlock app function
             } else {
                 props.setSnackBarMessage("Failed to approve the application");
                 props.setSnackBarVariant("info");
@@ -147,14 +146,13 @@ const ReworkModal = (props) => {
             }
 
         });
+
+        props.LoanApp.loanApplicationNo = undefined;
     }
     return (
         <div>
 
             <div>
-                {/* <BootstrapButton variant="contained" color="primary" disableRipple className={classes.margin} onClick={handleOpen}>
-                    RE-WORK
-                </BootstrapButton> */}
                 <Button
                     fullWidth
                     variant="outlined"
@@ -162,9 +160,6 @@ const ReworkModal = (props) => {
                     className={classes.margin}
                     onClick={handleOpen} style={{ width: '146px', height: '40px' }}>RE-WORK
                             </Button >
-                {/* <BootstrapButton variant="contained" color="primary" disableRipple className={classes.margin} onClick={approve}>
-                    APPROVE
-                </BootstrapButton> */}
                 <Button
                     fullWidth
                     variant="contained"
@@ -173,7 +168,7 @@ const ReworkModal = (props) => {
                     onClick={approve} style={{ width: '150px', height: '40px' }}>APPROVE
                             </Button >
             </div>
-            <div className="displayFlex" style={{ marginTop: '0.2rem', backgroundColor: 'white' }}>
+            <div style={{ display: 'flex', marginTop: '0.2rem', backgroundColor: 'white' }}>
 
                 <Modal
                     aria-labelledby="simple-modal-title"

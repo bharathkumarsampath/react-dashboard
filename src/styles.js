@@ -247,7 +247,13 @@ export const theme = createMuiTheme({
                 "&:first-child": {
                     paddingTop: "0 !important",
                 },
+                textAlign: 'center',
+                height: '14vh',
+                minWidth: "28vw",
+
             },
+
+
         },
 
         MuiExpansionPanel: {
@@ -456,10 +462,12 @@ theme.overrides.MuiSelect = {
 
         },
         fontWeight: 'normal',
-        fontSize: '1rem'
+        fontSize: '1rem',
+        border: '1px solid grey',
+        borderRadius: '5px'
     },
     icon: {
-        marginRight: "8px",
+        marginRight: "3px",
     },
 };
 

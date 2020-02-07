@@ -6,7 +6,7 @@ import Login from './Login/Login'
 import '../containers/App.css'
 import AuthRoute from './auth'
 import NoPageFound from './NoPageFound/NoPageFound';
-import { routes } from '../globals';
+import { globals } from '../globals';
 
 
 
@@ -16,9 +16,9 @@ const App = () => {
       { /* Constant header component */}
       { /* Container stuff goes here  */}
       <Switch>
-        <Route exact path={routes.HOME} component={Login}></Route>
-        <AuthRoute exact path={routes.DASHBOARD} component={Dashboard} />
-        <AuthRoute path={routes.LOANDETAIL + '/:loanAppNo'} component={LoanDetail} />
+        <Route exact path={globals.routes.HOME} component={Login} />
+        <AuthRoute exact path={globals.routes.DASHBOARD} component={Dashboard} />
+        <AuthRoute path={globals.routes.LOANDETAIL + '/:loanAppNo'} component={LoanDetail} />
         <Route component={NoPageFound} />
       </Switch>
     </div>

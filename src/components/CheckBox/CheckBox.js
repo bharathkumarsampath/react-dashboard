@@ -1,25 +1,13 @@
 import React from 'react';
 import Checkbox from '@material-ui/core/Checkbox';
 import { Typography } from '@material-ui/core';
+import CheckBoxStyles from './CheckBoxStyles'
 
 export default function Checkboxes({ text, checked = false, handleChange, value }) {
-
-    // const handleChange = event => {
-    //     setChecked(event.target.checked);
-    //     if (event.target.checked) {
-    //         var tempArray = [...props.checkBoxArray];
-    //         tempArray[event.target.value] = 1;
-    //         props.setCheckBoxArray(tempArray);
-    //     } else {
-    //         var tempArray = [...props.checkBoxArray];
-    //         tempArray[event.target.value] = 0;
-    //         props.setCheckBoxArray(tempArray);
-    //     }
-    // };
-
+    const classes = CheckBoxStyles();
 
     return (
-        <div className="displayFlex alignCenter">
+        <div className={classes.root}>
             <Checkbox
                 name={text}
                 checked={checked}
@@ -27,7 +15,7 @@ export default function Checkboxes({ text, checked = false, handleChange, value 
                 value={value}
                 inputProps={{ 'aria-label': 'primary checkbox' }}
             />
-            <Typography style={{ paddingTop: '3%' }}>{text}</Typography>
+            <Typography className={classes.checkBoxText}>{text}</Typography>
 
         </div>
     );
