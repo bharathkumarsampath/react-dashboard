@@ -5,11 +5,13 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import Logout from '../LogOut/LogOut'
 import Popover from '@material-ui/core/Popover';
 import { Grid } from '@material-ui/core';
-
-
+import { useHistory } from "react-router-dom";
+import { globals } from '../../globals';
 
 
 const toolbar = () => {
+
+    let history = useHistory();
     const [anchorEl, setAnchorEl] = React.useState(null);
 
     const handleClick = event => {
@@ -19,6 +21,10 @@ const toolbar = () => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    function NavToDashboard() {
+        history.push(globals.routes.DASHBOARD);
+    }
 
     const open = Boolean(anchorEl);
     function Account(props) {
@@ -31,8 +37,8 @@ const toolbar = () => {
     return (
         <Grid>
             <div className="toolbar" style={{ display: "flex", backgroundColor: 'white' }}>
-                <div style={{ textAlign: 'left', paddingTop: '.5%', paddingLeft: '.5%' }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="220" height="50" viewBox="0 0 181 32" alt="clix logo">
+                <div style={{ textAlign: 'left', paddingTop: '.5%', paddingLeft: '.5%', cursor: 'pointer' }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="220" height="50" viewBox="0 0 181 32" alt="clix logo" onClick={NavToDashboard}>
                         <g fill="none" fillRule="evenodd">
                             <path fill="#72BA43" d="M29.843 16c0-7.623-6.22-13.843-13.843-13.843C8.378 2.157 2.157 8.377 2.157 16S8.377 29.843 16 29.843c7.658 0 13.843-6.22 13.843-13.843M16 0c8.809 0 16 7.191 16 16 0 8.809-7.191 16-16 16-8.81 0-16-7.155-16-16C0 7.155 7.19 0 16 0" />
                             <path fill="#71BA44" d="M17 14.5c0-.278-.203-.5-.405-.5h-2.149c-.243 0-.446.222-.446.5s.203.5.446.5h2.149c.202 0 .405-.222.405-.5m0-1c0-.278-.203-.5-.405-.5h-2.149c-.243 0-.446.222-.446.5s.203.5.446.5h2.149c.202 0 .405-.222.405-.5m4 1c0-.278-.203-.5-.446-.5h-2.149c-.243 0-.405.222-.405.5s.203.5.405.5h2.149c.243 0 .446-.222.446-.5m0-1.004c0-.276-.203-.496-.446-.496h-2.149c-.243 0-.405.22-.405.496 0 .275.203.496.405.496h2.149c.243.055.446-.166.446-.496m0-.996c0-.278-.203-.5-.446-.5h-2.149c-.243 0-.405.222-.405.5s.203.5.405.5h2.149c.243 0 .446-.222.446-.5m0-1c0-.278-.203-.5-.446-.5h-2.149c-.243 0-.405.222-.405.5s.203.5.405.5h2.149c.243 0 .446-.222.446-.5m4.237 5.08c.61-.243.763-.486.763-.73 0-.365-.229-.527-.229-.527-.19-.243-.763-.324-1.22-.243-.23.04-3.587 1.054-3.587 1.054.076.325.267.852-.306 1.46-.381.365-.991.446-1.754.446s-1.603-.122-2.252-.203c-.19-.04-.8-.121-.8-.121s.419-.203.953-.203c.687-.04 1.221 0 1.564 0 .344.04.84.08 1.069.08.954.042 1.182-.567 1.182-.85 0-.69-.381-.933-1.564-1.014-.763-.081-1.602-.122-2.175-.203-1.106-.122-1.907-.446-2.327-.487-.267-.04-.992-.162-1.679.406C10.777 17.229 7 18.324 7 18.324 7.572 20.27 10.7 21 10.7 21c1.336-1.257 2.824-1.379 4.083-1.46.229 0 2.327 0 4.311.244.382.04.725-.203.725-.203 2.9-1.946 5.418-3 5.418-3M16 3c7.193 0 13 5.807 13 13s-5.807 13-13 13S3 23.193 3 16 8.844 3 16 3" />

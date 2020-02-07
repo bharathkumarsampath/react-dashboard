@@ -1,10 +1,10 @@
-import { api } from './globals'
+import { globals } from './globals'
 function unLockApp() {
     if (localStorage.getItem('loanAppNo')) {
         try {
             var settings = {
                 "mode": "no-cors",
-                "url": api.HOST + "unlockApp?loanAppNo=" + localStorage.getItem('loanAppNo'),
+                "url": globals.api.HOST + "unlockApp?loanAppNo=" + localStorage.getItem('loanAppNo'),
                 "method": "GET",
                 "headers": {
                     "Content-Type": "application/x-www-form-urlencoded",
@@ -31,4 +31,30 @@ function unLockApp() {
 
 }
 
-export { unLockApp };
+function GetFormattedDate(date) {
+    console.log(date);
+    var todayTime = new Date(date);
+    var month = todayTime.getMonth() + 1;
+    var day = todayTime.getDate();
+    var year = todayTime.getFullYear();
+    console.log(month + "/" + day + "/" + year);
+    return month + "/" + day + "/" + year;
+}
+
+function clearLocalStorage() {
+    if (localStorage.getItem('rememberMe')) {
+        const agentName = localStorage.getItem('agentName');
+        const password = localStorage.getItem('password');
+        localStorage.clear();
+        localStorage.setItem('rememberMe', true);
+        localStorage.setItem('agentName', agentName);
+        localStorage.setItem('password', password);
+    } else {
+        localStorage.clear();
+    }
+
+}
+
+
+
+export { unLockApp, clearLocalStorage, GetFormattedDate };

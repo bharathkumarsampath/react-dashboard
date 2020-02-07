@@ -19,7 +19,7 @@ const TransitionsModal = forwardRef((props, ref) => {
 
     const handleCloseAndApprove = () => {
         setOpen(false);
-        // props.bulkApprove();
+        props.bulkLock();
     };
 
     const handleClose = () => {

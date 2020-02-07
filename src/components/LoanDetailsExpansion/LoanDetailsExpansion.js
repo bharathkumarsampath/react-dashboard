@@ -1,5 +1,4 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -9,31 +8,44 @@ import LoanDetails from '../../components/UserDetails/UserDetails'
 import OfferDetails from '../../components/OfferDetails/OfferDetails'
 import KycDetails from '../../components/KycDetails/KycDetails'
 import EmployerDetails from '../../components/EmployerDetails/EmployerDetails'
-
-const useStyles = makeStyles(theme => ({
-    root: {
-        width: '100%',
-    },
-    heading: {
-        fontSize: theme.typography.pxToRem(15),
-        flexShrink: 0,
-    },
-    secondaryHeading: {
-        fontSize: theme.typography.pxToRem(15),
-        color: theme.palette.text.secondary,
-    },
-}));
-
+import LoanDetailsExpansionStyles from './LoanDetailsExpansionStyles'
+import { globals } from '../../globals'
 export default function ControlledExpansionPanels(props) {
-    const classes = useStyles();
+    const classes = LoanDetailsExpansionStyles();
     const [expanded, setExpanded] = React.useState('panel1');
 
     const handleChange = panel => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
+        switch (panel) {
+            case 'panel1': {
+                globals.loanAgreement.page = 1;
+                // setReload(!reload);
+                break;
+            }
+            case 'panel2': {
+                globals.loanAgreement.page = 3;
+                // setReload(!reload);
+                break;
+            }
+            case 'panel3': {
+                globals.loanAgreement.page = 4;
+                // setReload(!reload);
+                break;
+            }
+            case 'panel4': {
+                globals.loanAgreement.page = 5;
+                // setReload(!reload);
+                break;
+            }
+        }
     };
 
+
+
+
+
     return (
-        <div className={classes.root} style={{ backgroundColor: 'white', width: '28vw', height: '80vh', flex: "auto", flexDirection: 'column', overflow: 'auto', borderRadius: '0.4rem', margin: '1rem', boxShadow: '-1px 2px 6px -2px rgba(0,0,0,0.27)' }}>
+        <div className={classes.root}>
             <ExpansionPanel expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
                 <ExpansionPanelSummary
                     expandIcon={<ExpandMoreIcon />}

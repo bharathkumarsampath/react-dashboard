@@ -3,12 +3,12 @@ import NoPage404 from '../../assets/images/img-404.svg'
 import './NoPageFound.css'
 import Toolbar from '../../components/Toolbar/Toolbar'
 import { useHistory } from "react-router-dom"
-import { routes } from '../../globals';
+import { globals } from '../../globals';
 
 const NoPageFound = () => {
   let history = useHistory();
   function backToHomePage() {
-    history.push(routes.DASHBOARD);
+    history.push(globals.routes.DASHBOARD);
   }
   return (
     <div>

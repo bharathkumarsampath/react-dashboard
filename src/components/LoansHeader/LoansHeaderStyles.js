@@ -47,6 +47,13 @@ const useStyles = makeStyles(theme => ({
     threerow: {
         marginLeft: '30vw'
     },
+    root: {
+        display: 'flex',
+        marginTop: '0.2rem',
+        backgroundColor: 'white',
+        justifyContent: "space-between",
+        paddingLeft: '2%'
+    }
 }));
 
 const BootstrapButton = withStyles({
