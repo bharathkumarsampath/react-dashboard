@@ -7,6 +7,7 @@ import '../containers/App.css'
 import AuthRoute from './auth'
 import NoPageFound from './NoPageFound/NoPageFound';
 import { globals } from '../globals';
+import { unLockApp } from './../utils'
 
 
 
@@ -18,7 +19,7 @@ const App = () => {
       <Switch>
         <Route exact path={globals.routes.HOME} component={Login} />
         <AuthRoute exact path={globals.routes.DASHBOARD} component={Dashboard} />
-        <AuthRoute path={globals.routes.LOANDETAIL + '/:loanAppNo'} component={LoanDetail} />
+        <AuthRoute path={globals.routes.LOANDETAIL + '/:loanAppNo'} component={LoanDetail} onLeave={unLockApp} />
         <Route component={NoPageFound} />
       </Switch>
     </div>

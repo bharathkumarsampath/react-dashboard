@@ -9,7 +9,7 @@ const globals = {
     },
     loanAgreement: {
 
-        page: 0
+        page: 1
     },
     cards: {
 

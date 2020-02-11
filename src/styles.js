@@ -5,7 +5,7 @@ export const elements = {
 };
 export const theme = createMuiTheme({
     typography: {
-        // fontFamily: 'Open Sans',
+        fontFamily: "'Open Sans', sans-serif",
         fontSize: 16,
         color: "#2a292a",
         //useNextVariants: true,

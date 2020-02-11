@@ -54,7 +54,7 @@ const LoanAgreement = (props) => {
             </div>
 
             <Divider />
-            <PdfViewer src={url.loanAgreement} page={globals.loanAgreement.page} />
+            <PdfViewer src={url.loanAgreement} page={props.pageNumber} />
             {/* <iframe id="iframe" src={url.loanAgreement} title="Loan agreement" className={classes.loanAgreementPdf}></iframe> */}
         </div >
 

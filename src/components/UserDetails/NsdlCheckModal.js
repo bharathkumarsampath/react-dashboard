@@ -24,7 +24,7 @@ export default function NsdlCheckModal(props) {
             try {
                 var settings = {
                     "mode": "no-cors",
-                    "url": globals.api.HOST + "getPanStatus?loanAppNo=" + props.loanApp,
+                    "url": globals.api.HOST + "getPanStatus?loanAppNo=" + props.loanApp.loanApplicationNo,
                 }
                 await fetch(settings.url, {
                     method: "GET",
@@ -40,7 +40,7 @@ export default function NsdlCheckModal(props) {
                         setNsdlCheckError(res.response);
                     } else if (res.response === "Either token is invalid or token expired") {
                         console.log("Either token is invalid or token expired");
-                        unLockApp();
+                        unLockApp(props.loanApp.mvStatus);
                         setTimeout(function () { clearLocalStorage(); history.push(globals.routes.HOME) }, globals.messageDisplayTime.sessionExpiry);
                     } else {
                         setNsdlCheck(JSON.parse(res.response));
@@ -75,7 +75,7 @@ export default function NsdlCheckModal(props) {
             >
                 <DialogTitle id="alert-dialog-title">{"Nsdl Check Info"}</DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
+                    <DialogContentText id="alert-dialog-description" style={{ textAlign: "left", paddingLeft: "25px" }}>
                         {
                             (isFetching) ? ("Loading...") : (
                                 (nsdlCheckError) ?
@@ -85,9 +85,9 @@ export default function NsdlCheckModal(props) {
                                     ) : (
 
                                         <React.Fragment>
-                                            Time Stamp : {nsdlCheck.dateCreated}<br /><br />
-                                            Nsdl Check id Ref : {nsdlCheck.id}<br /><br />
-                                            Pan Number : {nsdlCheck.panNumber}<br /><br />
+                                            <span style={{ textAlign: "left" }}><b>Timestamp:</b> {nsdlCheck.dateCreated}</span><br /><br />
+                                            <span style={{ textAlign: "left" }}><b>NSDL check id:</b> {nsdlCheck.id}</span><br /><br />
+                                            <span style={{ textAlign: "left" }}><b>PAN number:</b> {nsdlCheck.panNumber}</span><br /><br />
                                         </React.Fragment>
                                     )
                             )

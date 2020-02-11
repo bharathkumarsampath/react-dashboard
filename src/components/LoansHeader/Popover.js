@@ -54,7 +54,7 @@ export default function SimplePopover(props) {
                 }}
             >
                 <div >
-                    <div className="displayFlex" style={{ letterSpacing: '0.4px', color: '#4a4a4a', justifyContent: 'space-between' }}>
+                    <div style={{ letterSpacing: '0.4px', color: '#4a4a4a', justifyContent: 'space-between', display: 'flex' }}>
                         <Typography className={classes.typography} style={{ color: '#4a4a4a' }}>{props.date}</Typography>
                         <CancelIcon style={{ marginLeft: '5vw', textAlign: 'right', cursor: 'pointer' }} onClick={handleClose} />
                     </div>

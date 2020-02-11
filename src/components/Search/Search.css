@@ -15,12 +15,12 @@
   height: 1.5rem;
   border-radius: 10px 0 0 10px;
   outline: none;
-  color: rgb(116, 121, 118);
+  color: #757575;
   background-color: rgb(237,237,237);
   border: none;
   font-weight: 535;
   font-size: 0.9rem;
-  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .searchTerm:focus{

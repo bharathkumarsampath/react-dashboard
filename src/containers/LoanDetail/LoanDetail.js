@@ -21,9 +21,12 @@ const UserProfile = (props) => {
     const [snackBarMessage, setSnackBarMessage] = React.useState();
     const [error, setError] = React.useState();
     const [selfieUrl, setSelfieUrl] = React.useState('');
+    const [pageNumber, setPageNumber] = React.useState(1);
     const showSnackBar = () => {
         setSnackBar(true);
     };
+
+
 
     const hideSnackBar = (event, reason) => {
         if (reason === 'clickaway') {
@@ -63,61 +66,62 @@ const UserProfile = (props) => {
         }
     }
     useEffect(() => {
+        if (props.match.params.loanAppNo !== "undefined") {
+            const fetchUsers = async () => {
+                try {
+                    setError(false);
+                    var settings = {
+                        "mode": "no-cors",
+                        "crossDomain": true,
+                        "url": globals.api.HOST + "getLoanApplication?loanAppNo=" + props.match.params.loanAppNo + "&agentName=" + localStorage.getItem('agentName'),
 
-        const fetchUsers = async () => {
-            try {
-                setError(false);
-                var settings = {
-                    "mode": "no-cors",
-                    "crossDomain": true,
-                    "url": globals.api.HOST + "getLoanApplication?loanAppNo=" + props.match.params.loanAppNo + "&agentName=" + localStorage.getItem('agentName'),
+                    }
+                    await fetch(settings.url, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                            "token": localStorage.getItem('token'),
+                        }
 
+                    }, globals.request.timeout, 'request timeout').then(res => res.json()
+                    ).then(res => {
+                        if (typeof res.response === "string" && res.response.includes("Application Locked")) {
+                            setSnackBarMessage(res.response);
+                            setSnackBarVariant("info");
+                            showSnackBar();
+                            setTimeout(function () { history.push(globals.routes.DASHBOARD); }, 2000);
+                        } else if (res.response === "Please provide valid loan application no") {
+                            setSnackBarMessage("Please provide valid loan application no");
+                            setSnackBarVariant("info");
+                            showSnackBar();
+                            setTimeout(function () { history.push(globals.routes.DASHBOARD); }, 2000);
+                        } else if (res.response === "Exception occurred") {
+                            setSnackBarMessage("Exception occurred, try again later");
+                            setSnackBarVariant("info");
+                            showSnackBar();
+                            setTimeout(function () { history.push(globals.routes.DASHBOARD); }, 2000);
+                        } else if (res.response === "Either token is invalid or token expired") {
+                            setSnackBarMessage("Your Session expired,try signing in again");
+                            setSnackBarVariant("info");
+                            showSnackBar();
+                            unLockApp(LoanApp.mvStatus);
+                            setTimeout(function () { clearLocalStorage(); history.push(globals.routes.HOME) }, globals.messageDisplayTime.sessionExpiry);
+                        } else {
+                            setLoanApp(JSON.parse(JSON.stringify(res)));
+
+                        }
+
+
+                    });
+
+                } catch (e) {
+                    console.log(e);
+                    setError(true);
                 }
-                await fetch(settings.url, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded",
-                        "token": localStorage.getItem('token'),
-                    }
 
-                }, globals.request.timeout, 'request timeout').then(res => res.json()
-                ).then(res => {
-                    if (typeof res.response === "string" && res.response.includes("Application Locked")) {
-                        setSnackBarMessage(res.response);
-                        setSnackBarVariant("info");
-                        showSnackBar();
-                        setTimeout(function () { history.push(globals.routes.DASHBOARD); }, 2000);
-                    } else if (res.response === "Please provide valid loan application no") {
-                        setSnackBarMessage("Please provide valid loan application no");
-                        setSnackBarVariant("info");
-                        showSnackBar();
-                        setTimeout(function () { history.push(globals.routes.DASHBOARD); }, 2000);
-                    } else if (res.response === "Exception occurred") {
-                        setSnackBarMessage("Exception occurred, try again later");
-                        setSnackBarVariant("info");
-                        showSnackBar();
-                        setTimeout(function () { history.push(globals.routes.DASHBOARD); }, 2000);
-                    } else if (res.response === "Either token is invalid or token expired") {
-                        setSnackBarMessage("Your Session expired,try signing in again");
-                        setSnackBarVariant("info");
-                        showSnackBar();
-                        unLockApp();
-                        setTimeout(function () { clearLocalStorage(); history.push(globals.routes.HOME) }, globals.messageDisplayTime.sessionExpiry);
-                    } else {
-                        setLoanApp(JSON.parse(JSON.stringify(res)));
-
-                    }
-
-
-                });
-
-            } catch (e) {
-                console.log(e);
-                setError(true);
-            }
-
-        };
-        fetchUsers();
+            };
+            fetchUsers();
+        }
         getReworkReasons();
     }, [reload]);
 
@@ -128,14 +132,14 @@ const UserProfile = (props) => {
                     (error) ? (<LoanDetailPageError />) : (
                         (LoanApp.loanApplicationNo) ?
                             (<div>
-                                <Toolbar />
+                                <Toolbar LoanApp={LoanApp} />
                                 <LoansHeader LoanApp={LoanApp} />
                                 <div style={{ display: 'flex' }}>
                                     <div>
-                                        <ExpansionPanel LoanApp={LoanApp} selfieUrl={selfieUrl} />
+                                        <ExpansionPanel LoanApp={LoanApp} selfieUrl={selfieUrl} setPageNumber={setPageNumber} />
                                     </div>
                                     <div>
-                                        <LoanAgreement LoanApp={LoanApp} setSelfieUrl={setSelfieUrl} LoanAppNo={props.match.params.loanAppNo} />
+                                        <LoanAgreement LoanApp={LoanApp} setSelfieUrl={setSelfieUrl} LoanAppNo={props.match.params.loanAppNo} pageNumber={pageNumber} />
                                     </div>
                                 </div></div>) :
                             (<Spinner />))

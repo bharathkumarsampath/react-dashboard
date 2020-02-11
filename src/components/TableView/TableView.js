@@ -5,7 +5,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TablePagination from '@material-ui/core/TablePagination';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
-import { CardContext, LatestCountContext } from '../../containers/Dashboard/Dashboard'
+import { CardContext, LatestCountContext, CountContext } from '../../containers/Dashboard/Dashboard'
 import EnhancedTableHead from '../TableViewHead/TableViewHead'
 import EnhancedTableToolbar from '../TableViewHeader/TableViewHeader'
 import Spinner from '../Loader/Loader'
@@ -83,7 +83,7 @@ export default function TableView() {
             case globals.state.CANCELLED:
                 return row.rejectedOrCancelledDate;
             default:
-                return row.submissionDate;
+                return null;
         }
     }
     function reloadTable() {
@@ -103,6 +103,7 @@ export default function TableView() {
     const [queueEmpty, setQueueEmpty] = React.useState(false);
     const [card] = useContext(CardContext);
     const [latestCount, setLatestCount] = useContext(LatestCountContext);
+    const [count, setCount] = useContext(CountContext);
 
     const [snackBar, setSnackBar] = React.useState();
     const [snackBarVariant, setSnackBarVariant] = React.useState();
@@ -201,7 +202,7 @@ export default function TableView() {
                 setSelected([]);
                 var settings = {
                     "mode": "no-cors",
-                    "url": globals.api.HOST + "getAllLoanApplication?status=" + cardParse(card),
+                    "url": globals.api.HOST + "getAllLoanApplication?status=" + cardParse(card) + "&pageNumber=" + page + "&pageOffset=" + rowsPerPage,
                     "method": "GET",
                     "headers": {
                         "Content-Type": "application/x-www-form-urlencoded",
@@ -245,7 +246,7 @@ export default function TableView() {
         };
         fetchUsers();
         // setQueueEmpty(true);
-    }, [card, latestCount]);
+    }, [card, latestCount, page, rowsPerPage]);
 
     const handleRequestSort = (event, property) => {
 
@@ -419,7 +420,7 @@ export default function TableView() {
                                                     {
                                                         (card[globals.cards.PENDING] || card[globals.cards.ALL]) ? (
 
-                                                            (row.lockedBy && row.lockedBy !== localStorage.getItem('agentName')) ?
+                                                            (row.lockedBy) ?
                                                                 (
                                                                     <TableCell align="left" style={{ display: 'flex' }}>
                                                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style={{ paddingRight: '0.5rem' }}>
@@ -492,7 +493,7 @@ export default function TableView() {
                         <TablePagination
                             rowsPerPageOptions={[5, 10, 25]}
                             component="div"
-                            count={rows.length}
+                            count={count[cardParse(card)]}
                             rowsPerPage={rowsPerPage}
                             page={page}
                             backIconButtonProps={{

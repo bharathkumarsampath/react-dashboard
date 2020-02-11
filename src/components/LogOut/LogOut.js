@@ -5,10 +5,10 @@ import LogoutNav from '../../assets/images/ic-logout.png'
 import { unLockApp, clearLocalStorage } from '../../utils'
 import { useHistory } from "react-router-dom";
 
-const LogOut = () => {
+const LogOut = (props) => {
     let history = useHistory();
     function navLogOut() {
-        unLockApp();
+        unLockApp(props.LoanApp.mvStatus);
         clearLocalStorage();
         history.push('/');
     }

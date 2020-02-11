@@ -13,7 +13,7 @@ const EmployerDetails = (props) => {
 
             <ListCell name='Employment Type' value={(props.LoanApp.employmentType) ? ("Salaried") : ("Not Salaried")} />
 
-            <ListCell name='Monthly Income' value={'₹' + props.LoanApp.monthlyIncome} />
+            {/* <ListCell name='Monthly Income' value={'₹' + props.LoanApp.monthlyIncome} /> */}
             {/* <ListCell name='Employer Type' value={props.LoanApp.employerType} /> */}
             {/* <ListCell name='Country' value={props.LoanApp.workAddressCountry} /> */}
             <ListCell name='Address' value={Address} />

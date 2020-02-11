@@ -24,7 +24,7 @@ export default function PennyDropCheckModal(props) {
             try {
                 var settings = {
                     "mode": "no-cors",
-                    "url": globals.api.HOST + "getPennyDrop?loanAppNo=" + props.loanApp,
+                    "url": globals.api.HOST + "getPennyDrop?loanAppNo=" + props.loanApp.loanApplicationNo,
                 }
                 await fetch(settings.url, {
                     method: "GET",
@@ -40,7 +40,7 @@ export default function PennyDropCheckModal(props) {
                         setPennyDropError(res.response);
                     } else if (res.response === "Either token is invalid or token expired") {
                         console.log("Either token is invalid or token expired");
-                        unLockApp();
+                        unLockApp(props.loanApp.mvStatus);
                         setTimeout(function () { clearLocalStorage(); history.push(globals.routes.HOME) }, globals.messageDisplayTime);
                     } else {
                         setPennyDrop(JSON.parse(res.response));
@@ -73,8 +73,8 @@ export default function PennyDropCheckModal(props) {
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">{"Penny Drop Info"}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
+                <DialogContent >
+                    <DialogContentText id="alert-dialog-description" style={{ textAlign: "left", paddingLeft: "25px" }}>
                         {
                             (isFetching) ? ("Loading") : (
                                 (pennyDropError) ?
@@ -84,8 +84,8 @@ export default function PennyDropCheckModal(props) {
                                     ) : (
 
                                         <React.Fragment>
-                                            Time Stamp : {pennyDrop.dateCreated}<br /><br />
-                                            Penny Drop id Ref : {pennyDrop.id}<br /><br />
+                                            <span style={{ textAlign: "left" }}><b>Timestamp:</b> {pennyDrop.dateCreated}</span><br /><br />
+                                            <span style={{ textAlign: "left" }}><b>Penny drop id:</b> {pennyDrop.id}</span><br /><br />
                                         </React.Fragment>
                                     )
                             )

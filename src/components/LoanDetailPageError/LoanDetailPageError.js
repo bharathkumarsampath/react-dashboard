@@ -12,7 +12,7 @@ const LoanDetailPageError = () => {
     }
     return (
         <React.Fragment>
-            <Toolbar />
+            {/* <Toolbar /> */}
             <div className={classes.root}>
 
                 <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 56 56" className={classes.errorIconOne}>

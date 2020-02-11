@@ -4,7 +4,7 @@ const LoanDetailPageErrorStyles = makeStyles(theme => ({
     root: {
         backgroundColor: 'rgb(245,247,251)',
         textAlign: 'center',
-        padding: '10rem'
+        padding: '10%'
     },
     errorIconOne: {
         width: '56px',
@@ -16,10 +16,10 @@ const LoanDetailPageErrorStyles = makeStyles(theme => ({
         letterSpacing: '0.25px',
         textAlign: 'center',
         color: '#9096ba',
-        paddingLeft: '27vw',
+        paddingLeft: '27%',
         fontSize: '22px',
         fontWeight: '600',
-        paddingTop: '0.6rem'
+        paddingTop: '0.6%'
     },
     errorPhraseTwo: {
         width: '452px',
@@ -28,13 +28,13 @@ const LoanDetailPageErrorStyles = makeStyles(theme => ({
         textAlign: 'center',
         color: '#9096ba',
         fontSize: '14px',
-        paddingLeft: '24vw',
-        paddingTop: '0.6rem'
+        paddingLeft: '24%',
+        paddingTop: '0.6%'
     },
     errorIconTwo: {
         width: '48px',
         height: '48px',
-        paddingTop: '1rem',
+        paddingTop: '1%',
         cursor: 'pointer'
     }
 }));

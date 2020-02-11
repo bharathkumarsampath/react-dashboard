@@ -1,6 +1,7 @@
 import { globals } from './globals'
-function unLockApp() {
-    if (localStorage.getItem('loanAppNo')) {
+function unLockApp(mvStatus) {
+    if (localStorage.getItem('loanAppNo') &&
+        mvStatus && (mvStatus === globals.state.PENDING || mvStatus === globals.state.RE_SUBMITTED)) {
         try {
             var settings = {
                 "mode": "no-cors",
@@ -31,14 +32,14 @@ function unLockApp() {
 
 }
 
-function GetFormattedDate(date) {
+function GetFormattedDate(date, tenure) {
     console.log(date);
     var todayTime = new Date(date);
-    var month = todayTime.getMonth() + 1;
+    var month = todayTime.getMonth() + tenure;
     var day = todayTime.getDate();
     var year = todayTime.getFullYear();
-    console.log(month + "/" + day + "/" + year);
-    return month + "/" + day + "/" + year;
+    console.log(day + "/" + month + "/" + year);
+    return day + "/" + month + "/" + year;
 }
 
 function clearLocalStorage() {
