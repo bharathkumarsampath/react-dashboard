@@ -7,9 +7,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import LoanDetails from '../../components/UserDetails/UserDetails'
 import OfferDetails from '../../components/OfferDetails/OfferDetails'
 import KycDetails from '../../components/KycDetails/KycDetails'
-import EmployerDetails from '../../components/EmployerDetails/EmployerDetails'
 import LoanDetailsExpansionStyles from './LoanDetailsExpansionStyles'
-import { globals } from '../../globals'
 export default function ControlledExpansionPanels(props) {
     const classes = LoanDetailsExpansionStyles();
     const [expanded, setExpanded] = React.useState('panel1');
@@ -18,24 +16,23 @@ export default function ControlledExpansionPanels(props) {
         setExpanded(isExpanded ? panel : false);
         switch (panel) {
             case 'panel1': {
-                globals.loanAgreement.page = 1;
-                // setReload(!reload);
+                props.setPageNumber(1);
                 break;
             }
             case 'panel2': {
-                globals.loanAgreement.page = 3;
-                // setReload(!reload);
+                props.setPageNumber(3);
                 break;
             }
             case 'panel3': {
-                globals.loanAgreement.page = 4;
-                // setReload(!reload);
+                props.setPageNumber(4);
                 break;
             }
             case 'panel4': {
-                globals.loanAgreement.page = 5;
-                // setReload(!reload);
+                props.setPageNumber(5);
                 break;
+            }
+            default: {
+                props.setPageNumber(1);
             }
         }
     };
@@ -55,7 +52,7 @@ export default function ControlledExpansionPanels(props) {
                     <Typography className={classes.heading}>User Profile</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                    <LoanDetails LoanApp={props.LoanApp} selfieUrl={props.selfieUrl} />
+                    <LoanDetails LoanApp={props.LoanApp} selfieUrl={props.selfieUrl} pageNumber={props.pageNumber} />
                 </ExpansionPanelDetails>
             </ExpansionPanel>
             <ExpansionPanel expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
@@ -82,7 +79,7 @@ export default function ControlledExpansionPanels(props) {
                     <KycDetails LoanApp={props.LoanApp} />
                 </ExpansionPanelDetails>
             </ExpansionPanel>
-            <ExpansionPanel expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
+            {/* <ExpansionPanel expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
                 <ExpansionPanelSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel4bh-content"
@@ -93,7 +90,7 @@ export default function ControlledExpansionPanels(props) {
                 <ExpansionPanelDetails>
                     <EmployerDetails LoanApp={props.LoanApp} />
                 </ExpansionPanelDetails>
-            </ExpansionPanel>
+            </ExpansionPanel> */}
         </div>
     );
 }

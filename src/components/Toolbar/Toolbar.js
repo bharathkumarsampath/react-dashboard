@@ -9,7 +9,7 @@ import { useHistory } from "react-router-dom";
 import { globals } from '../../globals';
 
 
-const toolbar = () => {
+const toolbar = (props) => {
 
     let history = useHistory();
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -55,7 +55,7 @@ const toolbar = () => {
 
                     {/* <img src={clixLogo} width={220} height={50} alt="clix logo" /> */}
                 </div>
-                <Search />
+                <Search LoanApp={props.LoanApp} />
                 <div onClick={handleClick} style={{ fontSize: '35', paddingTop: '1%', paddingLeft: '2%', cursor: 'pointer' }}>
                     <Account color="disabled" fontSize="large" />
                 </div>
@@ -73,7 +73,7 @@ const toolbar = () => {
                     horizontal: 'right',
                 }}
             >
-                <Logout />
+                <Logout LoanApp={props.LoanApp} />
             </Popover>
         </Grid>
     );

@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const search = () => {
+const search = (props) => {
     let history = useHistory();
 
     const classes = useStyles();
@@ -51,7 +51,7 @@ const search = () => {
     function searchLoanApp() {
         if (loanApp.loanApplicationNo) {
             if (window.location.pathname.includes(globals.routes.LOANDETAIL)) {
-                unLockApp();
+                unLockApp(props.LoanApp.mvStatus);
                 history.push(globals.routes.LOANDETAIL + '/' + loanApp.loanApplicationNo);
                 localStorage.setItem('loanAppNo', loanApp.loanApplicationNo);
                 setReload(!reload);
@@ -120,7 +120,7 @@ const search = () => {
                         setSnackBarMessage("Session Expired,try signing again");
                         setSnackBarVariant("warning");
                         showSnackBar();
-                        unLockApp();
+                        unLockApp(props.mvStatus);
                         setTimeout(function () { clearLocalStorage(); history.push(globals.routes.HOME) }, globals.messageDisplayTime.sessionExpiry);
                     } else {
                         setPopupMessage(

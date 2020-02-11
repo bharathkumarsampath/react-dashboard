@@ -28,7 +28,7 @@ const LoansHeader = (props) => {
         setSnackBar(false);
     };
     function unlockAndNavBack() {
-        unLockApp();
+        unLockApp(props.LoanApp.mvStatus);
         history.push(globals.routes.DASHBOARD);
     }
     return (
@@ -40,7 +40,7 @@ const LoansHeader = (props) => {
             paddingLeft: '2%'
         }}>
 
-            <div style={{ display: 'flex', paddingTop: '1%' }}>
+            <div style={{ display: 'flex', paddingTop: '1%', fontFamily: 'Open sans' }}>
                 <div style={{ textAlign: 'left', color: 'grey', cursor: 'pointer', marginLeft: '2%', marginTop: '1%' }} onClick={unlockAndNavBack}>
                     <ArrowBackIcon />
                 </div>

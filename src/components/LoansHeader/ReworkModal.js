@@ -84,12 +84,12 @@ const ReworkModal = (props) => {
                     props.setSnackBarVariant("success");
                     props.showSnackBar();
                     setReload(!reload);
-                    unLockApp();
+                    unLockApp(props.LoanApp.mvStatus);
                 } else if (res.response === "Either token is invalid or token expired") {
                     props.setSnackBarMessage("Session Expired,try signing again");
                     props.setSnackBarVariant("warning");
                     props.showSnackBar();
-                    unLockApp();
+                    unLockApp(props.LoanApp.mvStatus);
                     setTimeout(function () { clearLocalStorage(); history.push(globals.routes.HOME) }, globals.messageDisplayTime.sessionExpiry);
                 } else {
                     props.setSnackBarMessage("Failed to mark the application as  Rework");
@@ -132,12 +132,12 @@ const ReworkModal = (props) => {
                 props.setSnackBarVariant("info");
                 props.showSnackBar();
                 setReload(!reload);
-                unLockApp();
+                unLockApp(props.LoanApp.mvStatus);
             } else if (res.response === "Either token is invalid or token expired") {
                 props.setSnackBarMessage("Session Expired,try signing again");
                 props.setSnackBarVariant("warning");
                 props.showSnackBar();
-                unLockApp();
+                unLockApp(props.LoanApp.mvStatus);
                 setTimeout(function () { clearLocalStorage(); history.push(globals.routes.HOME) }, globals.messageDisplayTime.sessionExpiry); //add unlock app function
             } else {
                 props.setSnackBarMessage("Failed to approve the application");
@@ -175,9 +175,10 @@ const ReworkModal = (props) => {
                     aria-describedby="simple-modal-description"
                     open={open}
                     onClose={handleClose}
+                    className={classes.reworkModal}
                 >
 
-                    <div className={(checkBoxObject.length <= 8) ? (classes.paperone) : ((checkBoxObject.length <= 16) ? (classes.papertwo) : (classes.paperthree))}>
+                    <div className={classes.paperone}>
                         <Typography variant="h6" gutterBottom>
                             Re-Work Application
                     </Typography>

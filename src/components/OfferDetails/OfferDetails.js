@@ -1,6 +1,5 @@
 import React from 'react';
 import ListCell from '../../components/List/List'
-import { GetFormattedDate } from '../../utils'
 const OfferDetails = (props) => {
 
 
@@ -17,9 +16,9 @@ const OfferDetails = (props) => {
             <ListCell name='EMI' value={'₹' + props.LoanApp.loanEmi} />
             <ListCell name='Tenure' value={props.LoanApp.loanTenure + ' Months'} />
             <ListCell name='Rate of Interest' value={props.LoanApp.rateOfInterest + '%'} />
-            <ListCell name='First EMI' value={(props.LoanApp.firstEmiDate) ? (props.LoanApp.firstEmiDate.substring(0, 12)) : (null)} />
-            {/* {(props.LoanApp.maturityDate) ? (
-                <ListCell name='Maturity' value={props.LoanApp.maturityDate} />
+            {/* <ListCell name='First EMI' value={(props.LoanApp.firstEmiDate) ? (props.LoanApp.firstEmiDate.substring(0, 12)) : (null)} /> */}
+            {/* {(props.LoanApp.firstEmiDate) ? (
+                <ListCell name='Maturity' value={GetFormattedDate(props.LoanApp.firstEmiDate, props.LoanApp.loanTenure)} />
             ) : (null)} */}
 
             {/* <ListCell name='Application Submitted On' value={props.LoanApp.submissionDate} /> */}

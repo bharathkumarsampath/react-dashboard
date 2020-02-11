@@ -2,7 +2,6 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const LoanDetailsExpansionStyles = makeStyles(theme => ({
     root: {
-        width: '100%',
         backgroundColor: 'white',
         width: '28vw',
         height: '80vh',

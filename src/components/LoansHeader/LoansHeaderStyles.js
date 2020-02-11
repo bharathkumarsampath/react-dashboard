@@ -10,28 +10,30 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: theme.palette.background.paper,
         padding: theme.spacing(2, 4, 3),
         borderRadius: '8px',
-        marginLeft: '30vw',
         textAlign: 'center',
         marginTop: '5vh'
     },
-    papertwo: {
-        position: 'absolute',
-        backgroundColor: theme.palette.background.paper,
-        padding: theme.spacing(2, 4, 3),
-        borderRadius: '8px',
-        marginLeft: '20vw',
-        textAlign: 'center',
-        marginTop: '5vh'
+    reworkModal: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
-    paperthree: {
-        position: 'absolute',
-        backgroundColor: theme.palette.background.paper,
-        padding: theme.spacing(2, 4, 3),
-        borderRadius: '8px',
-        marginLeft: '7vw',
-        textAlign: 'center',
-        marginTop: '5vh'
-    },
+    // papertwo: {
+    //     position: 'absolute',
+    //     backgroundColor: theme.palette.background.paper,
+    //     padding: theme.spacing(2, 4, 3),
+    //     borderRadius: '8px',
+    //     textAlign: 'center',
+    //     marginTop: '5vh'
+    // },
+    // paperthree: {
+    //     position: 'absolute',
+    //     backgroundColor: theme.palette.background.paper,
+    //     padding: theme.spacing(2, 4, 3),
+    //     borderRadius: '8px',
+    //     textAlign: 'center',
+    //     marginTop: '5vh'
+    // },
     textArea: {
         '& .MuiTextField-root': {
             width: 400,
