@@ -2,7 +2,6 @@ import React, { useEffect, useContext } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import TablePagination from '@material-ui/core/TablePagination';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import { CardContext, LatestCountContext, CountContext } from '../../containers/Dashboard/Dashboard'
@@ -21,6 +20,8 @@ import TableServerError from '../TableServerError/TableServerError'
 import SnackBar from '../Snackbar/SnackBar'
 import { clearLocalStorage } from '../../utils';
 import fetch from 'fetch-timeout'
+import Pagination from './Pagination'
+import { Divider } from '@material-ui/core';
 const formatter = buildFormatter(buildFormatter)
 
 
@@ -51,7 +52,7 @@ function getSorting(order, orderBy) {
 }
 
 
-export default function TableView() {
+export default function TableView(props) {
 
     let history = useHistory();
     function navLoanDetails(event) {
@@ -93,8 +94,9 @@ export default function TableView() {
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState();
     const [selected, setSelected] = React.useState([]);
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [page] = React.useState(0);
+    // const [page2, setPage2] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [selectAll, setSelectAll] = React.useState(false);
 
     const [rows, setRows] = React.useContext(LoanAppContext);
@@ -103,7 +105,7 @@ export default function TableView() {
     const [queueEmpty, setQueueEmpty] = React.useState(false);
     const [card] = useContext(CardContext);
     const [latestCount, setLatestCount] = useContext(LatestCountContext);
-    const [count, setCount] = useContext(CountContext);
+    const [count] = useContext(CountContext);
 
     const [snackBar, setSnackBar] = React.useState();
     const [snackBarVariant, setSnackBarVariant] = React.useState();
@@ -198,11 +200,10 @@ export default function TableView() {
                 setIsFetching(true);
                 setError(false);
                 setQueueEmpty(false);
-                setPage(0);
                 setSelected([]);
                 var settings = {
                     "mode": "no-cors",
-                    "url": globals.api.HOST + "getAllLoanApplication?status=" + cardParse(card) + "&pageNumber=" + page + "&pageOffset=" + rowsPerPage,
+                    "url": globals.api.HOST + "getAllLoanApplication?status=" + cardParse(card) + "&pageNumber=" + props.page2 + "&pageOffset=" + rowsPerPage,
                     "method": "GET",
                     "headers": {
                         "Content-Type": "application/x-www-form-urlencoded",
@@ -246,7 +247,7 @@ export default function TableView() {
         };
         fetchUsers();
         // setQueueEmpty(true);
-    }, [card, latestCount, page, rowsPerPage]);
+    }, [card, latestCount, props.page2, rowsPerPage]);
 
     const handleRequestSort = (event, property) => {
 
@@ -295,15 +296,6 @@ export default function TableView() {
             }
             setSelected(newSelected);
         }
-    };
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = event => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
     };
 
     const isSelected = loanApplicationNo => selected.indexOf(loanApplicationNo) !== -1;
@@ -490,12 +482,12 @@ export default function TableView() {
                                 </TableBody>
                             </Table>
                         </div>
-                        <TablePagination
+                        <Divider />
+                        {/* <TablePagination
                             rowsPerPageOptions={[5, 10, 25]}
                             component="div"
-                            count={count[cardParse(card)]}
                             rowsPerPage={rowsPerPage}
-                            page={page}
+                            page={page2}
                             backIconButtonProps={{
                                 'aria-label': 'previous page',
                             }}
@@ -504,7 +496,11 @@ export default function TableView() {
                             }}
                             onChangePage={handleChangePage}
                             onChangeRowsPerPage={handleChangeRowsPerPage}
-                        />
+                        /> */}
+
+
+                        <Pagination style={{ float: 'right', align: 'left' }} page={page} page2={props.page2} rowsPerPage={rowsPerPage} setRowsPerPage={setRowsPerPage} count={count[cardParse(card)]} setPage2={props.setPage2} />
+
                     </Paper>)))}
             <SnackBar message={snackBarMessage} variant={snackBarVariant} snackBar={snackBar} showSnackBar={showSnackBar} hideSnackBar={hideSnackBar} />
         </div>

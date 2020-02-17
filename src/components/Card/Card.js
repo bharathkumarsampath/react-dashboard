@@ -11,6 +11,7 @@ export default function SimpleCard(props) {
     const [style, setStyle] = React.useState(classes.card);
 
     useEffect(() => {
+
         if (props.card[props.index] === 0) {
             setStyle(classes.card);
         } else {
@@ -19,6 +20,7 @@ export default function SimpleCard(props) {
     });
 
     function makeActive() {
+        props.setPage2(0);
         var array = [0, 0, 0, 0, 0];
         array[props.index] = 1;
         array[5] = props.index;
