@@ -4,13 +4,18 @@ import { CardContext, CountContext, LatestCountContext } from '../../containers/
 import { globals } from '../../globals'
 import fetch from 'fetch-timeout'
 import CountBoardStyles from './CountBoardStyles'
-export default function Cards() {
+export default function Cards(props) {
 
     const [card, setCard] = useContext(CardContext);
     const [count, setCount] = useContext(CountContext);
     const [latestCount] = useContext(LatestCountContext);
     const [error, setError] = React.useState(false);
+    // const [page2, setPage2] = React.useState(props);
     const classes = CountBoardStyles();
+
+    // useEffect(() => {
+    //     setPage2(props);
+    // }, [props]);
     useEffect(() => {
         const fetchUsers = async () => {
             try {
@@ -52,15 +57,17 @@ export default function Cards() {
 
         };
         fetchUsers();
+
+
     }, [card, latestCount]);
     return (<div>
         {
             <div className={classes.cards}>
-                <SimpleCard count={count.PENDING} text='PENDING' card={card} index={0} setCard={setCard} error={error} />
-                <SimpleCard count={count.RE_WORK} text='RE-WORK' card={card} index={1} setCard={setCard} error={error} />
-                <SimpleCard count={count.APPROVED} text='APPROVED' card={card} index={2} setCard={setCard} error={error} />
-                <SimpleCard count={count.REJECTED} text='REJECTED/CANCELLED' card={card} index={3} setCard={setCard} error={error} />
-                <SimpleCard count={count.ALL} text='ALL' card={card} index={4} setCard={setCard} error={error} />
+                <SimpleCard setPage2={props.setPage2} count={count.PENDING} text='PENDING' card={card} index={0} setCard={setCard} error={error} />
+                <SimpleCard setPage2={props.setPage2} count={count.RE_WORK} text='RE-WORK' card={card} index={1} setCard={setCard} error={error} />
+                <SimpleCard setPage2={props.setPage2} count={count.APPROVED} text='APPROVED' card={card} index={2} setCard={setCard} error={error} />
+                <SimpleCard setPage2={props.setPage2} count={count.REJECTED} text='REJECTED/CANCELLED' card={card} index={3} setCard={setCard} error={error} />
+                <SimpleCard setPage2={props.setPage2} count={count.ALL} text='ALL' card={card} index={4} setCard={setCard} error={error} />
             </div>
         }
     </div>);

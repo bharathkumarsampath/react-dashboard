@@ -17,6 +17,7 @@ const Dashboard = () => {
   const [count, setCount] = useState({});
   const [latestCount, setLatestCount] = useState(false);
   const [rows, setRows] = useState([]);
+  const [page2, setPage2] = React.useState(0);
   return (
     <div>
       <LoanAppContext.Provider value={[rows, setRows]}>
@@ -25,9 +26,8 @@ const Dashboard = () => {
         <CardContext.Provider value={[card, setCard]}>
           <CountContext.Provider value={[count, setCount]}>
             <LatestCountContext.Provider value={[latestCount, setLatestCount]}>
-
-              <Cards />
-              <EnhancedTable />
+              <Cards setPage2={setPage2} />
+              <EnhancedTable setPage2={setPage2} page2={page2} />
             </LatestCountContext.Provider>
           </CountContext.Provider>
         </CardContext.Provider>

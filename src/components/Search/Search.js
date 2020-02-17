@@ -116,7 +116,7 @@ const search = (props) => {
                                 </div>
                             </div>
                         );
-                    } else if (res.response === "Either token is invalid or token expired") {
+                    } else if (res && res.response === "Either token is invalid or token expired") {
                         setSnackBarMessage("Session Expired,try signing again");
                         setSnackBarVariant("warning");
                         showSnackBar();

@@ -467,7 +467,7 @@ theme.overrides.MuiSelect = {
         borderRadius: '5px'
     },
     icon: {
-        marginRight: "3px",
+        marginRight: "1.5px",
     },
 };
 
