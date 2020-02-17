@@ -1,6 +1,5 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
-import Toolbar from '../../components/Toolbar/Toolbar'
 import { ReloadAppContext } from '../../containers/LoanDetail/LoanDetail'
 import LoanDetailPageErrorStyles from './LoanDetailPageErrorStyles'
 const LoanDetailPageError = () => {

@@ -73,7 +73,7 @@ const toolbar = (props) => {
                     horizontal: 'right',
                 }}
             >
-                <Logout LoanApp={props.LoanApp} />
+                <Logout />
             </Popover>
         </Grid>
     );

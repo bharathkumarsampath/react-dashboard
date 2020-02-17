@@ -1,12 +1,6 @@
 import React from "react";
 const PdfViewer = (props) => {
     const { src } = props;
-    const [error, setError] = React.useState(false);
-    var image = new Image;
-
-
-
-
 
     return (
         <embed
@@ -15,7 +9,6 @@ const PdfViewer = (props) => {
             type="application/pdf"
             width='94%'
             height='90%'
-            error={error}
             alt="Aws pdf url is not valid"
         />
     );
