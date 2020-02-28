@@ -15,6 +15,12 @@ const LoanDetailsExpansionStyles = makeStyles(theme => ({
     heading: {
         fontSize: theme.typography.pxToRem(15),
         flexShrink: 0,
+        width: '86px',
+        height: '19px',
+        // fontSize: '14px',
+        fontWeight: '600',
+        cursor: 'pointer'
+
     },
     secondaryHeading: {
         fontSize: theme.typography.pxToRem(15),

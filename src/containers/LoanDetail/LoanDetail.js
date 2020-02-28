@@ -9,7 +9,7 @@ import { useHistory } from "react-router-dom"
 import LoanDetailPageError from '../../components/LoanDetailPageError/LoanDetailPageError'
 import SnackBar from '../../components/Snackbar/SnackBar'
 import { unLockApp, clearLocalStorage } from '../../utils'
-import fetch from 'fetch-timeout'
+import fetch from 'fetch-timeout';
 export const ReloadAppContext = React.createContext([{}, function () { }]);
 
 const UserProfile = (props) => {
@@ -124,6 +124,108 @@ const UserProfile = (props) => {
         }
         getReworkReasons();
     }, [reload]);
+
+    // React.componentDidMount = () => {
+    //     window.onbeforeunload = (e) => {
+
+    //         // e.preventDefault();
+    //         console.log("window.onunload");
+    //         unLockApp(LoanApp.mvStatus, function () {
+    //             history.push(globals.routes.DASHBOARD);
+    //         });
+    //         sleep(2000).then(() => { console.log("World!"); });
+
+    //     }
+
+
+    //     // window.onbeforeunload = () => true
+
+    // }
+
+
+
+
+    useEffect(() => {
+
+        // window.onpopstate = (e) => {
+
+        //     e.preventDefault();
+        //     console.log("window.onpopstate");
+        //     unLockApp(LoanApp.mvStatus, function () {
+        //         history.push(globals.routes.DASHBOARD);
+        //     });
+        //     sleep(2000).then(() => { console.log("World!"); });
+        // }
+
+
+
+        // window.onbeforeunload = (e) => {
+
+        //     e.preventDefault();
+        //     console.log("window.onbeforeunload");
+        //     unLockApp(LoanApp.mvStatus, function () {
+        //         history.push(globals.routes.DASHBOARD);
+        //     });
+        //     // sleep(2000).then(() => { console.log("World!"); });
+        // }
+
+        window.onunload = (e) => {
+
+            e.preventDefault();
+            unLockApp(LoanApp.mvStatus);
+            // sleep(2000).then(() => { console.log("World!"); });
+        }
+        // window.onhashchange = function (e) {
+        //     //blah blah blah
+        //     e.preventDefault();
+        //     console.log("window.onhashchange");
+        //     unLockApp(LoanApp.mvStatus, function () {
+        //         history.push(globals.routes.DASHBOARD);
+        //     });
+        // }
+
+        if (window.history && window.history.pushState) {
+
+
+            window.onpopstate = (e) => {
+
+                var hashLocation = window.location.hash;
+                var hashSplit = hashLocation.split("#!/");
+                var hashName = hashSplit[1];
+
+                if (hashName !== '') {
+                    var hash = window.location.hash;
+                    if (hash === '') {
+                        // alert('Back button was pressed.');
+                        unLockApp(LoanApp.mvStatus, function () {
+                            window.history.pushState('forward', null, '/dashboard');
+                        });
+                    }
+                }
+            }
+        }
+
+        // $(window).on('popstate', function () {
+        //     var hashLocation = window.location.hash;
+        //     var hashSplit = hashLocation.split("#!/");
+        //     var hashName = hashSplit[1];
+
+        //     if (hashName !== '') {
+        //         var hash = window.location.hash;
+        //         if (hash === '') {
+        //             alert('Back button was pressed.');
+        //             unLockApp(LoanApp.mvStatus, function () {
+        //                 history.push(globals.routes.DASHBOARD);
+        //             });
+        //         }
+        //     }
+        // });
+
+
+
+    });
+
+
 
     return (
         <ReloadAppContext.Provider value={[reload, setReload]}>

@@ -149,6 +149,12 @@ const ReworkModal = (props) => {
 
         props.LoanApp.loanApplicationNo = undefined;
     }
+
+    function unlock() {
+        unLockApp(props.LoanApp.mvStatus, function () {
+            history.push(globals.routes.DASHBOARD);
+        })
+    }
     return (
         <div>
 
@@ -166,6 +172,13 @@ const ReworkModal = (props) => {
                     color="primary"
                     className={classes.margin}
                     onClick={approve} style={{ width: '150px', height: '40px' }}>APPROVE
+                            </Button >
+                <Button
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.margin}
+                    onClick={unlock} style={{ width: '150px', height: '40px' }}>UN-LOCK
                             </Button >
             </div>
             <div style={{ display: 'flex', marginTop: '0.2rem', backgroundColor: 'white' }}>
