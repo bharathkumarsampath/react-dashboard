@@ -258,16 +258,24 @@ export default function TableView(props) {
 
     const handleSelectAllClick = event => {
         if (!selectAll) {
-            const newSelecteds = rows.slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage).map(n => {
-                if (!n.lockedBy) {
-                    return n.loanApplicationNo;
+            // const newSelecteds = rows.slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage).map(n => {
+            //     if (!n.lockedBy) {
+            //         return n.loanApplicationNo;
+            //     }
+            // });
+            var newSelecteds = [], index;
+            // console.log("page * rowsPerPage", page * rowsPerPage);
+            // console.log("object", rows[page * rowsPerPage].hasOwnProperty('lockedBy'));
+            // console.log("object", Object(rows[page * rowsPerPage]).hasOwnProperty('lockedBy'));
+            // console.log(rows[page * rowsPerPage]['loanApplicationNo']);
+            for (index = page * rowsPerPage; index <= (page * rowsPerPage) + rowsPerPage; index++) {
+                if (!Object(rows[index]).hasOwnProperty('lockedBy') && Object(rows[index]).hasOwnProperty('loanApplicationNo')) {
+                    newSelecteds.push(Object(rows[index])['loanApplicationNo']);
                 }
-                else {
-                    return "";
-                }
-            });
+            }
             setSelectAll(!selectAll);
             setSelected(newSelecteds);
+            console.log("newSelecteds", newSelecteds);
             return;
         }
         setSelected([]);

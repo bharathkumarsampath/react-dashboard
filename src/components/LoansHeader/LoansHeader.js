@@ -28,8 +28,11 @@ const LoansHeader = (props) => {
         setSnackBar(false);
     };
     function unlockAndNavBack() {
-        unLockApp(props.LoanApp.mvStatus);
-        history.push(globals.routes.DASHBOARD);
+        unLockApp(props.LoanApp.mvStatus, function () {
+            history.push(globals.routes.DASHBOARD);
+        });
+        // setTimeout(history.push(globals.routes.DASHBOARD), 2000);
+        //history.push(globals.routes.DASHBOARD);
     }
     return (
         <div style={{

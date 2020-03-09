@@ -1,5 +1,5 @@
 import { globals } from './globals'
-function unLockApp(mvStatus) {
+function unLockApp(mvStatus, callback) {
     if (localStorage.getItem('loanAppNo') &&
         mvStatus && (mvStatus === globals.state.PENDING || mvStatus === globals.state.RE_SUBMITTED)) {
         try {
@@ -29,6 +29,7 @@ function unLockApp(mvStatus) {
         }
 
     }
+    typeof callback === "function" && callback();
 
 }
 
