@@ -1,5 +1,5 @@
 import React from "react";
-import { Dialog, DialogTitle, Link } from "@material-ui/core";
+import { Dialog, DialogTitle, Link, Typography } from "@material-ui/core";
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import TextField from '@material-ui/core/TextField'
@@ -76,6 +76,7 @@ const Modal = (props) => {
                     <DialogContentText>
                         Enter the Email ID associated with the account.We will send the new password to the below email provided.
             </DialogContentText >
+                    <br />
                     <TextField
                         variant="outlined"
                         autoFocus
