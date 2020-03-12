@@ -123,6 +123,8 @@ const LoanDetails = (props) => {
                             (props.LoanApp.currentAddressStreet1 + ',') : (null)}
                         {(props.LoanApp.currentAddressStreet2) ?
                             (props.LoanApp.currentAddressStreet2 + ',') : (null)}
+                        {(props.LoanApp.currentAddressStreet3) ?
+                            (props.LoanApp.currentAddressStreet3 + ',') : (null)}
                         {(props.LoanApp.currentAddressCity) ?
                             (props.LoanApp.currentAddressCity + ',') : (null)}
                         {(props.LoanApp.currentAddressState) ?

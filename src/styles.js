@@ -501,7 +501,7 @@ theme.overrides.MuiOutlinedInput = {
         padding: "10.5px 14px",
 
         fontSize: "14px",
-        fontWeight: 600,
+        // fontWeight: 600,
         color: "#2a292a",
         // font-style: normal;
         // font-stretch: normal;
@@ -808,6 +808,9 @@ export const styles = (theme) => ({
     },
     textFieldFullWidth: {
         width: "100%",
+    },
+    textField: {
+        fontWeight: 'normal'
     },
     txtAlignCenter: {
         textAlign: "center",
