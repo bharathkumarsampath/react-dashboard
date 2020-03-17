@@ -120,11 +120,11 @@ const LoanDetails = (props) => {
                     <Typography variant="body2" gutterBottom style={{ width: ' 328px', fontSize: ' 14px', fontWeight: '600', lineHeight: ' 19px', overflowWrap: 'break-word' }}>
 
                         {(props.LoanApp.currentAddressStreet1) ?
-                            (props.LoanApp.currentAddressStreet1 + ',') : (null)}
+                            (props.LoanApp.currentAddressStreet1) : (null)}
                         {(props.LoanApp.currentAddressStreet2) ?
-                            (props.LoanApp.currentAddressStreet2 + ',') : (null)}
+                            (props.LoanApp.currentAddressStreet2) : (null)}
                         {(props.LoanApp.currentAddressStreet3) ?
-                            (props.LoanApp.currentAddressStreet3 + ',') : (null)}
+                            (props.LoanApp.currentAddressStreet3) : (null)}
                         {(props.LoanApp.currentAddressCity) ?
                             (props.LoanApp.currentAddressCity + ',') : (null)}
                         {(props.LoanApp.currentAddressState) ?
