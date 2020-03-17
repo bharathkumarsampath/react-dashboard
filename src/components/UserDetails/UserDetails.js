@@ -72,7 +72,7 @@ const LoanDetails = (props) => {
                 <div style={{ paddingLeft: '1rem', textAlign: 'left' }}>
                     <Typography variant="subtitle2" gutterBottom style={{ height: '46px', color: '#000000', fontSize: '16px', fontWeight: '600', lineHeight: '22px' }}>
                         {(props.LoanApp.firstName) ? (props.LoanApp.firstName + " ") : (null) +
-                            (props.LoanApp.middleName) ? (props.LoanApp.middleName) : (null) +
+                            (props.LoanApp.middleName) ? (props.LoanApp.middleName + " ") : (null) +
                                 (props.LoanApp.lastName) ? (props.LoanApp.lastName) : (null)}
 
                     </Typography>
