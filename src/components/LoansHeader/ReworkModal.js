@@ -74,7 +74,8 @@ const ReworkModal = (props) => {
                     old_status: props.LoanApp.mvStatus,
                     new_status: globals.state.RE_WORK,
                     remarks: remarks,
-                    clix_application_id: props.LoanApp.clixApplicationId
+                    clix_application_id: props.LoanApp.clixApplicationId,
+                    additional_comments: otherReasons
                 })
             }).then(res => res.text()
             ).then(res => {
