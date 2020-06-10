@@ -47,11 +47,9 @@ const ReworkModal = (props) => {
             }
 
         })
-        if (otherReasons) {
-            remarks = remarks + otherReasons;
-        } else {
-            remarks = remarks.substring(0, remarks.length - 1);
-        }
+        
+        remarks = remarks.substring(0, remarks.length - 1);
+        
         if (remarks) {
             handleClose();
 
