@@ -44,8 +44,8 @@ const globals = {
         ALL: "ALL"
     },
     api: {
-        HOST: "http://localhost:8080/services/api/clix/portal/"
-        // HOST: "https://lstaging2.whizdm.com/loans/services/api/clix/portal/"
+        // HOST: "http://localhost:8080/services/api/clix/portal/"
+         HOST: "https://dev-cp.whizdm.com/loans/services/api/clix/portal/"
     },
     table: {
         HEADING: [[
