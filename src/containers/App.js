@@ -18,7 +18,7 @@ const App = () => {
       { /* Container stuff goes here  */}
       <Switch>
         <Route exact path={globals.routes.HOME} component={Login} />
-        <AuthRoute exact path={globals.routes.DASHBOARD} component={Dashboard} />
+        <Route exact path={globals.routes.DASHBOARD} component={Dashboard} />
         <AuthRoute path={globals.routes.LOANDETAIL + '/:loanAppNo'} component={LoanDetail} onLeave={unLockApp} />
         <Route component={NoPageFound} />
       </Switch>

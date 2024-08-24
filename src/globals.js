@@ -20,8 +20,8 @@ const globals = {
         ALL: 4
     },
     routes: {
-        HOME: '/',
-        DASHBOARD: '/dashboard',
+        HOME: '/dashboard',
+        DASHBOARD: '/',
         LOANDETAIL: '/loan',
     },
     session: {
